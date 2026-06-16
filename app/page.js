@@ -14,7 +14,7 @@ export default function Landing() {
       <div className="space-y-3">
         <div className="text-6xl">💞</div>
         <h1 className="text-4xl font-black tracking-tight">
-          Couple<span className="gradient-text">Space</span>
+          Heart<span className="gradient-text">SYNC</span>
         </h1>
         <p className="text-balance text-[var(--muted)]">
           A private, beautiful little world for the two of you. Chat, memories, dates,
