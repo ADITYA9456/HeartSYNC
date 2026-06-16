@@ -1,0 +1,186 @@
+@import 'tailwindcss';
+
+/* next-themes toggles the `dark` class on <html>. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* =========================================================================
+   Palette tokens. Defaults = Midnight Love (light). Each [data-palette] block
+   overrides the semantic variables; `.dark` variants tweak them for night.
+   ========================================================================= */
+:root,
+[data-palette='midnight'] {
+  --bg-from: #eef1ff;
+  --bg-to: #f7eefe;
+  --primary: #6d5dfc;
+  --primary-2: #c354ff;
+  --accent: #8b7bff;
+  --text: #1b1730;
+  --muted: #6b6786;
+  --card: 255 255 255;     /* rgb for alpha compositing */
+  --border: 255 255 255;
+  --ring: #6d5dfc;
+}
+[data-palette='pink'] {
+  --bg-from: #fff0f5;
+  --bg-to: #ffe9ec;
+  --primary: #ff5d8f;
+  --primary-2: #ff9a8b;
+  --accent: #ff7eb3;
+  --text: #3a1f2b;
+  --muted: #946b78;
+  --card: 255 255 255;
+  --border: 255 255 255;
+  --ring: #ff5d8f;
+}
+[data-palette='lavender'] {
+  --bg-from: #f5f3ff;
+  --bg-to: #efe9ff;
+  --primary: #8b5cf6;
+  --primary-2: #c4b5fd;
+  --accent: #a78bfa;
+  --text: #271b3f;
+  --muted: #786a96;
+  --card: 255 255 255;
+  --border: 255 255 255;
+  --ring: #8b5cf6;
+}
+[data-palette='sunset'] {
+  --bg-from: #fff4e6;
+  --bg-to: #ffe9ec;
+  --primary: #ff6a88;
+  --primary-2: #ff9a44;
+  --accent: #ff7e6b;
+  --text: #3a241b;
+  --muted: #97725f;
+  --card: 255 255 255;
+  --border: 255 255 255;
+  --ring: #ff6a88;
+}
+
+/* ---- Dark overrides ---- */
+.dark[data-palette='midnight'],
+.dark:root,
+.dark {
+  --bg-from: #0b1026;
+  --bg-to: #160d2e;
+  --text: #f2f0ff;
+  --muted: #a59fc4;
+  --card: 30 27 56;
+  --border: 255 255 255;
+}
+.dark[data-palette='pink'] {
+  --bg-from: #25131a;
+  --bg-to: #2b1622;
+  --text: #ffeef3;
+  --muted: #c89aa9;
+  --card: 52 28 38;
+}
+.dark[data-palette='lavender'] {
+  --bg-from: #160f29;
+  --bg-to: #1d1338;
+  --text: #f1ecff;
+  --muted: #b3a6d6;
+  --card: 40 30 64;
+}
+.dark[data-palette='sunset'] {
+  --bg-from: #241310;
+  --bg-to: #2b1714;
+  --text: #ffeee6;
+  --muted: #cc9c86;
+  --card: 54 30 24;
+}
+
+@theme inline {
+  --color-primary: var(--primary);
+  --color-primary-2: var(--primary-2);
+  --color-accent: var(--accent);
+  --color-ink: var(--text);
+  --color-muted: var(--muted);
+  --font-sans: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  --radius-glass: 1.25rem;
+}
+
+* {
+  border-color: rgb(var(--border) / 0.14);
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  color: var(--text);
+  background:
+    radial-gradient(1200px 600px at 15% -10%, color-mix(in srgb, var(--primary) 22%, transparent), transparent 60%),
+    radial-gradient(1000px 700px at 110% 10%, color-mix(in srgb, var(--primary-2) 20%, transparent), transparent 55%),
+    linear-gradient(160deg, var(--bg-from), var(--bg-to));
+  background-attachment: fixed;
+  -webkit-font-smoothing: antialiased;
+  overscroll-behavior-y: none;
+}
+
+/* =========================================================================
+   Glassmorphism utilities
+   ========================================================================= */
+@utility glass {
+  background: rgb(var(--card) / 0.55);
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  border: 1px solid rgb(var(--border) / 0.18);
+}
+.dark .glass {
+  background: rgb(var(--card) / 0.45);
+  border-color: rgb(var(--border) / 0.08);
+}
+
+@utility glass-card {
+  background: rgb(var(--card) / 0.6);
+  backdrop-filter: blur(20px) saturate(150%);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  border: 1px solid rgb(var(--border) / 0.2);
+  border-radius: var(--radius-glass);
+  box-shadow: 0 10px 40px -16px color-mix(in srgb, var(--primary) 40%, transparent);
+}
+.dark .glass-card {
+  background: rgb(var(--card) / 0.5);
+  border-color: rgb(var(--border) / 0.1);
+}
+
+@utility gradient-text {
+  background: linear-gradient(120deg, var(--primary), var(--primary-2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@utility brand-gradient {
+  background: linear-gradient(120deg, var(--primary), var(--primary-2));
+}
+
+/* Hide scrollbars where we want a clean mobile feel */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Respect users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* Safe-area padding for the bottom nav on notched phones */
+.pb-safe {
+  padding-bottom: calc(env(safe-area-inset-bottom) + 0.5rem);
+}
+.pt-safe {
+  padding-top: env(safe-area-inset-top);
+}
