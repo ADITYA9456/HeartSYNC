@@ -1,15 +1,15 @@
 'use client';
-import { useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { useForm } from 'react-hook-form';
+import { Button } from '@/components/ui/button';
+import { Field, Input } from '@/components/ui/input';
+import { api } from '@/lib/api-client';
+import { loginSchema, registerSchema } from '@/lib/validators';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { GoogleLogin } from '@react-oauth/google';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
-import { loginSchema, registerSchema } from '@/lib/validators';
-import { api } from '@/lib/api-client';
-import { Button } from '@/components/ui/button';
-import { Input, Field } from '@/components/ui/input';
 
 export function AuthClient() {
   const router = useRouter();
@@ -35,7 +35,7 @@ export function AuthClient() {
       } else {
         const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
         await api.post('/api/auth/register', { ...values, timezone: tz });
-        toast.success('Welcome to CoupleSpace 💞');
+        toast.success('Welcome to HeartSYNC 💞');
         go(false);
       }
     } catch (e) {
@@ -67,7 +67,7 @@ export function AuthClient() {
       <div className="text-center">
         <div className="text-5xl">💞</div>
         <h1 className="mt-2 text-3xl font-black">
-          Couple<span className="gradient-text">Space</span>
+          Heart<span className="gradient-text">SYNC</span>
         </h1>
         <p className="text-sm text-[var(--muted)]">
           {isLogin ? 'Welcome back, lovebird.' : 'Create your private space for two.'}

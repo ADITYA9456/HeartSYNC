@@ -1,12 +1,12 @@
 'use client';
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Copy, Check, Heart, LogOut } from 'lucide-react';
-import { toast } from 'sonner';
-import { api } from '@/lib/api-client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { api } from '@/lib/api-client';
+import { AnimatePresence, motion } from 'framer-motion';
+import { Check, Copy, Heart, LogOut } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { toast } from 'sonner';
 
 export function ConnectClient() {
   const router = useRouter();
@@ -71,7 +71,7 @@ export function ConnectClient() {
         </div>
 
         <Button onClick={() => router.replace('/dashboard')} className="w-full">
-          Enter CoupleSpace
+          Enter HeartSYNC
         </Button>
         <p className="text-xs text-[var(--muted)]">
           You can find this code again any time in Settings until your partner joins.

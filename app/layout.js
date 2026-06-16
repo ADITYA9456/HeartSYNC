@@ -1,23 +1,23 @@
+import { ServiceWorkerRegistrar } from '@/components/pwa/service-worker-registrar';
 import { Inter } from 'next/font/google';
 import './globals.css';
 import { Providers } from './providers';
-import { ServiceWorkerRegistrar } from '@/components/pwa/service-worker-registrar';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans', display: 'swap' });
 
 export const metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'),
-  title: { default: 'CoupleSpace', template: '%s · CoupleSpace' },
+  title: { default: 'HeartSYNC', template: '%s · HeartSYNC' },
   description: 'A private space for two — chat, memories, dates, and a little AI magic.',
-  applicationName: 'CoupleSpace',
+  applicationName: 'HeartSYNC',
   manifest: '/manifest.webmanifest',
-  appleWebApp: { capable: true, statusBarStyle: 'black-translucent', title: 'CoupleSpace' },
+  appleWebApp: { capable: true, statusBarStyle: 'black-translucent', title: 'HeartSYNC' },
   icons: {
     icon: '/icons/icon-192.png',
     apple: '/icons/icon-192.png',
   },
   openGraph: {
-    title: 'CoupleSpace',
+    title: 'HeartSYNC',
     description: 'A private space for two.',
     type: 'website',
   },

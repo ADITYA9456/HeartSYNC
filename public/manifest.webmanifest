@@ -1,6 +1,6 @@
 {
-  "name": "CoupleSpace",
-  "short_name": "CoupleSpace",
+  "name": "HeartSYNC",
+  "short_name": "HeartSYNC",
   "description": "A private space for two — chat, memories, dates, and a little AI magic.",
   "start_url": "/dashboard",
   "scope": "/",

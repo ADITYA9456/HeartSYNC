@@ -1,22 +1,22 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
-import { useRouter } from 'next/navigation';
+import { Bell, Check, Flame, Heart, LogOut, Monitor, Moon, Sun } from 'lucide-react';
 import { useTheme } from 'next-themes';
+import { useRouter } from 'next/navigation';
+import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
-import { Flame, Heart, Check, Sun, Moon, Monitor, Bell, LogOut } from 'lucide-react';
 
-import { api } from '@/lib/api-client';
-import { useAppStore } from '@/lib/store';
-import { PALETTES } from '@/lib/constants';
 import { usePalette } from '@/components/providers/palette-provider';
+import { api } from '@/lib/api-client';
+import { PALETTES } from '@/lib/constants';
 import { registerForPush } from '@/lib/firebase-client';
+import { useAppStore } from '@/lib/store';
 
-import { GlassCard } from '@/components/ui/glass-card';
 import { Avatar } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { Input, Field } from '@/components/ui/input';
+import { GlassCard } from '@/components/ui/glass-card';
+import { Field, Input } from '@/components/ui/input';
 
 // A handful of common IANA zones; the detected zone is merged in at runtime.
 const COMMON_ZONES = [
@@ -395,7 +395,7 @@ export default function SettingsPage() {
         </Button>
         <p className="flex items-center justify-center gap-1.5 pt-1 text-xs text-[var(--muted)]">
           Made with <Heart className="h-3.5 w-3.5 text-[var(--primary)]" /> for
-          CoupleSpace
+          HeartSYNC
         </p>
       </Section>
     </div>

@@ -1,4 +1,4 @@
-# 💞 CoupleSpace
+# 💞 HeartSYNC
 
 A private, mobile-first PWA for **exactly two people**. Realtime chat, shared
 gallery, dates & timeline, an AI copilot, YouTube music, an optional period

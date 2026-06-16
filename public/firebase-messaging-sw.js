@@ -19,7 +19,7 @@ if (config.apiKey && config.projectId) {
   const messaging = firebase.messaging();
 
   messaging.onBackgroundMessage((payload) => {
-    const title = payload.notification?.title || 'CoupleSpace 💞';
+    const title = payload.notification?.title || 'HeartSYNC 💞';
     const options = {
       body: payload.notification?.body || '',
       icon: '/icons/icon-192.png',

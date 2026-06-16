@@ -6,7 +6,7 @@ export default function OfflinePage() {
       <div className="text-6xl">🌙</div>
       <h1 className="text-2xl font-bold">You&apos;re offline</h1>
       <p className="text-sm text-[var(--muted)]">
-        CoupleSpace needs a connection for this page. Your love is still here — we&apos;ll
+        HeartSYNC needs a connection for this page. Your love is still here — we&apos;ll
         reconnect the moment you&apos;re back online.
       </p>
       <a
