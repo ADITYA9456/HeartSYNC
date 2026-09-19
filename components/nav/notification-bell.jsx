@@ -1,10 +1,10 @@
 'use client';
-import { useEffect, useState } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
-import { Bell } from 'lucide-react';
-import { formatDistanceToNow } from 'date-fns';
 import { api } from '@/lib/api-client';
 import { useAppStore } from '@/lib/store';
+import { formatDistanceToNow } from 'date-fns';
+import { AnimatePresence, motion } from 'framer-motion';
+import { Bell } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 export function NotificationBell() {
   const [open, setOpen] = useState(false);
