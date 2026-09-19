@@ -167,6 +167,19 @@ body {
   scrollbar-width: none;
 }
 
+/* Keep the notification panel inside the viewport on narrow screens. */
+@media (max-width: 640px) {
+  .notification-popover {
+    position: fixed;
+    top: 7rem;
+    right: 1rem;
+    left: 1rem;
+    width: auto;
+    max-width: 20rem;
+    margin-inline: auto;
+  }
+}
+
 /* Respect users who prefer reduced motion */
 @media (prefers-reduced-motion: reduce) {
   *,

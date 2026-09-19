@@ -61,7 +61,7 @@ export function NotificationBell() {
               initial={{ opacity: 0, y: -8, scale: 0.98 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -8, scale: 0.98 }}
-              className="glass-card absolute right-0 top-12 z-50 max-h-96 w-80 overflow-y-auto p-2 no-scrollbar"
+              className="notification-popover glass-card absolute right-0 top-12 z-50 max-h-96 w-80 overflow-y-auto p-2 no-scrollbar"
             >
               <p className="px-2 py-1.5 text-sm font-semibold">Notifications</p>
               {items.length === 0 && (
