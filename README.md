@@ -5,6 +5,12 @@ gallery, dates & timeline, an AI copilot, YouTube music, an optional period
 tracker, and push notifications — wrapped in a polished glassy UI with four
 palettes and light/dark themes.
 
+The app also includes additive Games and Productivity MVP modules: partners can
+play a turn-based Couple Quiz and maintain shared tasks with assignments,
+deadlines, completion state, and couple-scoped persistence. Additional games,
+goals, habits, planning, and relationship experiences can build on these
+modules without changing the existing features.
+
 > JavaScript only. Next.js 16 (App Router). Supabase/Postgres data store with a
 > **custom JWT auth layer** (the service-role key is used **server-side only**).
 
@@ -49,7 +55,7 @@ app/                 App Router pages + /api routes
 components/           UI + feature components
 lib/                 server/client helpers (auth, supabase, csrf, ai, …)
 public/              manifest, service workers, icons, offline page
-supabase/migrations  SQL schema
+supabase/migrations  SQL schema (including additive Games/Productivity tables)
 server.js            custom Next + Socket.IO server
 middleware.js        JWT + CSRF + route protection
 ```

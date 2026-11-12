@@ -16,6 +16,8 @@ const QUICK = [
   { href: '/ai', label: 'Copilot', icon: 'Sparkles' },
   { href: '/music', label: 'Music', icon: 'Music' },
   { href: '/period', label: 'Wellness', icon: 'HeartPulse' },
+  { href: '/games', label: 'Games', icon: 'Gamepad2' },
+  { href: '/productivity', label: 'Tasks', icon: 'ListTodo' },
 ];
 
 export default function DashboardPage() {
