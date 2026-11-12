@@ -54,13 +54,13 @@ const section = {
 function Section({ index, title, subtitle, children }) {
   return (
     <motion.div custom={index} variants={section} initial="hidden" animate="show">
-      <GlassCard className="space-y-4">
+      <div className="journal-card p-6 space-y-4">
         <div className="space-y-0.5">
-          <h2 className="text-base font-semibold text-[var(--text)]">{title}</h2>
-          {subtitle && <p className="text-xs text-[var(--muted)]">{subtitle}</p>}
+          <h2 className="font-serif text-xl font-medium text-[var(--text)]">{title}</h2>
+          {subtitle && <p className="ink-stamp text-xs text-[var(--muted)]">{subtitle}</p>}
         </div>
         {children}
-      </GlassCard>
+      </div>
     </motion.div>
   );
 }
@@ -187,12 +187,12 @@ export default function SettingsPage() {
   const activeTheme = mounted ? theme || 'system' : null;
 
   return (
-    <div className="space-y-5">
+    <div className="mx-auto max-w-2xl px-4 py-8 space-y-8">
       <motion.h1
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
-        className="px-1 text-2xl font-bold text-[var(--text)]"
+        className="display-title text-5xl text-center"
       >
         Settings
       </motion.h1>
@@ -202,14 +202,14 @@ export default function SettingsPage() {
         <div className="flex items-center gap-4">
           <Avatar src={user?.avatar_url} name={user?.name} size={56} />
           <div className="min-w-0 flex-1">
-            <p className="truncate font-semibold text-[var(--text)]">
+            <p className="truncate font-serif text-lg font-medium text-[var(--text)]">
               {user?.name || 'You'}
             </p>
-            <p className="truncate text-sm text-[var(--muted)]">{user?.email}</p>
+            <p className="truncate ink-stamp text-sm text-[var(--muted)]">{user?.email}</p>
           </div>
-          <div className="flex items-center gap-1.5 rounded-2xl bg-[rgb(var(--card)/0.5)] px-3 py-2">
+          <div className="flex items-center gap-1.5 rounded-2xl bg-[rgb(var(--card)/0.5)] px-3 py-2 journal-card">
             <Flame className="h-4 w-4 text-orange-500" />
-            <span className="text-sm font-semibold text-[var(--text)]">
+            <span className="font-serif text-sm font-semibold text-[var(--text)]">
               {couple?.streak_count ?? 0}
             </span>
           </div>
@@ -231,7 +231,7 @@ export default function SettingsPage() {
                 type="button"
                 onClick={() => choosePalette(p.id)}
                 className={[
-                  'group relative flex items-center gap-3 rounded-2xl border p-3 text-left transition',
+                  'group relative flex items-center gap-3 rounded-2xl border p-3 text-left transition journal-card',
                   active
                     ? 'border-[var(--primary)] bg-[color-mix(in_srgb,var(--primary)_10%,transparent)]'
                     : 'border-[rgb(var(--border)/0.2)] hover:border-[rgb(var(--border)/0.4)]',

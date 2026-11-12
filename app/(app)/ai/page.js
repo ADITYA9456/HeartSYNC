@@ -132,17 +132,9 @@ export default function AiCopilotPage() {
 
   return (
     <div className="space-y-6 pb-6">
-      {/* Header */}
-      <header className="space-y-1.5">
-        <div className="flex items-center gap-2">
-          <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[var(--primary)] text-white shadow-md shadow-black/8">
-            <Icon name="Sparkles" size={20} />
-          </span>
-          <h1 className="text-2xl font-black text-[var(--text)]">AI Copilot</h1>
-        </div>
-        <p className="text-sm text-[var(--muted)]">
-          Your little love assistant — date plans, captions, notes, apologies and gift ideas, made just for the two of you.
-        </p>
+      <header className="space-y-2 text-center">
+        <h1 className="display-title text-5xl">Our AI Copilot</h1>
+        <p className="ink-stamp text-[var(--muted)]">Your little love assistant</p>
       </header>
 
       {/* Feature selector */}
@@ -158,8 +150,8 @@ export default function AiCopilotPage() {
               className={[
                 'relative flex shrink-0 items-center gap-1.5 rounded-2xl px-3.5 py-2 text-sm font-semibold transition-all active:scale-[0.97]',
                 isActive
-                  ? 'text-white bg-[var(--primary)] shadow-md shadow-black/8'
-                  : 'surface-flat text-[var(--text)]',
+                  ? 'journal-card text-[var(--primary)] shadow-md'
+                  : 'journal-card text-[var(--muted)] hover:text-[var(--text)]',
               ].join(' ')}
             >
               <Icon name={f.icon} size={16} />
@@ -189,6 +181,7 @@ export default function AiCopilotPage() {
             placeholder={`e.g. ${active.placeholder}`}
             rows={4}
             disabled={generating}
+            className="journal-card font-serif"
           />
           <div className="flex items-center justify-between gap-3 px-1">
             <span className="text-xs text-[var(--muted)]">
@@ -215,8 +208,8 @@ export default function AiCopilotPage() {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
               >
-                <GlassCard className="space-y-4">
-                  <div className="flex items-center gap-2 text-[var(--primary)]">
+                <div className="journal-card space-y-4 p-5">
+                  <div className="flex items-center gap-2 ink-stamp text-[var(--primary)]">
                     <Icon name="Sparkles" size={16} />
                     <span className="text-xs font-semibold uppercase tracking-wide">
                       {active.label}
@@ -225,17 +218,18 @@ export default function AiCopilotPage() {
 
                   <ResultReveal text={result.result} />
 
-                  <div className="flex flex-wrap gap-2 border-t border-[rgb(var(--border)/0.15)] pt-3">
-                    <Button variant="glass" size="sm" onClick={() => copyResult(result.result)}>
+                  <div className="flex flex-wrap gap-2 border-t border-[var(--ink)]/10 pt-3">
+                    <Button variant="ghost" size="sm" onClick={() => copyResult(result.result)} className="font-serif text-sm">
                       <Icon name="Copy" size={15} />
                       Copy
                     </Button>
                     <Button
-                      variant={result.entry?.favorite ? 'outline' : 'glass'}
+                      variant={result.entry?.favorite ? 'outline' : 'ghost'}
                       size="sm"
                       onClick={saveFavorite}
                       loading={saving}
                       disabled={result.entry?.favorite}
+                      className="font-serif text-sm"
                     >
                       <Icon name={result.entry?.favorite ? 'Star' : 'StarOff'} size={15} />
                       {result.entry?.favorite ? 'Saved' : 'Save'}
@@ -245,12 +239,13 @@ export default function AiCopilotPage() {
                       size="sm"
                       onClick={() => generate(lastPromptRef.current)}
                       disabled={generating}
+                      className="font-serif text-sm"
                     >
                       <Icon name="RefreshCw" size={15} />
                       Regenerate
                     </Button>
                   </div>
-                </GlassCard>
+                </div>
               </motion.div>
             )}
           </AnimatePresence>
@@ -262,14 +257,14 @@ export default function AiCopilotPage() {
         <button
           type="button"
           onClick={() => setHistoryOpen((o) => !o)}
-          className="flex w-full items-center justify-between rounded-2xl px-1 py-2 text-left"
+          className="journal-card flex w-full items-center justify-between p-4 text-left transition-all hover:translate-y-[-1px]"
           aria-expanded={historyOpen}
         >
-          <span className="flex items-center gap-2 text-sm font-semibold text-[var(--text)]">
-            <Icon name="History" size={16} className="text-[var(--muted)]" />
+          <span className="flex items-center gap-2 font-serif text-lg font-medium text-[var(--text)]">
+            <Icon name="History" size={18} className="text-[var(--muted)]" />
             History
             {history.length > 0 && (
-              <span className="rounded-full bg-[rgb(var(--card)/0.6)] px-2 py-0.5 text-xs text-[var(--muted)]">
+              <span className="ink-stamp px-2 py-0.5 text-xs text-[var(--muted)]">
                 {history.length}
               </span>
             )}
@@ -307,10 +302,10 @@ export default function AiCopilotPage() {
                         initial={{ opacity: 0, y: 8 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0 }}
-                        className="glass-card space-y-2 p-3"
+                        className="journal-card space-y-3 p-4"
                       >
                         <div className="flex items-start justify-between gap-2">
-                          <p className="min-w-0 flex-1 truncate text-sm font-medium text-[var(--text)]">
+                          <p className="min-w-0 flex-1 truncate font-serif text-base font-medium text-[var(--text)]">
                             {item.prompt}
                           </p>
                           <div className="flex shrink-0 items-center gap-1">
@@ -350,7 +345,7 @@ export default function AiCopilotPage() {
                         >
                           <p
                             className={[
-                              'whitespace-pre-wrap text-sm leading-relaxed text-[var(--muted)]',
+                              'whitespace-pre-wrap font-serif text-sm leading-relaxed text-[var(--muted)]',
                               isOpen ? '' : 'line-clamp-3',
                             ].join(' ')}
                           >
@@ -358,17 +353,17 @@ export default function AiCopilotPage() {
                           </p>
                         </button>
 
-                        <div className="flex items-center justify-between gap-2 pt-0.5">
-                          <span className="text-xs text-[var(--muted)]">
+                        <div className="flex items-center justify-between gap-2 pt-1 border-t border-[var(--ink)]/5">
+                          <span className="ink-stamp text-[var(--muted)]">
                             {item.created_at
                               ? formatDistanceToNow(new Date(item.created_at), { addSuffix: true })
                               : ''}
                           </span>
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-3">
                             <button
                               type="button"
                               onClick={() => copyResult(item.result)}
-                              className="text-xs font-medium text-[var(--primary)] hover:underline"
+                              className="font-serif text-xs font-medium text-[var(--primary)] hover:underline"
                             >
                               Copy
                             </button>
@@ -377,7 +372,7 @@ export default function AiCopilotPage() {
                               onClick={() =>
                                 setExpanded((e) => ({ ...e, [item.id]: !e[item.id] }))
                               }
-                              className="text-xs font-medium text-[var(--primary)] hover:underline"
+                              className="font-serif text-xs font-medium text-[var(--primary)] hover:underline"
                             >
                               {isOpen ? 'Less' : 'More'}
                             </button>

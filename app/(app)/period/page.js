@@ -95,13 +95,13 @@ export default function PeriodPage() {
   }
 
   return (
-    <div className="space-y-5">
-      <div>
-        <h1 className="px-1 text-2xl font-black text-[var(--text)]">Wellness</h1>
-        <p className="px-1 text-sm text-[var(--muted)]">
-          A private space to track your cycle and moods.
+    <div className="mx-auto max-w-2xl px-4 py-8 space-y-8">
+      <header className="text-center">
+        <h1 className="display-title text-5xl">Wellness Tracker</h1>
+        <p className="ink-stamp mt-2 text-[var(--muted)]">
+          A private space to track your cycle and moods, gently and intimately.
         </p>
-      </div>
+      </header>
 
       {!mine ? (
         <OptIn onEnable={enable} enabling={enabling} />
@@ -124,18 +124,21 @@ export default function PeriodPage() {
 /* ---------- Opt-in ---------- */
 function OptIn({ onEnable, enabling }) {
   return (
-    <GlassCard className="text-center">
-      <EmptyState emoji="🌸" title="A space that's just yours">
-        Track your cycle and moods, gently and privately. Nothing is shared unless
-        you choose to. You can turn this off any time.
-      </EmptyState>
-      <Button onClick={onEnable} loading={enabling} className="mx-auto">
+    <div className="journal-card p-8 text-center space-y-6">
+      <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[var(--primary)]/10 text-3xl">
+        🌸
+      </div>
+      <div className="space-y-2">
+        <h2 className="font-serif text-2xl font-medium">A space that's just yours</h2>
+        <p className="font-serif text-sm text-[var(--muted)]">Track your cycle and moods, gently and privately. Nothing is shared unless you choose to. You can turn this off any time.</p>
+      </div>
+      <Button onClick={onEnable} loading={enabling} className="journal-card px-8 py-3 font-serif text-lg font-medium">
         Enable tracker
       </Button>
-      <p className="mt-3 flex items-center justify-center gap-1.5 text-xs text-[var(--muted)]">
+      <p className="flex items-center justify-center gap-1.5 ink-stamp text-[var(--muted)]">
         <Icon name="Lock" size={13} /> Private by default
       </p>
-    </GlassCard>
+    </div>
   );
 }
 
@@ -145,13 +148,13 @@ function PredictionCard({ tracker }) {
 
   if (!p?.hasCycle) {
     return (
-      <GlassCard className="text-center">
+      <div className="journal-card p-8 text-center space-y-4">
         <div className="text-4xl">🗓️</div>
-        <p className="mt-2 font-semibold">No cycles logged yet</p>
-        <p className="mt-1 text-sm text-[var(--muted)]">
+        <h3 className="font-serif text-xl font-medium">No cycles logged yet</h3>
+        <p className="font-serif text-sm text-[var(--muted)]">
           Log your first period below to start seeing gentle predictions.
         </p>
-      </GlassCard>
+      </div>
     );
   }
 
@@ -175,23 +178,14 @@ function PredictionCard({ tracker }) {
   }
 
   return (
-    <GlassCard className="overflow-hidden">
-      <motion.div
-        initial={{ scale: 0.96, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ duration: 0.4 }}
-        className="text-center"
-      >
-        <span className="inline-flex items-center gap-1.5 rounded-full bg-[color-mix(in_srgb,var(--primary)_12%,transparent)] px-3 py-1 text-xs font-medium text-[var(--primary)]">
-          <Icon name="Sparkles" size={13} /> Prediction
-        </span>
-        <p className="mt-3 text-3xl font-black text-[var(--primary)]">{headline}</p>
-        <p className="mt-1 text-sm text-[var(--muted)]">{sub}</p>
-        {p.cycleDay != null && !p.isActive && (
-          <p className="mt-2 text-xs text-[var(--muted)]">Currently day {p.cycleDay} of your cycle</p>
-        )}
-      </motion.div>
-    </GlassCard>
+    <div className="journal-card p-8 text-center space-y-2">
+      <span className="ink-stamp text-[var(--primary)] uppercase tracking-widest text-sm">Prediction</span>
+      <p className="font-serif text-4xl font-medium text-[var(--text)]">{headline}</p>
+      <p className="font-serif text-sm text-[var(--muted)] italic">{sub}</p>
+      {p.cycleDay != null && !p.isActive && (
+        <p className="ink-stamp text-[var(--muted)] pt-2">Currently day {p.cycleDay} of your cycle</p>
+      )}
+    </div>
   );
 }
 
@@ -223,8 +217,8 @@ function Settings({ tracker, onSave, saving }) {
   }
 
   return (
-    <GlassCard className="space-y-4">
-      <h2 className="flex items-center gap-2 font-semibold">
+    <div className="journal-card p-6 space-y-6">
+      <h2 className="flex items-center gap-2 font-serif text-xl font-medium">
         <Icon name="Settings2" size={18} className="text-[var(--primary)]" /> Settings
       </h2>
 
@@ -232,39 +226,27 @@ function Settings({ tracker, onSave, saving }) {
         type="button"
         onClick={toggleVisibility}
         disabled={saving}
-        className="glass flex w-full items-center justify-between rounded-2xl p-3 text-left transition active:scale-[0.99]"
+        className="journal-card w-full flex items-center justify-between p-4 text-left transition-all hover:translate-y-[-1px]"
       >
-        <span className="flex items-center gap-3">
-          <span className="text-2xl">{shared ? '💞' : '🔒'}</span>
+        <span className="flex items-center gap-4">
+          <span className="text-3xl">{shared ? '💞' : '🔒'}</span>
           <span>
-            <span className="block text-sm font-semibold">
+            <span className="block font-serif text-lg font-medium">
               {shared ? 'Shared with partner' : 'Private'}
             </span>
-            <span className="block text-xs text-[var(--muted)]">
+            <span className="block ink-stamp text-xs text-[var(--muted)]">
               {shared
-                ? 'Your partner sees only summary info — next predicted date & average cycle.'
-                : 'Only you can see anything here.'}
+                ? 'Your partner sees summary info.'
+                : 'Only you can see this.'}
             </span>
           </span>
         </span>
-        <span
-          className={
-            'relative h-6 w-11 shrink-0 rounded-full transition-colors ' +
-            (shared
-              ? '[background:linear-gradient(120deg,var(--primary),var(--primary-2))]'
-              : 'bg-[rgb(var(--border)/0.4)]')
-          }
-        >
-          <motion.span
-            layout
-            transition={{ type: 'spring', stiffness: 500, damping: 32 }}
-            className="absolute top-0.5 h-5 w-5 rounded-full bg-white shadow"
-            style={{ left: shared ? 22 : 2 }}
-          />
-        </span>
+        <div className="h-5 w-5 rounded-full border border-[var(--primary)] p-1">
+            {shared && <div className="h-full w-full rounded-full bg-[var(--primary)]"></div>}
+        </div>
       </button>
 
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 gap-4">
         <Field label="Avg cycle (days)" hint="15–60">
           <Input
             type="number"
@@ -273,6 +255,7 @@ function Settings({ tracker, onSave, saving }) {
             value={cycle}
             onChange={(e) => setCycle(e.target.value)}
             onBlur={commitCycle}
+            className="font-serif"
           />
         </Field>
         <Field label="Avg period (days)" hint="1–15">
@@ -283,10 +266,11 @@ function Settings({ tracker, onSave, saving }) {
             value={period}
             onChange={(e) => setPeriod(e.target.value)}
             onBlur={commitPeriod}
+            className="font-serif"
           />
         </Field>
       </div>
-    </GlassCard>
+    </div>
   );
 }
 
@@ -321,13 +305,13 @@ function LogPeriod({ tracker, onSave, saving }) {
   }
 
   return (
-    <GlassCard className="space-y-4">
-      <h2 className="flex items-center gap-2 font-semibold">
+    <div className="journal-card p-6 space-y-6">
+      <h2 className="flex items-center gap-2 font-serif text-xl font-medium">
         <Icon name="Droplet" size={18} className="text-[var(--primary)]" /> Log a period
       </h2>
 
       <Field label="Start date">
-        <Input type="date" max={todayStr()} value={start} onChange={(e) => setStart(e.target.value)} />
+        <Input type="date" max={todayStr()} value={start} onChange={(e) => setStart(e.target.value)} className="font-serif" />
       </Field>
 
       <Field label="Flow">
@@ -340,10 +324,10 @@ function LogPeriod({ tracker, onSave, saving }) {
                 type="button"
                 onClick={() => setFlow(f)}
                 className={
-                  'rounded-2xl py-2.5 text-sm font-medium capitalize transition ' +
+                  'rounded-xl py-2.5 text-sm font-serif font-medium capitalize transition ' +
                   (active
-                    ? 'text-white [background:linear-gradient(120deg,var(--primary),var(--primary-2))]'
-                    : 'glass text-[var(--muted)]')
+                    ? 'journal-card border-[var(--primary)] text-[var(--primary)] shadow-sm'
+                    : 'bg-[var(--ink)]/5 text-[var(--muted)]')
                 }
               >
                 {f}
@@ -353,17 +337,16 @@ function LogPeriod({ tracker, onSave, saving }) {
         </div>
       </Field>
 
-      <Button onClick={add} loading={saving} className="w-full">
+      <Button onClick={add} loading={saving} className="w-full journal-card py-3 font-serif font-medium">
         Add period
       </Button>
 
       {openCycle && (
-        <div className="glass rounded-2xl p-3">
-          <p className="text-sm font-medium">
+        <div className="journal-card border-[var(--primary)]/20 p-4">
+          <p className="font-serif text-sm font-medium">
             Open cycle started {fmtDate(openCycle.start)}
           </p>
-          <p className="mt-0.5 text-xs text-[var(--muted)]">Set an end date when it&apos;s over.</p>
-          <div className="mt-2 flex items-center gap-2">
+          <div className="mt-4 flex items-center gap-2">
             <Input
               type="date"
               min={String(openCycle.start).slice(0, 10)}
@@ -371,23 +354,24 @@ function LogPeriod({ tracker, onSave, saving }) {
               defaultValue={todayStr()}
               onChange={(e) => e.target.value && (e.target.dataset.val = e.target.value)}
               id="open-cycle-end"
-              className="flex-1"
+              className="flex-1 font-serif"
             />
             <Button
-              variant="glass"
+              variant="outline"
               size="sm"
               disabled={saving}
               onClick={() => {
                 const el = document.getElementById('open-cycle-end');
                 endOpen(el?.value || todayStr());
               }}
+              className="font-serif"
             >
               End
             </Button>
           </div>
         </div>
       )}
-    </GlassCard>
+    </div>
   );
 }
 
@@ -411,13 +395,13 @@ function LogMood({ tracker, onSave, saving }) {
   }
 
   return (
-    <GlassCard className="space-y-4">
-      <h2 className="flex items-center gap-2 font-semibold">
+    <div className="journal-card p-6 space-y-6">
+      <h2 className="flex items-center gap-2 font-serif text-xl font-medium">
         <Icon name="Smile" size={18} className="text-[var(--primary)]" /> Log a mood
       </h2>
 
       <Field label="Date">
-        <Input type="date" max={todayStr()} value={date} onChange={(e) => setDate(e.target.value)} />
+        <Input type="date" max={todayStr()} value={date} onChange={(e) => setDate(e.target.value)} className="font-serif" />
       </Field>
 
       <Field label="How are you feeling?">
@@ -430,10 +414,10 @@ function LogMood({ tracker, onSave, saving }) {
                 type="button"
                 onClick={() => setMood(m)}
                 className={
-                  'flex h-12 w-12 items-center justify-center rounded-2xl text-2xl transition ' +
+                  'flex h-12 w-12 items-center justify-center rounded-xl text-2xl transition ' +
                   (active
-                    ? 'scale-110 [background:linear-gradient(120deg,var(--primary),var(--primary-2))] shadow-lg'
-                    : 'glass')
+                    ? 'journal-card border-[var(--primary)] shadow-sm'
+                    : 'bg-[var(--ink)]/5')
                 }
               >
                 {m}
@@ -449,13 +433,14 @@ function LogMood({ tracker, onSave, saving }) {
           maxLength={300}
           placeholder="Anything you'd like to remember…"
           onChange={(e) => setNotes(e.target.value)}
+          className="font-serif"
         />
       </Field>
 
-      <Button onClick={add} loading={saving} className="w-full">
+      <Button onClick={add} loading={saving} className="w-full journal-card py-3 font-serif font-medium">
         Save mood
       </Button>
-    </GlassCard>
+    </div>
   );
 }
 
@@ -473,33 +458,33 @@ function CyclesList({ tracker, onSave }) {
   if (!cycles.length) return null;
 
   return (
-    <GlassCard className="space-y-3">
-      <h2 className="flex items-center gap-2 font-semibold">
+    <div className="journal-card p-6 space-y-4">
+      <h2 className="flex items-center gap-2 font-serif text-xl font-medium">
         <Icon name="History" size={18} className="text-[var(--primary)]" /> Recent cycles
       </h2>
-      <ul className="space-y-2">
+      <ul className="space-y-3">
         <AnimatePresence initial={false}>
           {cycles.map((c, i) => (
             <motion.li
               key={`${c.start}-${c.end || 'open'}-${i}`}
               layout
-              initial={{ opacity: 0, x: -8 }}
-              animate={{ opacity: 1, x: 0 }}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, x: 8 }}
-              className="glass flex items-center justify-between rounded-2xl p-3"
+              className="journal-card p-4 flex items-center justify-between"
             >
               <div className="min-w-0">
-                <p className="text-sm font-medium">
+                <p className="font-serif text-base font-medium">
                   {fmtDate(c.start)}
                   {c.end ? ` – ${fmtDate(c.end)}` : ' · ongoing'}
                 </p>
                 {c.flow && (
-                  <p className="text-xs capitalize text-[var(--muted)]">{c.flow} flow</p>
+                  <p className="ink-stamp text-xs capitalize text-[var(--muted)]">{c.flow} flow</p>
                 )}
               </div>
               <button
                 onClick={() => remove(c)}
-                className="rounded-xl p-2 text-[var(--muted)] transition hover:text-rose-500"
+                className="p-2 text-[var(--muted)] transition hover:text-rose-500"
                 aria-label="Delete cycle"
               >
                 <Icon name="Trash2" size={16} />
@@ -508,7 +493,7 @@ function CyclesList({ tracker, onSave }) {
           ))}
         </AnimatePresence>
       </ul>
-    </GlassCard>
+    </div>
   );
 }
 
@@ -517,7 +502,6 @@ function MoodsList({ tracker, onSave }) {
   const moods = useMemo(() => sortMoodsDesc(tracker.moods || []), [tracker.moods]);
 
   function remove(m, idx) {
-    // Match on the original array to avoid removing duplicates.
     let removed = false;
     const next = (tracker.moods || []).filter((x) => {
       if (!removed && x.date === m.date && x.mood === m.mood && x.notes === m.notes) {
@@ -532,29 +516,29 @@ function MoodsList({ tracker, onSave }) {
   if (!moods.length) return null;
 
   return (
-    <GlassCard className="space-y-3">
-      <h2 className="flex items-center gap-2 font-semibold">
+    <div className="journal-card p-6 space-y-4">
+      <h2 className="flex items-center gap-2 font-serif text-xl font-medium">
         <Icon name="BookHeart" size={18} className="text-[var(--primary)]" /> Recent moods
       </h2>
-      <ul className="space-y-2">
+      <ul className="space-y-3">
         <AnimatePresence initial={false}>
           {moods.map((m, i) => (
             <motion.li
               key={`${m.date}-${m.mood}-${i}`}
               layout
-              initial={{ opacity: 0, x: -8 }}
-              animate={{ opacity: 1, x: 0 }}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, x: 8 }}
-              className="glass flex items-center gap-3 rounded-2xl p-3"
+              className="journal-card p-4 flex items-center gap-4"
             >
               <span className="text-2xl">{m.mood}</span>
               <div className="min-w-0 flex-1">
-                <p className="text-sm font-medium">{fmtDate(m.date)}</p>
-                {m.notes && <p className="truncate text-xs text-[var(--muted)]">{m.notes}</p>}
+                <p className="font-serif text-base font-medium">{fmtDate(m.date)}</p>
+                {m.notes && <p className="truncate font-serif text-sm text-[var(--muted)]">{m.notes}</p>}
               </div>
               <button
                 onClick={() => remove(m, i)}
-                className="rounded-xl p-2 text-[var(--muted)] transition hover:text-rose-500"
+                className="p-2 text-[var(--muted)] transition hover:text-rose-500"
                 aria-label="Delete mood"
               >
                 <Icon name="Trash2" size={16} />
@@ -563,7 +547,7 @@ function MoodsList({ tracker, onSave }) {
           ))}
         </AnimatePresence>
       </ul>
-    </GlassCard>
+    </div>
   );
 }
 
@@ -573,13 +557,13 @@ function PartnerCard({ tracker, partner }) {
   const name = partner?.name?.split(' ')[0];
 
   return (
-    <GlassCard className="border border-[color-mix(in_srgb,var(--primary)_20%,transparent)]">
+    <div className="journal-card p-6 border-2 border-[var(--primary)]/20">
       <div className="flex items-center gap-2">
         <span className="text-xl">💛</span>
-        <h2 className="font-semibold">{name ? `${name}'s wellness` : 'Partner'}</h2>
+        <h2 className="font-serif text-lg font-medium">{name ? `${name}'s wellness` : 'Partner'}</h2>
       </div>
       {p?.hasCycle ? (
-        <div className="mt-2 space-y-1 text-sm">
+        <div className="mt-2 space-y-1 font-serif text-sm">
           {p.isActive ? (
             <p>
               On their period right now — <span className="font-medium">be extra kind 💛</span>
@@ -594,11 +578,11 @@ function PartnerCard({ tracker, partner }) {
               Next period in about {p.daysUntil} days ({format(p.nextStart, 'MMM d')}).
             </p>
           )}
-          <p className="text-xs text-[var(--muted)]">Average cycle {p.avgCycle} days · summary only</p>
+          <p className="ink-stamp text-xs text-[var(--muted)]">Average cycle {p.avgCycle} days · summary only</p>
         </div>
       ) : (
-        <p className="mt-2 text-sm text-[var(--muted)]">Shared with you — no cycles logged yet.</p>
+        <p className="font-serif text-sm text-[var(--muted)]">Shared with you — no cycles logged yet.</p>
       )}
-    </GlassCard>
+    </div>
   );
 }
