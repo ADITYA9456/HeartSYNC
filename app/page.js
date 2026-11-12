@@ -11,43 +11,45 @@ const features = [
 
 export default function Landing() {
   return (
-    <main className="mx-auto flex min-h-dvh max-w-md flex-col items-center justify-center gap-10 px-6 text-center">
-      <div className="space-y-5">
-        <HeartMark size={72} className="mx-auto" />
-        <div className="space-y-2">
-          <h1 className="text-5xl font-black tracking-[-0.03em]">
-            Heart<span className="text-[var(--primary)]">SYNC</span>
+    <main className="mx-auto flex min-h-dvh max-w-md flex-col items-center justify-center gap-16 px-8 text-center">
+      <div className="space-y-8">
+        <HeartMark size={80} className="mx-auto opacity-90 drop-shadow-lg" />
+        <div className="space-y-4">
+          <h1 className="text-6xl font-serif font-medium tracking-tight">
+            Heart<span className="text-[var(--primary)] italic">SYNC</span>
           </h1>
-          <p className="mx-auto max-w-[280px] text-pretty text-sm leading-relaxed text-[var(--muted)]">
+          <p className="mx-auto max-w-[280px] text-pretty text-lg font-light leading-relaxed text-[var(--muted)] italic">
             A private, beautiful little world for the two of you.
           </p>
         </div>
       </div>
 
-      <div className="grid w-full grid-cols-2 gap-2.5">
+      <div className="grid w-full grid-cols-1 gap-4">
         {features.map((f) => (
           <div
             key={f.label}
-            className="surface-flat flex items-center gap-2.5 px-4 py-3.5 text-left text-sm"
+            className="group flex items-center gap-4 rounded-3xl border border-[var(--primary)]/10 bg-white/50 px-6 py-5 text-left text-sm backdrop-blur-sm transition-all hover:bg-white/80 dark:bg-white/5 dark:hover:bg-white/10"
           >
-            <f.icon size={18} strokeWidth={1.5} className="text-[var(--primary)]" />
-            <span className="font-medium">{f.label}</span>
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-[var(--primary)]/10">
+              <f.icon size={20} strokeWidth={1.5} className="text-[var(--primary)]" />
+            </div>
+            <span className="text-base font-medium tracking-wide">{f.label}</span>
           </div>
         ))}
       </div>
 
-      <div className="flex w-full flex-col gap-3">
+      <div className="flex w-full flex-col gap-4">
         <Link
           href="/auth"
-          className="flex h-12 items-center justify-center rounded-2xl bg-[var(--primary)] font-semibold text-white shadow-md shadow-black/10 transition-[background-color,box-shadow,transform] hover:brightness-110 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] focus-visible:ring-offset-2"
+          className="flex h-14 items-center justify-center rounded-full bg-[var(--text)] font-medium text-[var(--bg-from)] shadow-xl transition-all hover:scale-[1.02] active:scale-[0.98] dark:bg-white dark:text-[var(--text)]"
         >
-          Get started
+          Enter your world
         </Link>
         <Link
           href="/auth?mode=login"
-          className="text-sm font-medium text-[var(--muted)] transition hover:text-[var(--text)]"
+          className="text-sm font-light text-[var(--muted)] underline underline-offset-4 transition hover:text-[var(--text)]"
         >
-          I already have an account
+          Already have an account?
         </Link>
       </div>
     </main>

@@ -1,9 +1,10 @@
 import { ServiceWorkerRegistrar } from '@/components/pwa/service-worker-registrar';
-import { Inter } from 'next/font/google';
+import { Inter, Lora } from 'next/font/google';
 import './globals.css';
 import { Providers } from './providers';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans', display: 'swap' });
+const lora = Lora({ subsets: ['latin'], variable: '--font-serif', display: 'swap' });
 
 export const metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'),
@@ -36,7 +37,7 @@ export const viewport = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" data-palette="midnight" suppressHydrationWarning>
-      <body className={`${inter.variable} font-sans min-h-dvh antialiased`}>
+      <body className={`${inter.variable} ${lora.variable} font-sans min-h-dvh antialiased`}>
         <Providers>{children}</Providers>
         <ServiceWorkerRegistrar />
       </body>
