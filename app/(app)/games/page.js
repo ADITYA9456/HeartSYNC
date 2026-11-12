@@ -7,7 +7,6 @@ import { useAppStore } from '@/lib/store';
 import { COUPLE_QUIZ_QUESTIONS } from '@/lib/games';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/input';
-import { GlassCard } from '@/components/ui/glass-card';
 import { Spinner, EmptyState } from '@/components/ui/spinner';
 import { Icon } from '@/components/ui/icon';
 
@@ -23,7 +22,7 @@ export default function GamesPage() {
   async function load() {
     try {
       const data = await api.get('/api/games');
-      setActive(data.active);
+      setActive(data.active || null);
       setHistory(data.history || []);
     } catch (e) {
       toast.error(e.message || 'Could not load games');
@@ -39,7 +38,7 @@ export default function GamesPage() {
   async function startGame() {
     try {
       const data = await api.post('/api/games', { gameType: 'couple_quiz' });
-      setActive(data.game);
+      setActive(data.game || null);
       setAnswer('');
     } catch (e) {
       toast.error(e.message || 'Could not start game');
@@ -51,9 +50,9 @@ export default function GamesPage() {
     setSaving(true);
     try {
       const data = await api.patch('/api/games', { gameId: active.id, answer });
-      setActive(data.game.status === 'completed' ? null : data.game);
+      setActive(data.game?.status === 'completed' ? null : data.game);
       setAnswer('');
-      if (data.game.status === 'completed') {
+      if (data.game?.status === 'completed') {
         toast.success('Quiz complete! You both showed up for each other.');
         load();
       }
@@ -65,74 +64,87 @@ export default function GamesPage() {
   }
 
   const myTurn = active?.current_turn_user_id === user?.id;
+  const qIndex = active?.state?.questionIndex ?? 0;
   const progress = active
-    ? Math.round((active.state.questionIndex / COUPLE_QUIZ_QUESTIONS.length) * 100)
+    ? Math.round((qIndex / COUPLE_QUIZ_QUESTIONS.length) * 100)
     : 0;
 
   if (loading) return <div className="flex justify-center py-16"><Spinner /></div>;
 
   return (
-    <div className="space-y-6 pb-6">
-      <header className="space-y-1.5">
-        <div className="flex items-center gap-2">
-          <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[var(--primary)] text-white">
-            <Icon name="Gamepad2" size={20} />
-          </span>
-          <h1 className="text-2xl font-black">Games</h1>
-        </div>
-        <p className="text-sm text-[var(--muted)]">Play little games that help you learn more about each other.</p>
+    <div className="mx-auto max-w-2xl px-4 py-8 space-y-8">
+      <header className="text-center">
+        <h1 className="display-title text-5xl">Our Games</h1>
+        <p className="ink-stamp mt-2 text-[var(--muted)]">Little games to learn more about each other</p>
       </header>
 
       {active ? (
-        <GlassCard className="space-y-4">
+        <div className="journal-card p-6 space-y-6">
           <div className="flex items-center justify-between gap-3">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-[var(--primary)]">Couple Quiz</p>
-              <p className="mt-1 text-xs text-[var(--muted)]">Question {active.state.questionIndex + 1} of {active.questionCount}</p>
+              <p className="ink-stamp text-[var(--primary)]">Couple Quiz</p>
+              <p className="mt-1 font-serif text-sm text-[var(--muted)]">Question {qIndex + 1} of {active.questionCount || COUPLE_QUIZ_QUESTIONS.length}</p>
             </div>
-            <span className="text-xs text-[var(--muted)]">{progress}%</span>
+            <span className="ink-stamp">{progress}%</span>
           </div>
-          <div className="h-2 overflow-hidden rounded-full bg-[rgb(var(--card)/0.6)]">
+          <div className="h-1.5 overflow-hidden rounded-full bg-[var(--ink)]/5">
             <div className="h-full rounded-full bg-[var(--primary)] transition-all" style={{ width: `${Math.max(progress, 5)}%` }} />
           </div>
-          <p className="text-lg font-semibold leading-relaxed">{active.question}</p>
+          <p className="font-serif text-2xl font-medium leading-relaxed">{active.question}</p>
           {myTurn ? (
-            <>
-              <Textarea value={answer} onChange={(event) => setAnswer(event.target.value)} placeholder="Write your answer…" rows={4} maxLength={500} />
-              <Button onClick={submitAnswer} loading={saving} disabled={!answer.trim()}>Submit answer</Button>
-            </>
+            <div className="space-y-4">
+              <Textarea
+                value={answer}
+                onChange={(event) => setAnswer(event.target.value)}
+                placeholder="Write your answer…"
+                rows={4}
+                maxLength={500}
+                className="font-serif"
+              />
+              <Button onClick={submitAnswer} loading={saving} disabled={!answer.trim()} className="journal-card w-full py-3 font-serif text-lg font-medium">
+                Submit answer
+              </Button>
+            </div>
           ) : (
-            <div className="rounded-2xl bg-[rgb(var(--card)/0.45)] p-4 text-sm text-[var(--muted)]">
-              Waiting for {partner?.name || 'your partner'} to answer this question.
+            <div className="journal-card p-4 text-center font-serif text-sm text-[var(--muted)] italic">
+              Waiting for {partner?.name?.split(' ')[0] || 'your partner'} to answer this question.
             </div>
           )}
-        </GlassCard>
+        </div>
       ) : (
-        <GlassCard className="space-y-4 text-center">
-          <Icon name="HeartHandshake" size={34} className="mx-auto text-[var(--primary)]" />
-          <div>
-            <h2 className="text-lg font-bold">Couple Quiz</h2>
-            <p className="mt-1 text-sm text-[var(--muted)]">Take turns answering thoughtful questions about your relationship.</p>
+        <div className="journal-card p-8 text-center space-y-6">
+          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[var(--primary)]/10 text-[var(--primary)]">
+            <Icon name="HeartHandshake" size={28} />
           </div>
-          <Button onClick={startGame} disabled={!partner}>Start a quiz</Button>
-          {!partner && <p className="text-xs text-[var(--muted)]">Connect with your partner before starting a game.</p>}
-        </GlassCard>
+          <div className="space-y-2">
+            <h2 className="font-serif text-2xl font-medium">Couple Quiz</h2>
+            <p className="font-serif text-sm text-[var(--muted)]">Take turns answering thoughtful questions about your relationship.</p>
+          </div>
+          <Button onClick={startGame} disabled={!partner} className="journal-card px-8 py-3 font-serif text-lg font-medium">
+            Start a quiz
+          </Button>
+          {!partner && <p className="ink-stamp text-[var(--muted)]">Connect with your partner before starting a game.</p>}
+        </div>
       )}
 
-      <section className="space-y-2">
-        <h2 className="px-1 text-xs font-semibold uppercase tracking-wide text-[var(--muted)]">Recent games</h2>
+      <section className="space-y-4">
+        <h2 className="ink-stamp px-1 text-[var(--muted)]">Recent games</h2>
         {history.length === 0 ? (
-          <EmptyState icon="Trophy" title="No completed games yet">Start a quiz whenever you want a little connection time.</EmptyState>
+          <EmptyState title="No completed games yet">Start a quiz whenever you want a little connection time.</EmptyState>
         ) : (
-          history.map((game) => (
-            <div key={game.id} className="glass-card flex items-center justify-between gap-3 p-4">
-              <div>
-                <p className="font-semibold">Couple Quiz</p>
-                <p className="text-xs text-[var(--muted)]">{new Date(game.created_at).toLocaleDateString()}</p>
+          history.map((game) => {
+            const scoresObj = game.state?.scores || {};
+            const totalScore = Object.values(scoresObj).reduce((sum, score) => sum + (Number(score) || 0), 0);
+            return (
+              <div key={game.id} className="journal-card flex items-center justify-between gap-3 p-5">
+                <div>
+                  <p className="font-serif text-lg font-medium">Couple Quiz</p>
+                  <p className="ink-stamp mt-1 text-[var(--muted)]">{new Date(game.created_at).toLocaleDateString()}</p>
+                </div>
+                <span className="ink-stamp text-[var(--primary)]">{totalScore} answers</span>
               </div>
-              <span className="text-sm font-semibold text-[var(--primary)]">{Object.values(game.state?.scores || {}).reduce((sum, score) => sum + score, 0)} answers</span>
-            </div>
-          ))
+            );
+          })
         )}
       </section>
     </div>
