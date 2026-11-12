@@ -209,7 +209,7 @@ export default function GalleryPage() {
     );
 
     const okCount = queued.length;
-    toast.success(okCount === 1 ? 'Memory added 💞' : `${okCount} memories uploaded`);
+    toast.success(okCount === 1 ? 'Memory added' : `${okCount} memories uploaded`);
     // Clear finished chips shortly after.
     setTimeout(() => {
       setUploads((prev) => prev.filter((x) => x.status === 'uploading'));
@@ -232,7 +232,7 @@ export default function GalleryPage() {
     <div className="space-y-4">
       <header className="flex items-end justify-between gap-3 px-1">
         <div>
-          <h1 className="text-2xl font-black gradient-text">Our Gallery</h1>
+          <h1 className="text-2xl font-black text-[var(--text)]">Our Gallery</h1>
           <p className="text-sm text-[var(--muted)]">Every moment, kept forever.</p>
         </div>
       </header>
@@ -305,7 +305,7 @@ export default function GalleryPage() {
           <Spinner className="h-8 w-8" />
         </div>
       ) : memories.length === 0 ? (
-        <EmptyState emoji="📸" title="No memories yet">
+        <EmptyState icon="Camera" title="No memories yet">
           {album !== ALL || tag
             ? 'Nothing matches these filters yet.'
             : 'Tap the + button to add your first photo together.'}
@@ -343,7 +343,7 @@ export default function GalleryPage() {
       <button
         onClick={openPicker}
         aria-label="Add memory"
-        className="fixed bottom-28 right-5 z-30 flex h-14 w-14 items-center justify-center rounded-full text-white shadow-xl shadow-[color-mix(in_srgb,var(--primary)_45%,transparent)] [background:linear-gradient(120deg,var(--primary),var(--primary-2))] transition active:scale-95"
+        className="fixed bottom-28 right-5 z-30 flex h-14 w-14 items-center justify-center rounded-full bg-[var(--primary)] text-white shadow-md shadow-black/10 transition active:scale-95"
       >
         {uploadingCount > 0 ? (
           <Loader2 className="h-6 w-6 animate-spin" />
@@ -377,8 +377,8 @@ function Chip({ active, onClick, children }) {
       className={
         'shrink-0 whitespace-nowrap rounded-full px-4 py-1.5 text-sm font-medium capitalize transition ' +
         (active
-          ? 'text-white [background:linear-gradient(120deg,var(--primary),var(--primary-2))]'
-          : 'glass text-[var(--text)]')
+          ? 'bg-[var(--primary)] text-white'
+          : 'surface-flat text-[var(--text)]')
       }
     >
       {children}
@@ -473,7 +473,7 @@ function Lightbox({ memory, user, partner, onClose, onPatched, onDeleted }) {
       });
       onPatched(updated || { id: memory.id, caption: caption.trim() || null, album: album.trim() || null, tags });
       setEditing(false);
-      toast.success('Saved 💕');
+      toast.success('Saved');
     } catch (e) {
       toast.error(e.message || 'Could not save');
     } finally {

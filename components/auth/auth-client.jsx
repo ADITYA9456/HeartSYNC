@@ -7,16 +7,23 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { GoogleLogin } from '@react-oauth/google';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
+import { HeartMark } from '@/components/ui/heart-mark';
 
 export function AuthClient() {
   const router = useRouter();
   const params = useSearchParams();
   const [mode, setMode] = useState(params.get('mode') === 'login' ? 'login' : 'register');
   const [submitting, setSubmitting] = useState(false);
+  const [googleReady, setGoogleReady] = useState(false);
   const isLogin = mode === 'login';
+
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => setGoogleReady(true));
+    return () => cancelAnimationFrame(frame);
+  }, []);
 
   const { register, handleSubmit, formState: { errors }, reset } = useForm({
     resolver: zodResolver(isLogin ? loginSchema : registerSchema),
@@ -63,18 +70,39 @@ export function AuthClient() {
   }
 
   return (
-    <main className="mx-auto flex min-h-dvh max-w-md flex-col justify-center gap-6 px-6 py-10">
-      <div className="text-center">
-        <div className="text-5xl">💞</div>
-        <h1 className="mt-2 text-3xl font-black">
-          Heart<span className="gradient-text">SYNC</span>
-        </h1>
-        <p className="text-sm text-[var(--muted)]">
-          {isLogin ? 'Welcome back, lovebird.' : 'Create your private space for two.'}
-        </p>
-      </div>
+    <main className="mx-auto grid min-h-dvh w-full max-w-5xl items-center gap-10 px-6 py-10 lg:grid-cols-[1fr_0.8fr] lg:gap-20 lg:px-12">
+      <section className="hidden max-w-md space-y-8 lg:block">
+        <HeartMark size={64} />
+        <div className="space-y-4">
+          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[var(--primary)]">A private space for two</p>
+          <h1 className="text-balance text-6xl font-black leading-[0.95] tracking-[-0.06em]">
+            Keep the little things close.
+          </h1>
+          <p className="max-w-sm text-base leading-relaxed text-[var(--muted)]">
+            Conversations, memories, plans, and the everyday details that make your relationship yours.
+          </p>
+        </div>
+        <div className="flex items-center gap-3 border-l-2 border-[var(--primary)] pl-4 text-sm text-[var(--muted)]">
+          <span className="font-semibold text-[var(--text)]">HeartSYNC</span>
+          <span aria-hidden="true">/</span>
+          <span>Made for your shared world</span>
+        </div>
+      </section>
 
-      <div className="glass-card p-5">
+      <section className="mx-auto w-full max-w-md">
+        <div className="mb-8 lg:hidden">
+          <HeartMark size={52} className="mb-5" />
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--primary)]">HeartSYNC</p>
+        </div>
+        <div className="surface-elevated p-6 sm:p-8">
+          <div className="mb-7 space-y-2">
+            <h1 className="text-2xl font-bold tracking-tight">
+              {isLogin ? 'Welcome back.' : 'Start your shared space.'}
+            </h1>
+            <p className="text-sm text-[var(--muted)]">
+              {isLogin ? 'Pick up where you left off.' : 'A private home for the two of you.'}
+            </p>
+          </div>
         <AnimatePresence mode="wait">
           <motion.form
             key={mode}
@@ -86,11 +114,11 @@ export function AuthClient() {
           >
             {!isLogin && (
               <Field label="Your name" error={errors.name?.message}>
-                <Input placeholder="Alex" autoComplete="name" {...register('name')} />
+                <Input placeholder="Alex…" autoComplete="name" {...register('name')} />
               </Field>
             )}
             <Field label="Email" error={errors.email?.message}>
-              <Input type="email" placeholder="you@example.com" autoComplete="email" {...register('email')} />
+              <Input type="email" placeholder="you@example.com…" autoComplete="email" spellCheck={false} {...register('email')} />
             </Field>
             <Field label="Password" error={errors.password?.message}>
               <Input
@@ -113,20 +141,26 @@ export function AuthClient() {
           <span className="h-px flex-1 bg-[rgb(var(--border)/0.2)]" />
         </div>
 
-        <div className="flex justify-center [color-scheme:light]">
-          <GoogleLogin
-            onSuccess={onGoogle}
-            onError={() => toast.error('Google sign-in failed')}
-            shape="pill"
-            text={isLogin ? 'signin_with' : 'signup_with'}
-          />
+          {googleReady && (
+            <div className="flex justify-center [color-scheme:light]">
+              <GoogleLogin
+                onSuccess={onGoogle}
+                onError={() => toast.error('Google sign-in failed')}
+                shape="pill"
+                text={isLogin ? 'signin_with' : 'signup_with'}
+              />
+            </div>
+          )}
         </div>
-      </div>
 
-      <button onClick={switchMode} className="text-center text-sm text-[var(--muted)]">
+      <button
+        onClick={switchMode}
+        className="mt-5 w-full text-center text-sm text-[var(--muted)] transition-colors hover:text-[var(--text)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] focus-visible:ring-offset-2"
+      >
         {isLogin ? "Don't have an account? " : 'Already have an account? '}
         <span className="font-semibold text-[var(--primary)]">{isLogin ? 'Sign up' : 'Sign in'}</span>
       </button>
+      </section>
     </main>
   );
 }

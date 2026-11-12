@@ -1,5 +1,6 @@
 import Link from 'next/link';
-import { Heart, MessageCircle, Images, Sparkles } from 'lucide-react';
+import { MessageCircle, Images, Sparkles, Heart } from 'lucide-react';
+import { HeartMark } from '@/components/ui/heart-mark';
 
 const features = [
   { icon: MessageCircle, label: 'Realtime chat' },
@@ -10,23 +11,27 @@ const features = [
 
 export default function Landing() {
   return (
-    <main className="mx-auto flex min-h-dvh max-w-md flex-col items-center justify-center gap-8 px-6 text-center">
-      <div className="space-y-3">
-        <div className="text-6xl">💞</div>
-        <h1 className="text-4xl font-black tracking-tight">
-          Heart<span className="gradient-text">SYNC</span>
-        </h1>
-        <p className="text-balance text-[var(--muted)]">
-          A private, beautiful little world for the two of you. Chat, memories, dates,
-          and a touch of AI — all in one place.
-        </p>
+    <main className="mx-auto flex min-h-dvh max-w-md flex-col items-center justify-center gap-10 px-6 text-center">
+      <div className="space-y-5">
+        <HeartMark size={72} className="mx-auto" />
+        <div className="space-y-2">
+          <h1 className="text-5xl font-black tracking-[-0.03em]">
+            Heart<span className="text-[var(--primary)]">SYNC</span>
+          </h1>
+          <p className="mx-auto max-w-[280px] text-pretty text-sm leading-relaxed text-[var(--muted)]">
+            A private, beautiful little world for the two of you.
+          </p>
+        </div>
       </div>
 
-      <div className="grid w-full grid-cols-2 gap-3">
+      <div className="grid w-full grid-cols-2 gap-2.5">
         {features.map((f) => (
-          <div key={f.label} className="glass-card flex items-center gap-2 p-3 text-left text-sm">
-            <f.icon size={18} className="text-[var(--primary)]" />
-            {f.label}
+          <div
+            key={f.label}
+            className="surface-flat flex items-center gap-2.5 px-4 py-3.5 text-left text-sm"
+          >
+            <f.icon size={18} strokeWidth={1.5} className="text-[var(--primary)]" />
+            <span className="font-medium">{f.label}</span>
           </div>
         ))}
       </div>
@@ -34,11 +39,14 @@ export default function Landing() {
       <div className="flex w-full flex-col gap-3">
         <Link
           href="/auth"
-          className="flex h-12 items-center justify-center rounded-2xl font-semibold text-white shadow-lg [background:linear-gradient(120deg,var(--primary),var(--primary-2))]"
+          className="flex h-12 items-center justify-center rounded-2xl bg-[var(--primary)] font-semibold text-white shadow-md shadow-black/10 transition-[background-color,box-shadow,transform] hover:brightness-110 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] focus-visible:ring-offset-2"
         >
           Get started
         </Link>
-        <Link href="/auth?mode=login" className="text-sm text-[var(--muted)]">
+        <Link
+          href="/auth?mode=login"
+          className="text-sm font-medium text-[var(--muted)] transition hover:text-[var(--text)]"
+        >
           I already have an account
         </Link>
       </div>

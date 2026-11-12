@@ -107,8 +107,8 @@ export function TimelineTab() {
                 transition={{ delay: i * 0.05 }}
               >
                 {/* dot */}
-                <div className="absolute -left-[1.45rem] top-1 flex h-7 w-7 items-center justify-center rounded-full [background:linear-gradient(120deg,var(--primary),var(--primary-2))] text-sm shadow-lg shadow-[color-mix(in_srgb,var(--primary)_35%,transparent)]">
-                  {ev.emoji || '💖'}
+                <div className="absolute -left-[1.45rem] top-1 flex h-7 w-7 items-center justify-center rounded-full bg-[var(--primary)] text-sm text-white shadow-md shadow-black/8">
+                  {ev.emoji || <Icon name="Heart" size={14} className="text-white" />}
                 </div>
                 <div className="glass-card p-4">
                   <div className="flex items-start justify-between gap-2">

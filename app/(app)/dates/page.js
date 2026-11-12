@@ -4,11 +4,12 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { DatesTab } from '@/components/dates/dates-tab';
 import { TimelineTab } from '@/components/dates/timeline-tab';
 import { CalendarTab } from '@/components/dates/calendar-tab';
+import { Icon } from '@/components/ui/icon';
 
 const TABS = [
-  { id: 'dates', label: 'Dates', emoji: '💞' },
-  { id: 'timeline', label: 'Timeline', emoji: '📖' },
-  { id: 'calendar', label: 'Calendar', emoji: '🗓️' },
+  { id: 'dates', label: 'Dates', icon: 'Heart' },
+  { id: 'timeline', label: 'Timeline', icon: 'BookOpen' },
+  { id: 'calendar', label: 'Calendar', icon: 'Calendar' },
 ];
 
 export default function DatesPage() {
@@ -24,7 +25,7 @@ export default function DatesPage() {
   return (
     <div className="space-y-5">
       <div>
-        <h1 className="px-1 text-2xl font-black gradient-text">Our Moments</h1>
+        <h1 className="px-1 text-2xl font-black text-[var(--text)]">Our Moments</h1>
         <p className="px-1 text-sm text-[var(--muted)]">Dates, memories &amp; plans — together.</p>
       </div>
 
@@ -42,11 +43,11 @@ export default function DatesPage() {
               {active && (
                 <motion.span
                   layoutId="tab-pill"
-                  className="absolute inset-0 -z-10 rounded-xl [background:linear-gradient(120deg,var(--primary),var(--primary-2))] shadow-lg shadow-[color-mix(in_srgb,var(--primary)_35%,transparent)]"
+                  className="absolute inset-0 -z-10 rounded-xl bg-[var(--primary)] shadow-md shadow-black/8"
                   transition={{ type: 'spring', damping: 24, stiffness: 320 }}
                 />
               )}
-              <span>{t.emoji}</span>
+              <Icon name={t.icon} size={15} strokeWidth={1.5} />
               <span>{t.label}</span>
             </button>
           );

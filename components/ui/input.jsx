@@ -3,7 +3,7 @@ import { forwardRef } from 'react';
 import { cn } from '@/lib/utils';
 
 const base =
-  'w-full rounded-2xl bg-[rgb(var(--card)/0.5)] border border-[rgb(var(--border)/0.2)] px-4 py-3 text-[var(--text)] placeholder:text-[var(--muted)] outline-none transition focus:border-[var(--primary)] focus:ring-2 focus:ring-[color-mix(in_srgb,var(--primary)_30%,transparent)]';
+  'w-full rounded-2xl bg-[rgb(var(--card)/0.5)] border border-[rgb(var(--border)/0.2)] px-4 py-3 text-[var(--text)] placeholder:text-[var(--muted)] outline-none transition-[border-color,box-shadow] focus:border-[var(--primary)] focus:ring-2 focus:ring-[color-mix(in_srgb,var(--primary)_30%,transparent)]';
 
 export const Input = forwardRef(function Input({ className, ...props }, ref) {
   return <input ref={ref} className={cn(base, className)} {...props} />;

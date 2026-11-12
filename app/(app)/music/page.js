@@ -79,16 +79,16 @@ function ConnectState({ onConnect, connecting }) {
       transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
       className="glass-card mt-6 flex flex-col items-center gap-4 p-8 text-center"
     >
-      <div className="flex h-20 w-20 items-center justify-center rounded-3xl [background:linear-gradient(120deg,var(--primary),var(--primary-2))] shadow-lg">
+      <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-[var(--primary)] shadow-md shadow-black/8">
         <Music className="h-9 w-9 text-white" />
       </div>
       <div className="space-y-1">
-        <h2 className="text-lg font-semibold gradient-text">
+        <h2 className="text-lg font-semibold text-[var(--text)]">
           Connect your YouTube Music
         </h2>
         <p className="mx-auto max-w-xs text-sm text-[var(--muted)]">
           Link your account to see all your playlists in one cozy place. We
-          only read your playlists, never change them. 🎶
+          only read your playlists, never change them.
         </p>
       </div>
       <Button
@@ -202,7 +202,7 @@ export default function MusicPage() {
     <div className="px-4 pt-6">
       <header className="flex items-start justify-between gap-3">
         <div>
-          <h1 className="flex items-center gap-2 text-2xl font-bold gradient-text">
+          <h1 className="flex items-center gap-2 text-2xl font-bold text-[var(--text)]">
             <Music className="h-6 w-6 text-[var(--primary)]" />
             Our Music
           </h1>

@@ -1,7 +1,7 @@
 // Custom Next.js server with an attached Socket.IO instance. A long-lived Node
 // process is required for realtime chat (plain Edge runtimes won't work).
 const { createServer } = require('http');
-const { parse } = require('url');
+const { parse: parseQuery } = require('querystring');
 const next = require('next');
 
 const dev = process.env.NODE_ENV !== 'production';
@@ -31,7 +31,11 @@ app.prepare().then(async () => {
   const secret = new TextEncoder().encode(process.env.JWT_SECRET);
 
   const server = createServer((req, res) => {
-    handle(req, res, parse(req.url, true));
+    const requestUrl = new URL(req.url || '/', `http://${req.headers.host || 'localhost'}`);
+    handle(req, res, {
+      pathname: requestUrl.pathname,
+      query: parseQuery(requestUrl.search.slice(1)),
+    });
   });
 
   const io = new Server(server, {

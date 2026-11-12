@@ -97,7 +97,7 @@ export default function PeriodPage() {
   return (
     <div className="space-y-5">
       <div>
-        <h1 className="px-1 text-2xl font-black gradient-text">Wellness</h1>
+        <h1 className="px-1 text-2xl font-black text-[var(--text)]">Wellness</h1>
         <p className="px-1 text-sm text-[var(--muted)]">
           A private space to track your cycle and moods.
         </p>
@@ -185,7 +185,7 @@ function PredictionCard({ tracker }) {
         <span className="inline-flex items-center gap-1.5 rounded-full bg-[color-mix(in_srgb,var(--primary)_12%,transparent)] px-3 py-1 text-xs font-medium text-[var(--primary)]">
           <Icon name="Sparkles" size={13} /> Prediction
         </span>
-        <p className="mt-3 text-3xl font-black gradient-text">{headline}</p>
+        <p className="mt-3 text-3xl font-black text-[var(--primary)]">{headline}</p>
         <p className="mt-1 text-sm text-[var(--muted)]">{sub}</p>
         {p.cycleDay != null && !p.isActive && (
           <p className="mt-2 text-xs text-[var(--muted)]">Currently day {p.cycleDay} of your cycle</p>

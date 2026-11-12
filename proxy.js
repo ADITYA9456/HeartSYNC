@@ -1,4 +1,4 @@
-// Edge middleware: CSRF (double-submit) + JWT session + route protection.
+// Proxy: CSRF (double-submit) + JWT session + route protection.
 import { NextResponse } from 'next/server';
 import { verifyToken, AUTH_COOKIE, CSRF_COOKIE, CSRF_HEADER } from '@/lib/auth';
 import { generateCsrfToken, timingSafeEqual, SAFE_METHODS } from '@/lib/csrf';
@@ -11,7 +11,7 @@ function isConnectPage(pathname) {
   return pathname === '/connect' || pathname.startsWith('/connect/');
 }
 
-export async function middleware(req) {
+export async function proxy(req) {
   const { pathname } = req.nextUrl;
   const method = req.method.toUpperCase();
   const isApi = pathname.startsWith('/api');

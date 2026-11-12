@@ -135,10 +135,10 @@ export default function AiCopilotPage() {
       {/* Header */}
       <header className="space-y-1.5">
         <div className="flex items-center gap-2">
-          <span className="flex h-10 w-10 items-center justify-center rounded-2xl [background:linear-gradient(120deg,var(--primary),var(--primary-2))] text-white shadow-lg shadow-[color-mix(in_srgb,var(--primary)_40%,transparent)]">
+          <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[var(--primary)] text-white shadow-md shadow-black/8">
             <Icon name="Sparkles" size={20} />
           </span>
-          <h1 className="text-2xl font-black gradient-text">AI Copilot</h1>
+          <h1 className="text-2xl font-black text-[var(--text)]">AI Copilot</h1>
         </div>
         <p className="text-sm text-[var(--muted)]">
           Your little love assistant — date plans, captions, notes, apologies and gift ideas, made just for the two of you.
@@ -158,8 +158,8 @@ export default function AiCopilotPage() {
               className={[
                 'relative flex shrink-0 items-center gap-1.5 rounded-2xl px-3.5 py-2 text-sm font-semibold transition-all active:scale-[0.97]',
                 isActive
-                  ? 'text-white [background:linear-gradient(120deg,var(--primary),var(--primary-2))] shadow-lg shadow-[color-mix(in_srgb,var(--primary)_35%,transparent)]'
-                  : 'glass text-[var(--text)]',
+                  ? 'text-white bg-[var(--primary)] shadow-md shadow-black/8'
+                  : 'surface-flat text-[var(--text)]',
               ].join(' ')}
             >
               <Icon name={f.icon} size={16} />
@@ -294,7 +294,7 @@ export default function AiCopilotPage() {
                     <Spinner />
                   </div>
                 ) : history.length === 0 ? (
-                  <EmptyState emoji="🌱" title="Nothing here yet">
+                  <EmptyState icon="Sprout" title="Nothing here yet">
                     Your {active.label.toLowerCase()} will show up here once you generate something.
                   </EmptyState>
                 ) : (

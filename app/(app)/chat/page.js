@@ -423,7 +423,7 @@ export default function ChatPage() {
             <Spinner className="h-7 w-7" />
           </div>
         ) : messages.length === 0 ? (
-          <EmptyState emoji="💌" title="Say hello to your love">
+          <EmptyState icon="Mail" title="Say hello to your love">
             This is the start of your story together. Send the first message.
           </EmptyState>
         ) : (

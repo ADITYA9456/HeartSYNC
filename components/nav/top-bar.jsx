@@ -21,7 +21,7 @@ export function TopBar() {
 
   return (
     <header className="sticky top-0 z-30 px-4 pt-safe">
-      <div className="glass mx-auto mt-3 flex max-w-2xl items-center gap-3 rounded-3xl px-3 py-2.5">
+      <div className="glass mx-auto mt-3 flex max-w-2xl items-center gap-3 rounded-3xl px-3.5 py-2">
         <Avatar src={user?.avatar_url} name={user?.name} size={40} />
         <div className="min-w-0 flex-1">
           <p className="truncate text-xs text-[var(--muted)]">{greeting()},</p>
@@ -40,7 +40,7 @@ export function TopBar() {
         <Link
           href="/settings"
           aria-label="Settings"
-          className="glass flex h-10 w-10 items-center justify-center rounded-full text-[var(--text)] transition active:scale-95"
+          className="flex h-9 w-9 items-center justify-center rounded-full text-[var(--text)] transition hover:bg-[rgb(var(--card)/0.5)] active:scale-95"
         >
           <Settings size={18} />
         </Link>

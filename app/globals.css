@@ -111,10 +111,12 @@ body {
 
 body {
   color: var(--text);
-  background:
-    radial-gradient(1200px 600px at 15% -10%, color-mix(in srgb, var(--primary) 22%, transparent), transparent 60%),
-    radial-gradient(1000px 700px at 110% 10%, color-mix(in srgb, var(--primary-2) 20%, transparent), transparent 55%),
-    linear-gradient(160deg, var(--bg-from), var(--bg-to));
+  background-color: var(--bg-from);
+  background-image: radial-gradient(
+    900px 450px at 15% -10%,
+    color-mix(in srgb, var(--primary) 8%, transparent),
+    transparent 70%
+  );
   background-attachment: fixed;
   -webkit-font-smoothing: antialiased;
   overscroll-behavior-y: none;
@@ -138,13 +140,14 @@ body {
   background: rgb(var(--card) / 0.6);
   backdrop-filter: blur(20px) saturate(150%);
   -webkit-backdrop-filter: blur(20px) saturate(150%);
-  border: 1px solid rgb(var(--border) / 0.2);
+  border: 1px solid rgb(var(--border) / 0.16);
   border-radius: var(--radius-glass);
-  box-shadow: 0 10px 40px -16px color-mix(in srgb, var(--primary) 40%, transparent);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.04), 0 8px 32px -8px rgb(0 0 0 / 0.06);
 }
 .dark .glass-card {
   background: rgb(var(--card) / 0.5);
-  border-color: rgb(var(--border) / 0.1);
+  border-color: rgb(var(--border) / 0.08);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.16), 0 8px 32px -8px rgb(0 0 0 / 0.2);
 }
 
 @utility gradient-text {
@@ -156,6 +159,38 @@ body {
 
 @utility brand-gradient {
   background: linear-gradient(120deg, var(--primary), var(--primary-2));
+}
+
+/* ---- Premium surface hierarchy ---- */
+@utility surface-elevated {
+  background: rgb(var(--card) / 0.82);
+  backdrop-filter: blur(12px) saturate(130%);
+  -webkit-backdrop-filter: blur(12px) saturate(130%);
+  border: 1px solid rgb(var(--border) / 0.1);
+  border-radius: var(--radius-glass);
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.03), 0 12px 40px -12px rgb(0 0 0 / 0.07);
+}
+.dark .surface-elevated {
+  background: rgb(var(--card) / 0.68);
+  border-color: rgb(var(--border) / 0.06);
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.2), 0 12px 40px -12px rgb(0 0 0 / 0.28);
+}
+
+@utility surface-flat {
+  background: rgb(var(--card) / 0.28);
+  border-radius: var(--radius-glass);
+  border: none;
+}
+.dark .surface-flat {
+  background: rgb(var(--card) / 0.18);
+}
+
+@utility display-num {
+  font-size: clamp(3rem, 8vw, 5rem);
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.035em;
+  font-variant-numeric: tabular-nums;
 }
 
 /* Hide scrollbars where we want a clean mobile feel */
@@ -187,6 +222,12 @@ body {
   *::after {
     animation-duration: 0.001ms !important;
     transition-duration: 0.001ms !important;
+  }
+}
+
+@media (pointer: fine) {
+  html {
+    overscroll-behavior-y: none;
   }
 }
 
