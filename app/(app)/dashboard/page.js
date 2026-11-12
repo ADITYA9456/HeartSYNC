@@ -10,14 +10,12 @@ import { Avatar } from '@/components/ui/avatar';
 import { Icon } from '@/components/ui/icon';
 
 const QUICK = [
-  { href: '/chat', label: 'Chat', icon: 'MessageCircle' },
-  { href: '/gallery', label: 'Gallery', icon: 'Images' },
+  { href: '/chat', label: 'Letters', icon: 'MessageCircle' },
+  { href: '/gallery', label: 'Timeline', icon: 'Images' },
   { href: '/dates', label: 'Dates', icon: 'CalendarHeart' },
   { href: '/ai', label: 'Copilot', icon: 'Sparkles' },
-  { href: '/music', label: 'Music', icon: 'Music' },
+  { href: '/music', label: 'Soundtrack', icon: 'Music' },
   { href: '/period', label: 'Wellness', icon: 'HeartPulse' },
-  { href: '/games', label: 'Games', icon: 'Gamepad2' },
-  { href: '/productivity', label: 'Tasks', icon: 'ListTodo' },
 ];
 
 export default function DashboardPage() {
@@ -57,102 +55,94 @@ export default function DashboardPage() {
     : null;
 
   return (
-    <div className="space-y-6">
-      {/* Hero */}
+    <div className="space-y-8">
+      {/* Editorial Hero */}
       <motion.div
-        initial={{ opacity: 0, y: 16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-        className="surface-elevated overflow-hidden p-5 text-center"
+        initial={{ opacity: 0, scale: 0.98 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="journal-card relative overflow-hidden p-8 text-center"
       >
-        <div className="flex items-center justify-center gap-4">
-          <Avatar src={user?.avatar_url} name={user?.name} size={52} />
-          <span className="text-xs font-semibold tracking-widest uppercase text-[var(--muted)]">&</span>
-          <Avatar src={partner?.avatar_url} name={partner?.name} size={52} />
+        <div className="flex items-center justify-center gap-6">
+          <Avatar src={user?.avatar_url} name={user?.name} size={64} className="ring-4 ring-[var(--bg-from)]" />
+          <div className="ink-stamp text-[var(--muted)]">Together</div>
+          <Avatar src={partner?.avatar_url} name={partner?.name} size={64} className="ring-4 ring-[var(--bg-from)]" />
         </div>
-        <p className="mt-3 text-sm text-[var(--muted)]">
-          {partner ? `${user?.name?.split(' ')[0]} & ${partner?.name?.split(' ')[0]}` : 'Waiting for your partner to join…'}
-        </p>
-        {daysTogether != null && (
-          <>
-            <p className="mt-2 display-num text-[var(--primary)]">{daysTogether}</p>
-            <p className="mt-1 text-xs font-medium tracking-wide uppercase text-[var(--muted)]">
-              days together
-            </p>
-          </>
-        )}
+
+        <div className="mt-8">
+          <p className="font-serif text-lg text-[var(--muted)] italic">
+            {partner ? `${user?.name?.split(' ')[0]} & ${partner?.name?.split(' ')[0]}` : 'Waiting for connection…'}
+          </p>
+          {daysTogether != null && (
+            <div className="mt-2">
+              <span className="display-title text-6xl text-[var(--primary)]">{daysTogether}</span>
+              <span className="ink-stamp ml-2">Days</span>
+            </div>
+          )}
+        </div>
       </motion.div>
 
-      {/* Pings — compact pill-style actions */}
+      {/* Action Stamps */}
       {partner && (
-        <div className="flex gap-2.5">
+        <div className="grid grid-cols-2 gap-4">
           <button
             onClick={() => ping('hug')}
             disabled={pinging}
-            className="surface-flat flex flex-1 items-center justify-center gap-2 py-3.5 text-sm font-medium transition hover:bg-[rgb(var(--card)/0.5)] active:scale-[0.97]"
+            className="journal-card group flex items-center justify-center gap-3 p-4 transition-transform hover:-translate-y-1 active:scale-95"
           >
-            <Icon name="Hand" size={18} strokeWidth={1.5} className="text-[var(--primary)]" />
-            Send a hug
+            <Icon name="Hand" size={18} className="text-[var(--primary)]" />
+            <span className="font-serif font-medium">Send a hug</span>
           </button>
           <button
             onClick={() => ping('miss_you')}
             disabled={pinging}
-            className="surface-flat flex flex-1 items-center justify-center gap-2 py-3.5 text-sm font-medium transition hover:bg-[rgb(var(--card)/0.5)] active:scale-[0.97]"
+            className="journal-card group flex items-center justify-center gap-3 p-4 transition-transform hover:-translate-y-1 active:scale-95"
           >
-            <Icon name="HeartCrack" size={18} strokeWidth={1.5} className="text-[var(--primary)]" />
-            Miss you
+            <Icon name="HeartCrack" size={18} className="text-[var(--primary)]" />
+            <span className="font-serif font-medium">Miss you</span>
           </button>
         </div>
       )}
 
-      {/* Next date */}
+      {/* Next Date - Asymmetric */}
       {nextDate && (
-        <Link href="/dates">
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-            whileHover={{ y: -3 }}
-            className="glass-card flex items-center gap-3 p-4"
-          >
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[var(--primary)] text-white">
-              <Icon name="CalendarHeart" size={20} />
+        <Link href="/dates" className="block group">
+          <div className="journal-card flex items-center gap-6 p-6 transition-transform group-hover:translate-x-2">
+            <div className="flex h-16 w-16 shrink-0 flex-col items-center justify-center rounded-2xl bg-[var(--primary)] text-white">
+              <span className="text-xs font-bold uppercase opacity-80">
+                {new Date(nextDate.date).toLocaleDateString(undefined, { month: 'short' })}
+              </span>
+              <span className="text-2xl font-serif font-bold">
+                {new Date(nextDate.date).getDate()}
+              </span>
             </div>
             <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-semibold">{nextDate.title}</p>
-              <p className="text-xs text-[var(--muted)]">
-                {new Date(nextDate.date).toLocaleDateString(undefined, { month: 'long', day: 'numeric' })}
-              </p>
+              <p className="ink-stamp text-[var(--primary)]">Upcoming Date</p>
+              <h3 className="font-serif text-xl font-medium">{nextDate.title}</h3>
             </div>
-            <Icon name="ChevronRight" size={18} className="text-[var(--muted)]" />
-          </motion.div>
+            <Icon name="ChevronRight" className="text-[var(--muted)]" />
+          </div>
         </Link>
       )}
 
-      {/* Quick links */}
-      <div>
-        <h2 className="mb-2.5 px-1 text-xs font-semibold tracking-wide uppercase text-[var(--muted)]">
-          Explore
-        </h2>
-        <div className="grid grid-cols-3 gap-2.5">
-          {QUICK.map((q, i) => (
-            <motion.div
+      {/* Explore - Editorial List */}
+      <section>
+        <h2 className="mb-6 ink-stamp text-[var(--muted)]">Our Space</h2>
+        <div className="space-y-3">
+          {QUICK.map((q) => (
+            <Link
               key={q.href}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.05 + i * 0.04, ease: [0.22, 1, 0.36, 1] }}
+              href={q.href}
+              className="journal-card flex items-center gap-4 p-5 transition-all hover:bg-[var(--primary)]/5"
             >
-              <Link
-                href={q.href}
-                className="surface-flat flex flex-col items-center gap-2.5 py-5 text-center transition hover:bg-[rgb(var(--card)/0.5)]"
-              >
-                <Icon name={q.icon} size={22} strokeWidth={1.5} className="text-[var(--primary)]" />
-                <span className="text-xs font-medium">{q.label}</span>
-              </Link>
-            </motion.div>
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--primary)]/10 text-[var(--primary)]">
+                <Icon name={q.icon} size={20} />
+              </div>
+              <span className="font-serif text-lg font-medium">{q.label}</span>
+              <Icon name="ArrowRight" size={16} className="ml-auto text-[var(--muted)]" />
+            </Link>
           ))}
         </div>
-      </div>
+      </section>
     </div>
   );
 }
