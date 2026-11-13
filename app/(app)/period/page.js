@@ -8,7 +8,9 @@ import { useAppStore } from '@/lib/store';
 import { Button } from '@/components/ui/button';
 import { Input, Textarea, Field } from '@/components/ui/input';
 import { GlassCard } from '@/components/ui/glass-card';
-import { Spinner, EmptyState } from '@/components/ui/spinner';
+import { EmptyState, ErrorState } from '@/components/ui/spinner';
+import { Skeleton, PageSkeleton } from '@/components/ui/skeleton';
+import { friendlyError } from '@/lib/friendly-error';
 import { Icon } from '@/components/ui/icon';
 import {
   MOOD_OPTIONS,
@@ -33,6 +35,8 @@ export default function PeriodPage() {
   const [saving, setSaving] = useState(false);
   const [mine, setMine] = useState(null);
   const [partnerTracker, setPartnerTracker] = useState(null);
+  const [loadError, setLoadError] = useState(null);
+  const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
     let alive = true;
@@ -43,12 +47,14 @@ export default function PeriodPage() {
         setMine(d.mine || null);
         setPartnerTracker(d.partner || null);
       })
-      .catch((e) => toast.error(e.message))
+      .catch((e) => {
+        if (alive) setLoadError(friendlyError(e, 'Could not load your tracker.'));
+      })
       .finally(() => alive && setLoading(false));
     return () => {
       alive = false;
     };
-  }, []);
+  }, [reloadKey]);
 
   // Persist a partial change to my tracker. Always send full arrays.
   async function save(patch, successMsg) {
@@ -77,7 +83,7 @@ export default function PeriodPage() {
         moods: [],
       });
       setMine(tracker);
-      toast.success('Your private space is ready 🌸');
+      toast.success('Your private space is ready');
     } catch (e) {
       toast.error(e.message);
     } finally {
@@ -85,19 +91,22 @@ export default function PeriodPage() {
     }
   }
 
-  if (loading) {
+  if (loading) return <PageSkeleton rows={3} />;
+
+  // Never fall through to the opt-in screen on a failed load: enabling would
+  // overwrite an existing tracker with empty data.
+  if (loadError) {
     return (
-      <div className="flex flex-col items-center justify-center gap-3 py-24">
-        <Spinner />
-        <p className="text-sm text-[var(--muted)]">Opening your private space…</p>
-      </div>
+      <ErrorState title="Wellness did not load" onRetry={() => { setLoadError(null); setLoading(true); setReloadKey((k) => k + 1); }}>
+        {loadError}
+      </ErrorState>
     );
   }
 
   return (
     <div className="space-y-5">
       <div>
-        <h1 className="px-1 text-2xl font-black text-[var(--text)]">Wellness</h1>
+        <h1 className="px-1 font-display text-4xl font-semibold tracking-tight">Wellness</h1>
         <p className="px-1 text-sm text-[var(--muted)]">
           A private space to track your cycle and moods.
         </p>
@@ -125,7 +134,7 @@ export default function PeriodPage() {
 function OptIn({ onEnable, enabling }) {
   return (
     <GlassCard className="text-center">
-      <EmptyState emoji="🌸" title="A space that's just yours">
+      <EmptyState icon="Flower2" title="A space that's just yours">
         Track your cycle and moods, gently and privately. Nothing is shared unless
         you choose to. You can turn this off any time.
       </EmptyState>
@@ -146,7 +155,7 @@ function PredictionCard({ tracker }) {
   if (!p?.hasCycle) {
     return (
       <GlassCard className="text-center">
-        <div className="text-4xl">🗓️</div>
+        <Icon name="CalendarDays" size={32} className="mx-auto text-[var(--primary)]" aria-hidden="true" />
         <p className="mt-2 font-semibold">No cycles logged yet</p>
         <p className="mt-1 text-sm text-[var(--muted)]">
           Log your first period below to start seeing gentle predictions.
@@ -159,7 +168,7 @@ function PredictionCard({ tracker }) {
   let sub;
   if (p.isActive) {
     headline = `Cycle day ${p.cycleDay}`;
-    sub = 'Take it easy today 💛';
+    sub = 'Take it easy today';
   } else if (p.daysUntil > 1) {
     headline = `${p.daysUntil} days until next period`;
     sub = `Expected ${format(p.nextStart, 'EEEE, MMM d')}`;
@@ -168,7 +177,7 @@ function PredictionCard({ tracker }) {
     sub = `Expected ${format(p.nextStart, 'EEEE, MMM d')}`;
   } else if (p.daysUntil === 0) {
     headline = 'Period expected today';
-    sub = 'Be kind to yourself 🌷';
+    sub = 'Be kind to yourself';
   } else {
     headline = `${Math.abs(p.daysUntil)} day${Math.abs(p.daysUntil) === 1 ? '' : 's'} late`;
     sub = `Was expected ${format(p.nextStart, 'EEEE, MMM d')}`;
@@ -208,18 +217,18 @@ function Settings({ tracker, onSave, saving }) {
 
   function toggleVisibility() {
     const next = shared ? 'private' : 'partner';
-    onSave({ visibility: next }, next === 'partner' ? 'Sharing summary with your partner 💞' : 'Back to private 🔒');
+    onSave({ visibility: next }, next === 'partner' ? 'Sharing summary with your partner' : 'Back to private').catch(() => {});
   }
 
   function commitCycle() {
     const v = Math.max(15, Math.min(60, Number(cycle) || 28));
     setCycle(v);
-    if (v !== tracker.average_cycle) onSave({ averageCycle: v });
+    if (v !== tracker.average_cycle) onSave({ averageCycle: v }).catch(() => {});
   }
   function commitPeriod() {
     const v = Math.max(1, Math.min(15, Number(period) || 5));
     setPeriod(v);
-    if (v !== tracker.average_period) onSave({ averagePeriod: v });
+    if (v !== tracker.average_period) onSave({ averagePeriod: v }).catch(() => {});
   }
 
   return (
@@ -235,7 +244,7 @@ function Settings({ tracker, onSave, saving }) {
         className="glass flex w-full items-center justify-between rounded-2xl p-3 text-left transition active:scale-[0.99]"
       >
         <span className="flex items-center gap-3">
-          <span className="text-2xl">{shared ? '💞' : '🔒'}</span>
+          <Icon name={shared ? 'Users' : 'Lock'} size={22} className="text-[var(--primary)]" aria-hidden="true" />
           <span>
             <span className="block text-sm font-semibold">
               {shared ? 'Shared with partner' : 'Private'}
@@ -251,7 +260,7 @@ function Settings({ tracker, onSave, saving }) {
           className={
             'relative h-6 w-11 shrink-0 rounded-full transition-colors ' +
             (shared
-              ? '[background:linear-gradient(120deg,var(--primary),var(--primary-2))]'
+              ? 'bg-[var(--primary)]'
               : 'bg-[rgb(var(--border)/0.4)]')
           }
         >
@@ -304,7 +313,7 @@ function LogPeriod({ tracker, onSave, saving }) {
     if (!start) return toast.error('Pick a start date');
     const next = [...(tracker.cycles || []), { start, flow }];
     try {
-      await onSave({ cycles: next }, 'Period logged 🌷');
+      await onSave({ cycles: next }, 'Period logged');
       setStart(todayStr());
       setFlow('medium');
     } catch {}
@@ -330,7 +339,7 @@ function LogPeriod({ tracker, onSave, saving }) {
         <Input type="date" max={todayStr()} value={start} onChange={(e) => setStart(e.target.value)} />
       </Field>
 
-      <Field label="Flow">
+      <Field label="Flow" group>
         <div className="grid grid-cols-3 gap-2">
           {FLOW_OPTIONS.map((f) => {
             const active = flow === f;
@@ -342,7 +351,7 @@ function LogPeriod({ tracker, onSave, saving }) {
                 className={
                   'rounded-2xl py-2.5 text-sm font-medium capitalize transition ' +
                   (active
-                    ? 'text-white [background:linear-gradient(120deg,var(--primary),var(--primary-2))]'
+                    ? 'text-[var(--on-primary)] bg-[var(--primary)]'
                     : 'glass text-[var(--muted)]')
                 }
               >
@@ -403,7 +412,7 @@ function LogMood({ tracker, onSave, saving }) {
     if (notes.trim()) entry.notes = notes.trim().slice(0, 300);
     const next = [...(tracker.moods || []), entry];
     try {
-      await onSave({ moods: next }, 'Mood saved 💭');
+      await onSave({ moods: next }, 'Mood saved');
       setNotes('');
       setMood('🙂');
       setDate(todayStr());
@@ -420,7 +429,7 @@ function LogMood({ tracker, onSave, saving }) {
         <Input type="date" max={todayStr()} value={date} onChange={(e) => setDate(e.target.value)} />
       </Field>
 
-      <Field label="How are you feeling?">
+      <Field label="How are you feeling?" group>
         <div className="flex flex-wrap gap-2">
           {MOOD_OPTIONS.map((m) => {
             const active = mood === m;
@@ -432,7 +441,7 @@ function LogMood({ tracker, onSave, saving }) {
                 className={
                   'flex h-12 w-12 items-center justify-center rounded-2xl text-2xl transition ' +
                   (active
-                    ? 'scale-110 [background:linear-gradient(120deg,var(--primary),var(--primary-2))] shadow-lg'
+                    ? 'scale-110 bg-[var(--primary)] shadow-lg'
                     : 'glass')
                 }
               >
@@ -467,7 +476,7 @@ function CyclesList({ tracker, onSave }) {
     const next = (tracker.cycles || []).filter(
       (x) => !(x.start === c.start && x.end === c.end && x.flow === c.flow)
     );
-    onSave({ cycles: next }, 'Removed');
+    onSave({ cycles: next }, 'Removed').catch(() => {});
   }
 
   if (!cycles.length) return null;
@@ -499,7 +508,7 @@ function CyclesList({ tracker, onSave }) {
               </div>
               <button
                 onClick={() => remove(c)}
-                className="rounded-xl p-2 text-[var(--muted)] transition hover:text-rose-500"
+                className="rounded-xl p-2 text-[var(--muted)] transition hover:text-[var(--danger-text)]"
                 aria-label="Delete cycle"
               >
                 <Icon name="Trash2" size={16} />
@@ -526,7 +535,7 @@ function MoodsList({ tracker, onSave }) {
       }
       return true;
     });
-    onSave({ moods: next }, 'Removed');
+    onSave({ moods: next }, 'Removed').catch(() => {});
   }
 
   if (!moods.length) return null;
@@ -554,7 +563,7 @@ function MoodsList({ tracker, onSave }) {
               </div>
               <button
                 onClick={() => remove(m, i)}
-                className="rounded-xl p-2 text-[var(--muted)] transition hover:text-rose-500"
+                className="rounded-xl p-2 text-[var(--muted)] transition hover:text-[var(--danger-text)]"
                 aria-label="Delete mood"
               >
                 <Icon name="Trash2" size={16} />
@@ -575,19 +584,19 @@ function PartnerCard({ tracker, partner }) {
   return (
     <GlassCard className="border border-[color-mix(in_srgb,var(--primary)_20%,transparent)]">
       <div className="flex items-center gap-2">
-        <span className="text-xl">💛</span>
+        <Icon name="HeartPulse" size={20} className="text-[var(--primary)]" aria-hidden="true" />
         <h2 className="font-semibold">{name ? `${name}'s wellness` : 'Partner'}</h2>
       </div>
       {p?.hasCycle ? (
         <div className="mt-2 space-y-1 text-sm">
           {p.isActive ? (
             <p>
-              On their period right now — <span className="font-medium">be extra kind 💛</span>
+              On their period right now — <span className="font-medium">be extra kind</span>
             </p>
           ) : p.daysUntil <= 3 ? (
             <p>
               Next period {p.daysUntil <= 0 ? 'around now' : `in ~${p.daysUntil} day${p.daysUntil === 1 ? '' : 's'}`} —{' '}
-              <span className="font-medium">be extra kind 💛</span>
+              <span className="font-medium">be extra kind</span>
             </p>
           ) : (
             <p className="text-[var(--muted)]">

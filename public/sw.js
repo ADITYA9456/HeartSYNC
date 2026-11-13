@@ -1,12 +1,12 @@
 /* CoupleSpace service worker — app-shell + offline fallback.
    Network-first for navigations (so fresh content wins) with an offline page
    fallback; cache-first for static assets. */
-const VERSION = 'cs-v1';
+const VERSION = 'cs-v2'; // v2: new icon set
 const STATIC_CACHE = `${VERSION}-static`;
 const RUNTIME_CACHE = `${VERSION}-runtime`;
 const OFFLINE_URL = '/offline';
 
-const PRECACHE = ['/offline', '/manifest.webmanifest', '/icons/icon-192.png'];
+const PRECACHE = ['/offline', '/manifest.webmanifest', '/icons/v2/icon-192.png'];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(

@@ -19,7 +19,9 @@ import { useAppStore } from '@/lib/store';
 import { uploadToCloudinary } from '@/lib/upload-client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Spinner, EmptyState } from '@/components/ui/spinner';
+import { Spinner, EmptyState, ErrorState } from '@/components/ui/spinner';
+import { Skeleton } from '@/components/ui/skeleton';
+import { friendlyError } from '@/lib/friendly-error';
 import { Avatar } from '@/components/ui/avatar';
 
 const PAGE_SIZE = 24;
@@ -43,8 +45,9 @@ export default function GalleryPage() {
   const [memories, setMemories] = useState([]);
   const [cursor, setCursor] = useState(null);
   const [hasMore, setHasMore] = useState(true);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [initialLoaded, setInitialLoaded] = useState(false);
+  const [loadError, setLoadError] = useState(null);
 
   // Filters
   const [album, setAlbum] = useState(ALL); // selected album (server filter)
@@ -79,6 +82,7 @@ export default function GalleryPage() {
     const myReq = ++reqIdRef.current;
     setLoading(true);
     setInitialLoaded(false);
+    setLoadError(null);
     try {
       const data = await api.get(buildUrl(null));
       if (myReq !== reqIdRef.current) return; // stale
@@ -86,7 +90,7 @@ export default function GalleryPage() {
       setCursor(data.nextCursor || null);
       setHasMore(Boolean(data.nextCursor));
     } catch (e) {
-      if (myReq === reqIdRef.current) toast.error(e.message || 'Could not load gallery');
+      if (myReq === reqIdRef.current) setLoadError(friendlyError(e, 'Could not load your gallery.'));
     } finally {
       if (myReq === reqIdRef.current) {
         setLoading(false);
@@ -232,7 +236,7 @@ export default function GalleryPage() {
     <div className="space-y-4">
       <header className="flex items-end justify-between gap-3 px-1">
         <div>
-          <h1 className="text-2xl font-black text-[var(--text)]">Our Gallery</h1>
+          <h1 className="font-display text-4xl font-semibold tracking-tight">Gallery</h1>
           <p className="text-sm text-[var(--muted)]">Every moment, kept forever.</p>
         </div>
       </header>
@@ -256,6 +260,7 @@ export default function GalleryPage() {
           onChange={(e) => setTagInput(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && applyTag()}
           placeholder="Filter by tag…"
+          aria-label="Filter by tag"
           className="h-10 py-2 text-sm"
         />
         {tag ? (
@@ -291,7 +296,7 @@ export default function GalleryPage() {
               >
                 {u.status === 'uploading' && <Loader2 className="h-3 w-3 animate-spin text-[var(--primary)]" />}
                 {u.status === 'done' && <Check className="h-3 w-3 text-emerald-500" />}
-                {u.status === 'error' && <X className="h-3 w-3 text-rose-500" />}
+                {u.status === 'error' && <X className="h-3 w-3 text-[var(--danger-text)]" />}
                 <span className="truncate">{u.name}</span>
               </span>
             ))}
@@ -300,15 +305,29 @@ export default function GalleryPage() {
       </AnimatePresence>
 
       {/* Grid */}
-      {!initialLoaded && loading ? (
-        <div className="flex justify-center py-20">
-          <Spinner className="h-8 w-8" />
+      {loadError && memories.length === 0 ? (
+        <ErrorState title="Gallery did not load" onRetry={loadFirst}>
+          {loadError}
+        </ErrorState>
+      ) : !initialLoaded && loading ? (
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3" aria-busy="true" aria-label="Loading photos">
+          {[0, 1, 2, 3, 4, 5].map((i) => (
+            <Skeleton key={i} className={i % 3 === 0 ? 'h-56' : 'h-40'} />
+          ))}
         </div>
       ) : memories.length === 0 ? (
-        <EmptyState icon="Camera" title="No memories yet">
-          {album !== ALL || tag
-            ? 'Nothing matches these filters yet.'
-            : 'Tap the + button to add your first photo together.'}
+        <EmptyState
+          icon="Camera"
+          title={album !== ALL || tag ? 'Nothing matches these filters' : 'No memories yet'}
+          action={
+            album !== ALL || tag ? (
+              <Button variant="glass" onClick={() => { setAlbum(ALL); setTag(''); setTagInput(''); }}>Clear filters</Button>
+            ) : (
+              <Button onClick={() => fileRef.current?.click()}>Add your first photo</Button>
+            )
+          }
+        >
+          {album !== ALL || tag ? 'Try another album or tag.' : 'Photos you add show up here for both of you.'}
         </EmptyState>
       ) : (
         <Masonry
@@ -343,7 +362,7 @@ export default function GalleryPage() {
       <button
         onClick={openPicker}
         aria-label="Add memory"
-        className="fixed bottom-28 right-5 z-30 flex h-14 w-14 items-center justify-center rounded-full bg-[var(--primary)] text-white shadow-md shadow-black/10 transition active:scale-95"
+        className="fixed bottom-[calc(var(--nav-h)+env(safe-area-inset-bottom)+1rem)] right-5 z-30 flex h-14 w-14 items-center justify-center rounded-full bg-[var(--primary)] text-[var(--on-primary)] shadow-md shadow-black/10 transition active:scale-95"
       >
         {uploadingCount > 0 ? (
           <Loader2 className="h-6 w-6 animate-spin" />
@@ -377,7 +396,7 @@ function Chip({ active, onClick, children }) {
       className={
         'shrink-0 whitespace-nowrap rounded-full px-4 py-1.5 text-sm font-medium capitalize transition ' +
         (active
-          ? 'bg-[var(--primary)] text-white'
+          ? 'bg-[var(--primary)] text-[var(--on-primary)]'
           : 'surface-flat text-[var(--text)]')
       }
     >
@@ -576,7 +595,7 @@ function Lightbox({ memory, user, partner, onClose, onPatched, onDeleted }) {
               </Button>
               {!confirmDel ? (
                 <Button variant="ghost" size="sm" onClick={() => setConfirmDel(true)}>
-                  <Trash2 className="h-4 w-4 text-rose-500" />
+                  <Trash2 className="h-4 w-4 text-[var(--danger-text)]" />
                 </Button>
               ) : (
                 <Button variant="danger" size="sm" loading={deleting} onClick={doDelete}>
@@ -596,16 +615,19 @@ function Lightbox({ memory, user, partner, onClose, onPatched, onDeleted }) {
               value={caption}
               onChange={(e) => setCaption(e.target.value)}
               placeholder="Add a caption…"
+              aria-label="Caption"
             />
             <Input
               value={album}
               onChange={(e) => setAlbum(e.target.value)}
               placeholder="Album (e.g. Trips)"
+              aria-label="Album"
             />
             <Input
               value={tagsText}
               onChange={(e) => setTagsText(e.target.value)}
               placeholder="Tags, comma separated"
+              aria-label="Tags"
             />
             <div className="flex gap-2">
               <Button size="sm" loading={saving} onClick={save}>

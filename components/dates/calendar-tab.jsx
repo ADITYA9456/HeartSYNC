@@ -11,9 +11,11 @@ import {
 import { motion } from 'framer-motion';
 import { toast } from 'sonner';
 import { api } from '@/lib/api-client';
+import { friendlyError } from '@/lib/friendly-error';
+import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { Input, Textarea, Field } from '@/components/ui/input';
-import { Spinner, EmptyState } from '@/components/ui/spinner';
+import { EmptyState, ErrorState } from '@/components/ui/spinner';
 import { Icon } from '@/components/ui/icon';
 import { Modal } from '@/components/dates/modal';
 import { dateTimeInputToISO, dateInputToISO, isoToDateInput } from '@/components/dates/shared';
@@ -43,6 +45,8 @@ export function CalendarTab() {
   const [form, setForm] = useState(() => emptyForm(new Date()));
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(null);
+  const [loadError, setLoadError] = useState(null);
+  const [reloadKey, setReloadKey] = useState(0);
 
   // Fetch the visible month's events whenever the month changes.
   useEffect(() => {
@@ -53,12 +57,14 @@ export function CalendarTab() {
     api
       .get(`/api/calendar?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`)
       .then((d) => alive && setEvents(d.events || []))
-      .catch((e) => toast.error(e.message))
+      .catch((e) => {
+        if (alive) setLoadError(friendlyError(e, 'Could not load events.'));
+      })
       .finally(() => alive && setLoading(false));
     return () => {
       alive = false;
     };
-  }, [month]);
+  }, [month, reloadKey]);
 
   const eventDays = useMemo(
     () => events.map((e) => new Date(e.starts_at)),
@@ -109,7 +115,7 @@ export function CalendarTab() {
         setEvents((prev) => [...prev, event]);
       }
       setOpen(false);
-      toast.success('Event added 🗓️');
+      toast.success('Event added');
     } catch (err) {
       toast.error(err.message);
     } finally {
@@ -154,8 +160,8 @@ export function CalendarTab() {
           }}
           modifiersStyles={{
             selected: {
-              background: 'linear-gradient(120deg,var(--primary),var(--primary-2))',
-              color: '#fff',
+              background: 'var(--primary)',
+              color: 'var(--on-primary)',
             },
             today: { color: 'var(--primary)', fontWeight: 700 },
           }}
@@ -183,12 +189,17 @@ export function CalendarTab() {
         <h3 className="mb-2 px-1 text-sm font-semibold text-[var(--muted)]">
           {format(selected, 'EEEE, MMMM d')}
         </h3>
-        {loading ? (
-          <div className="flex justify-center py-10">
-            <Spinner />
+        {loadError ? (
+          <ErrorState title="Could not load events" onRetry={() => { setLoadError(null); setReloadKey((k) => k + 1); }}>
+            {loadError}
+          </ErrorState>
+        ) : loading ? (
+          <div className="space-y-3" aria-busy="true" aria-label="Loading events">
+            <Skeleton className="h-16 w-full" />
+            <Skeleton className="h-16 w-full" />
           </div>
         ) : dayEvents.length === 0 ? (
-          <EmptyState emoji="🗓️" title="Nothing planned">
+          <EmptyState icon="CalendarDays" title="Nothing planned">
             Tap “Add event” to plan something together.
           </EmptyState>
         ) : (
@@ -226,7 +237,7 @@ export function CalendarTab() {
                 <button
                   onClick={() => remove(ev.id, ev.title)}
                   disabled={deleting === ev.id}
-                  className="shrink-0 px-3 text-rose-500 transition hover:bg-rose-500/10 disabled:opacity-50"
+                  className="shrink-0 px-3 text-[var(--danger-text)] transition hover:bg-[color-mix(in_srgb,var(--danger)_10%,transparent)] disabled:opacity-50"
                   aria-label="Delete"
                 >
                   <Icon name="Trash2" size={16} />
@@ -300,7 +311,7 @@ export function CalendarTab() {
               />
             </div>
           </Field>
-          <Field label="Colour">
+          <Field label="Colour" group>
             <div className="flex gap-2">
               {COLORS.map((c) => (
                 <button

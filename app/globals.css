@@ -4,90 +4,134 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 /* =========================================================================
-   Palette tokens. Defaults = Midnight Love (light). Each [data-palette] block
-   overrides the semantic variables; `.dark` variants tweak them for night.
+   HeartSYNC design tokens — "keepsake paper and ink".
+   One accent (per palette), one warm secondary (marigold, for streaks and
+   highlights), and a warm neutral scale. Light and dark are designed
+   separately: light is warm paper with ink text, dark is warm charcoal
+   (not plum), with a lighter accent so it holds 4.5:1 on dark surfaces.
+
+   Variable names used by existing pages are kept (--bg-from, --card,
+   --border, --primary, --primary-2, --muted, --text, --ring) so everything
+   inherits the new system; new semantic tokens are added alongside.
+   Every text/background pair below was checked for >= 4.5:1.
    ========================================================================= */
-:root,
-[data-palette='midnight'] {
-  --bg-from: #eef1ff;
-  --bg-to: #f7eefe;
-  --primary: #6d5dfc;
-  --primary-2: #c354ff;
-  --accent: #8b7bff;
-  --text: #1b1730;
-  --muted: #6b6786;
-  --card: 255 255 255;     /* rgb for alpha compositing */
-  --border: 255 255 255;
-  --ring: #6d5dfc;
-}
-[data-palette='pink'] {
-  --bg-from: #fff0f5;
-  --bg-to: #ffe9ec;
-  --primary: #ff5d8f;
-  --primary-2: #ff9a8b;
-  --accent: #ff7eb3;
-  --text: #3a1f2b;
-  --muted: #946b78;
-  --card: 255 255 255;
-  --border: 255 255 255;
-  --ring: #ff5d8f;
-}
-[data-palette='lavender'] {
-  --bg-from: #f5f3ff;
-  --bg-to: #efe9ff;
-  --primary: #8b5cf6;
-  --primary-2: #c4b5fd;
-  --accent: #a78bfa;
-  --text: #271b3f;
-  --muted: #786a96;
-  --card: 255 255 255;
-  --border: 255 255 255;
-  --ring: #8b5cf6;
-}
-[data-palette='sunset'] {
-  --bg-from: #fff4e6;
-  --bg-to: #ffe9ec;
-  --primary: #ff6a88;
-  --primary-2: #ff9a44;
-  --accent: #ff7e6b;
-  --text: #3a241b;
-  --muted: #97725f;
-  --card: 255 255 255;
-  --border: 255 255 255;
-  --ring: #ff6a88;
+:root {
+  /* Neutrals — light */
+  --bg-from: #faf6f1;
+  --bg-to: #faf6f1;
+  --surface: #ffffff;
+  --surface-2: #f1e9e1;
+  --text: #241c18;
+  --muted: #6a5e56;           /* 5.8:1 on bg, 5.2:1 on surface-2 */
+  --card: 255 255 255;        /* rgb triplet for alpha compositing */
+  --border: 36 28 24;         /* ink, used at low alpha */
+
+  /* Warm secondary — marigold */
+  --secondary: #b86b0e;
+  --secondary-text: #8a4f06;  /* 6.1:1 on bg */
+
+  /* Status */
+  --danger: #b42318;
+  --danger-text: #b42318;
+  --danger-solid: #b42318;    /* white text 6.5:1 */
+  --success: #2f7a4f;
+
+  /* Accent — Rose (default palette) */
+  --primary: #b0264f;         /* 6.0:1 on bg */
+  --primary-2: #8e1d40;       /* pressed / deeper shade, never a gradient stop */
+  --accent: #b0264f;
+  --on-primary: #ffffff;      /* 6.5:1 on primary */
+  --ring: #b0264f;
+
+  /* Elevation */
+  --shadow-sm: 0 1px 2px rgb(36 28 24 / 0.06);
+  --shadow-md: 0 1px 2px rgb(36 28 24 / 0.05), 0 8px 24px -12px rgb(36 28 24 / 0.18);
+  --shadow-lg: 0 2px 4px rgb(36 28 24 / 0.05), 0 18px 40px -16px rgb(36 28 24 / 0.25);
+
+  /* Layout */
+  --nav-h: 4.5rem;
+  --radius-sm: 0.75rem;
+  --radius-md: 1rem;
+  --radius-lg: 1.5rem;
+
+  color-scheme: light;
 }
 
-/* ---- Dark overrides ---- */
-.dark[data-palette='midnight'],
-.dark:root,
-.dark {
-  --bg-from: #0b1026;
-  --bg-to: #160d2e;
-  --text: #f2f0ff;
-  --muted: #a59fc4;
-  --card: 30 27 56;
-  --border: 255 255 255;
+/* Accent palettes. IDs are stored in couples.theme / localStorage, so they
+   stay as-is; only their look changed. */
+[data-palette='midnight'] {
+  /* "Ink" */
+  --primary: #2f4b8f;
+  --primary-2: #243a70;
+  --accent: #2f4b8f;
+  --ring: #2f4b8f;
 }
-.dark[data-palette='pink'] {
-  --bg-from: #25131a;
-  --bg-to: #2b1622;
-  --text: #ffeef3;
-  --muted: #c89aa9;
-  --card: 52 28 38;
+[data-palette='lavender'] {
+  /* "Plum" */
+  --primary: #7a3e8c;
+  --primary-2: #61306f;
+  --accent: #7a3e8c;
+  --ring: #7a3e8c;
+}
+[data-palette='sunset'] {
+  /* "Terracotta" */
+  --primary: #a3431d;
+  --primary-2: #833516;
+  --accent: #a3431d;
+  --ring: #a3431d;
+}
+
+/* ---- Dark: warm charcoal ---- */
+.dark {
+  --bg-from: #151211;
+  --bg-to: #151211;
+  --surface: #211c1a;
+  --surface-2: #2c2522;
+  --text: #f3ece6;
+  --muted: #b3a69d;           /* 7.9:1 on bg, 6.4:1 on surface-2 */
+  --card: 33 28 26;
+  --border: 255 240 230;
+
+  --secondary: #e8a54b;
+  --secondary-text: #f0b865;
+
+  --danger: #fca5a5;
+  --danger-text: #fca5a5;
+  --danger-solid: #b42318;
+  --success: #7fd3a1;
+
+  --primary: #f27b97;         /* Rose, 7.2:1 on bg */
+  --primary-2: #f597ad;
+  --accent: #f27b97;
+  --on-primary: #2a0b14;      /* 7.0:1 on primary */
+  --ring: #f27b97;
+
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.3);
+  --shadow-md: 0 1px 2px rgb(0 0 0 / 0.3), 0 10px 28px -14px rgb(0 0 0 / 0.6);
+  --shadow-lg: 0 2px 4px rgb(0 0 0 / 0.3), 0 20px 44px -18px rgb(0 0 0 / 0.7);
+
+  color-scheme: dark;
+}
+.dark[data-palette='midnight'] {
+  --primary: #93aeee;
+  --primary-2: #aec2f2;
+  --accent: #93aeee;
+  --on-primary: #0e1a33;
+  --ring: #93aeee;
 }
 .dark[data-palette='lavender'] {
-  --bg-from: #160f29;
-  --bg-to: #1d1338;
-  --text: #f1ecff;
-  --muted: #b3a6d6;
-  --card: 40 30 64;
+  --primary: #cfa0dd;
+  --primary-2: #dbb7e6;
+  --accent: #cfa0dd;
+  --on-primary: #2a1033;
+  --ring: #cfa0dd;
 }
 .dark[data-palette='sunset'] {
-  --bg-from: #241310;
-  --bg-to: #2b1714;
-  --text: #ffeee6;
-  --muted: #cc9c86;
-  --card: 54 30 24;
+  --primary: #f0956c;
+  --primary-2: #f3ab89;
+  --accent: #f0956c;
+  --on-primary: #2e1206;
+  --ring: #f0956c;
 }
 
 @theme inline {
@@ -96,102 +140,124 @@
   --color-accent: var(--accent);
   --color-ink: var(--text);
   --color-muted: var(--muted);
-  --font-sans: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
-  --font-serif: var(--font-serif), ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-secondary: var(--secondary);
+
+  --font-sans: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-display-face), ui-serif, Georgia, serif;
+  --font-serif: var(--font-display-face), ui-serif, Georgia, serif;
+
+  /* Type scale (1.25 ratio, 16px base) */
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.375rem;
+  --text-2xl: 1.625rem;
+  --text-3xl: 2rem;
+  --text-4xl: 2.5rem;
+
   --radius-glass: 1.25rem;
-  --radius-premium: 2rem;
+  --radius-premium: 1.5rem;
 }
 
 * {
-  border-color: rgb(var(--border) / 0.14);
+  border-color: rgb(var(--border) / 0.1);
 }
 
-html,
-body {
-  height: 100%;
+html {
+  background-color: var(--bg-from);
 }
 
 body {
   color: var(--text);
   background-color: var(--bg-from);
-  background-image: radial-gradient(
-    900px 450px at 15% -10%,
-    color-mix(in srgb, var(--primary) 8%, transparent),
-    transparent 70%
-  );
-  background-attachment: fixed;
   -webkit-font-smoothing: antialiased;
   overscroll-behavior-y: none;
+  text-rendering: optimizeLegibility;
+}
+
+/* One stroke weight for every lucide icon in the app. */
+svg.lucide {
+  stroke-width: 1.75px;
+}
+
+/* Visible keyboard focus everywhere. */
+:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+  border-radius: 0.6rem;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--primary) 25%, transparent);
+}
+
+/* Native date/time inputs follow the theme. */
+input[type='date'],
+input[type='time'],
+input[type='datetime-local'] {
+  font-variant-numeric: tabular-nums;
+  min-height: 2.75rem;
+}
+input[type='date']::-webkit-calendar-picker-indicator,
+input[type='time']::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  opacity: 0.7;
+}
+.dark input[type='date']::-webkit-calendar-picker-indicator,
+.dark input[type='time']::-webkit-calendar-picker-indicator {
+  filter: invert(0.9);
 }
 
 /* =========================================================================
-   Glassmorphism utilities
+   Surfaces. Tonal fills instead of borders; elevation only on the one
+   anchor per screen (surface-elevated). Old utility names are kept so
+   existing markup picks up the new look.
    ========================================================================= */
 @utility glass {
-  background: rgb(var(--card) / 0.55);
-  backdrop-filter: blur(18px) saturate(140%);
-  -webkit-backdrop-filter: blur(18px) saturate(140%);
-  border: 1px solid rgb(var(--border) / 0.18);
-}
-.dark .glass {
-  background: rgb(var(--card) / 0.45);
-  border-color: rgb(var(--border) / 0.08);
+  background: var(--surface-2);
 }
 
 @utility glass-card {
-  background: rgb(var(--card) / 0.6);
-  backdrop-filter: blur(20px) saturate(150%);
-  -webkit-backdrop-filter: blur(20px) saturate(150%);
-  border: 1px solid rgb(var(--border) / 0.16);
+  background: var(--surface);
   border-radius: var(--radius-glass);
-  box-shadow: 0 1px 2px rgb(0 0 0 / 0.04), 0 8px 32px -8px rgb(0 0 0 / 0.06);
-}
-.dark .glass-card {
-  background: rgb(var(--card) / 0.5);
-  border-color: rgb(var(--border) / 0.08);
-  box-shadow: 0 1px 2px rgb(0 0 0 / 0.16), 0 8px 32px -8px rgb(0 0 0 / 0.2);
+  box-shadow: var(--shadow-sm);
 }
 
-@utility gradient-text {
-  background: linear-gradient(120deg, var(--primary), var(--primary-2));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
-@utility brand-gradient {
-  background: linear-gradient(120deg, var(--primary), var(--primary-2));
-}
-
-/* ---- Premium surface hierarchy ---- */
 @utility surface-elevated {
-  background: rgb(var(--card) / 0.82);
-  backdrop-filter: blur(12px) saturate(130%);
-  -webkit-backdrop-filter: blur(12px) saturate(130%);
-  border: 1px solid rgb(var(--border) / 0.1);
-  border-radius: var(--radius-glass);
-  box-shadow: 0 1px 3px rgb(0 0 0 / 0.03), 0 12px 40px -12px rgb(0 0 0 / 0.07);
-}
-.dark .surface-elevated {
-  background: rgb(var(--card) / 0.68);
-  border-color: rgb(var(--border) / 0.06);
-  box-shadow: 0 1px 3px rgb(0 0 0 / 0.2), 0 12px 40px -12px rgb(0 0 0 / 0.28);
+  background: var(--surface);
+  border-radius: var(--radius-premium);
+  box-shadow: var(--shadow-lg);
 }
 
 @utility surface-flat {
-  background: rgb(var(--card) / 0.28);
+  background: var(--surface-2);
   border-radius: var(--radius-glass);
-  border: none;
 }
-.dark .surface-flat {
-  background: rgb(var(--card) / 0.18);
+
+/* Former gradient helpers now render solid colour by design. */
+@utility gradient-text {
+  color: var(--primary);
+}
+
+@utility brand-gradient {
+  background: var(--primary);
+  color: var(--on-primary);
 }
 
 @utility display-num {
-  font-size: clamp(3rem, 8vw, 5rem);
-  font-weight: 900;
+  font-family: var(--font-display);
+  font-size: clamp(3.25rem, 12vw, 5rem);
+  font-weight: 600;
   line-height: 1;
-  letter-spacing: -0.035em;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+/* Tabular numerals for counts, dates and timers. */
+.tnum {
   font-variant-numeric: tabular-nums;
 }
 
@@ -208,13 +274,43 @@ body {
 @media (max-width: 640px) {
   .notification-popover {
     position: fixed;
-    top: 7rem;
+    top: calc(env(safe-area-inset-top) + 4.5rem);
     right: 1rem;
     left: 1rem;
     width: auto;
-    max-width: 20rem;
+    max-width: 22rem;
     margin-inline: auto;
   }
+}
+
+/* The single entrance animation: a short rise-in for page content. */
+@keyframes hs-rise {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+/* Page content only fades: a transform (even a filled animation) on the
+   wrapper would become the containing block for position:fixed children
+   such as the gallery FAB and the settings save bar. */
+@keyframes hs-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.page-enter {
+  animation: hs-fade 240ms ease-out backwards;
+}
+/* Sheets and bars (already position:fixed) may rise in. */
+.sheet-enter {
+  animation: hs-rise 280ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
 }
 
 /* Respect users who prefer reduced motion */
@@ -223,20 +319,20 @@ body {
   *::before,
   *::after {
     animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
   }
 }
 
-@media (pointer: fine) {
-  html {
-    overscroll-behavior-y: none;
-  }
-}
-
-/* Safe-area padding for the bottom nav on notched phones */
+/* Safe-area helpers */
 .pb-safe {
   padding-bottom: calc(env(safe-area-inset-bottom) + 0.5rem);
 }
 .pt-safe {
   padding-top: env(safe-area-inset-top);
+}
+/* Scrollable pages clear the fixed bottom nav (+ the home indicator). */
+.pb-nav {
+  padding-bottom: calc(var(--nav-h) + env(safe-area-inset-bottom) + 1.5rem);
 }

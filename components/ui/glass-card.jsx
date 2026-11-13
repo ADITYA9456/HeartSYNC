@@ -1,18 +1,15 @@
 'use client';
-import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
+// Tonal card surface. (Previously animated every card on mount; the app now
+// uses a single page-level entrance animation instead.)
 export function GlassCard({ className, children, hover = false, ...props }) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-      whileHover={hover ? { y: -4 } : undefined}
-      className={cn('glass-card p-4', className)}
+    <div
+      className={cn('glass-card p-4 sm:p-5', hover && 'transition-shadow hover:shadow-[var(--shadow-md)]', className)}
       {...props}
     >
       {children}
-    </motion.div>
+    </div>
   );
 }

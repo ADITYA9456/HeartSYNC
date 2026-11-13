@@ -3,17 +3,20 @@ import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
 import { api } from '@/lib/api-client';
+import { friendlyError } from '@/lib/friendly-error';
+import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { Input, Textarea, Field } from '@/components/ui/input';
 import { GlassCard } from '@/components/ui/glass-card';
-import { Spinner, EmptyState } from '@/components/ui/spinner';
+import { EmptyState, ErrorState } from '@/components/ui/spinner';
 import { Icon } from '@/components/ui/icon';
 import { Modal } from '@/components/dates/modal';
 import {
   CATEGORIES,
-  CATEGORY_EMOJI,
+  CATEGORY_ICON,
   countdownLabel,
   isUpcoming,
+  nextOccurrence,
   dateInputToISO,
 } from '@/components/dates/shared';
 
@@ -33,6 +36,8 @@ export function DatesTab() {
   const [form, setForm] = useState(EMPTY_FORM);
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(null);
+  const [loadError, setLoadError] = useState(null);
+  const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
     let alive = true;
@@ -41,16 +46,18 @@ export function DatesTab() {
       .then((d) => {
         if (alive) setDates(d.dates || []);
       })
-      .catch((e) => toast.error(e.message))
+      .catch((e) => {
+        if (alive) setLoadError(friendlyError(e, 'Could not load this right now.'));
+      })
       .finally(() => alive && setLoading(false));
     return () => {
       alive = false;
     };
-  }, []);
+  }, [reloadKey]);
 
   async function submit(e) {
     e.preventDefault();
-    if (!form.title.trim()) return toast.error('Give it a title 💕');
+    if (!form.title.trim()) return toast.error('Give it a title');
     if (!form.date) return toast.error('Pick a date');
     const remind = Math.max(0, Math.min(60, Number(form.remindDays) || 0));
     setSaving(true);
@@ -68,7 +75,7 @@ export function DatesTab() {
       );
       setOpen(false);
       setForm(EMPTY_FORM);
-      toast.success('Date saved 🎉');
+      toast.success('Date saved');
     } catch (err) {
       toast.error(err.message);
     } finally {
@@ -90,16 +97,28 @@ export function DatesTab() {
     }
   }
 
+  if (loadError) {
+    return (
+      <ErrorState title="Could not load" onRetry={() => { setLoadError(null); setLoading(true); setReloadKey((k) => k + 1); }}>
+        {loadError}
+      </ErrorState>
+    );
+  }
+
   if (loading) {
     return (
-      <div className="flex justify-center py-16">
-        <Spinner />
+      <div className="space-y-3" aria-busy="true" aria-label="Loading">
+        <Skeleton className="h-12 w-full" />
+        <Skeleton className="h-20 w-full" />
+        <Skeleton className="h-20 w-full" />
       </div>
     );
   }
 
-  const upcoming = dates.filter((d) => isUpcoming(d.date));
-  const past = dates.filter((d) => !isUpcoming(d.date));
+  const upcoming = dates
+    .filter((d) => isUpcoming(d.date, d.recurring))
+    .sort((a, b) => nextOccurrence(a.date, a.recurring) - nextOccurrence(b.date, b.recurring));
+  const past = dates.filter((d) => !isUpcoming(d.date, d.recurring));
 
   return (
     <div className="space-y-4">
@@ -108,7 +127,7 @@ export function DatesTab() {
       </Button>
 
       {dates.length === 0 ? (
-        <EmptyState emoji="💝" title="No special dates yet">
+        <EmptyState icon="CalendarHeart" title="No special dates yet">
           Add anniversaries, birthdays and milestones so you never miss a moment.
         </EmptyState>
       ) : (
@@ -153,7 +172,7 @@ export function DatesTab() {
               autoFocus
             />
           </Field>
-          <Field label="Category">
+          <Field label="Category" group>
             <div className="grid grid-cols-4 gap-2">
               {CATEGORIES.map((c) => (
                 <button
@@ -172,7 +191,7 @@ export function DatesTab() {
                         : 'transparent',
                   }}
                 >
-                  <span className="text-xl">{c.emoji}</span>
+                  <Icon name={c.icon} size={20} aria-hidden="true" />
                   {c.label}
                 </button>
               ))}
@@ -238,7 +257,7 @@ function DateCard({ date, index, onDelete, deleting, faded }) {
       <GlassCard className={faded ? 'opacity-70' : ''}>
         <div className="flex items-start gap-3">
           <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[rgb(var(--card)/0.6)] text-2xl">
-            {CATEGORY_EMOJI[date.category] || '📌'}
+            <Icon name={CATEGORY_ICON[date.category] || 'Pin'} size={22} className="text-[var(--primary)]" aria-hidden="true" />
           </div>
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2">
@@ -255,7 +274,7 @@ function DateCard({ date, index, onDelete, deleting, faded }) {
               })}
             </p>
             <span className="mt-1 inline-block rounded-full bg-[color-mix(in_srgb,var(--primary)_14%,transparent)] px-2 py-0.5 text-xs font-semibold text-[var(--primary)]">
-              {countdownLabel(date.date)}
+              {countdownLabel(date.date, date.recurring)}
             </span>
             {date.notes && (
               <p className="mt-1.5 text-sm text-[var(--muted)]">{date.notes}</p>
@@ -264,7 +283,7 @@ function DateCard({ date, index, onDelete, deleting, faded }) {
           <Button
             variant="ghost"
             size="icon"
-            className="shrink-0 text-rose-500"
+            className="shrink-0 text-[var(--danger-text)]"
             loading={deleting}
             onClick={() => onDelete(date.id, date.title)}
             aria-label="Delete"

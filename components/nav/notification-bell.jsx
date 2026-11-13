@@ -30,6 +30,7 @@ export function NotificationBell() {
   async function toggle() {
     const next = !open;
     setOpen(next);
+    if (next) load();
     if (next && unread > 0) {
       setUnread(0);
       try {
@@ -47,7 +48,7 @@ export function NotificationBell() {
       >
         <Bell size={18} />
         {unread > 0 && (
-          <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-rose-500 px-1 text-[10px] font-bold text-white">
+          <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-[var(--danger-solid)] px-1 text-[10px] font-bold text-white">
             {unread > 9 ? '9+' : unread}
           </span>
         )}
@@ -66,7 +67,7 @@ export function NotificationBell() {
               <p className="px-2 py-1.5 text-sm font-semibold">Notifications</p>
               {items.length === 0 && (
                 <p className="px-2 py-6 text-center text-sm text-[var(--muted)]">
-                  Nothing yet — say hi to your partner 💞
+                  Nothing yet. Say hi to your partner.
                 </p>
               )}
               {items.map((n) => (
