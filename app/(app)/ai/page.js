@@ -27,6 +27,10 @@ export default function AiCopilotPage() {
   const [expanded, setExpanded] = useState({}); // entryId -> bool
 
   const lastPromptRef = useRef('');
+  const activeIdRef = useRef(activeId);
+  useEffect(() => {
+    activeIdRef.current = activeId;
+  }, [activeId]);
 
   const active = useMemo(
     () => AI_FEATURES.find((f) => f.id === activeId) || AI_FEATURES[0],
@@ -66,10 +70,13 @@ export default function AiCopilotPage() {
     }
     setGenerating(true);
     lastPromptRef.current = p;
+    const feature = activeId;
     try {
-      const data = await api.post('/api/ai', { feature: activeId, prompt: p });
+      const data = await api.post('/api/ai', { feature, prompt: p });
+      // Ignore a late answer if the user switched feature meanwhile.
+      if (activeIdRef.current !== feature) return;
       setResult(data);
-      loadHistory(activeId);
+      loadHistory(feature);
     } catch (e) {
       // 429 = too fast, 502 = copilot unavailable — both come through as err.message.
       toast.error(e.message);
@@ -187,6 +194,7 @@ export default function AiCopilotPage() {
             value={prompt}
             onChange={(e) => setPrompt(e.target.value.slice(0, MAX))}
             placeholder={`e.g. ${active.placeholder}`}
+            aria-label={`${active.label} prompt`}
             rows={4}
             disabled={generating}
           />

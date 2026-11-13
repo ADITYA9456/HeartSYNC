@@ -30,6 +30,7 @@ export function NotificationBell() {
   async function toggle() {
     const next = !open;
     setOpen(next);
+    if (next) load();
     if (next && unread > 0) {
       setUnread(0);
       try {

@@ -2,6 +2,7 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { api } from '@/lib/api-client';
+import { disconnectSocket } from '@/lib/socket-client';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Check, Copy, Heart, LogOut } from 'lucide-react';
 import { useRouter } from 'next/navigation';
@@ -44,13 +45,18 @@ export function ConnectClient() {
   }
 
   async function copy() {
-    await navigator.clipboard.writeText(inviteCode);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1500);
+    try {
+      await navigator.clipboard.writeText(inviteCode);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch {
+      toast.error('Could not copy. Select the code and copy it manually.');
+    }
   }
 
   async function logout() {
     await api.post('/api/auth/logout').catch(() => {});
+    disconnectSocket();
     router.replace('/auth');
   }
 
@@ -74,7 +80,7 @@ export function ConnectClient() {
           Enter HeartSYNC
         </Button>
         <p className="text-xs text-[var(--muted)]">
-          You can find this code again any time in Settings until your partner joins.
+          Save this code now. For your privacy it is stored encrypted and cannot be shown again.
         </p>
       </main>
     );
@@ -122,6 +128,7 @@ export function ConnectClient() {
           <motion.div key="j" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="glass-card space-y-4 p-5">
             <Input
               placeholder="Enter invite code"
+              aria-label="Invite code"
               value={code}
               onChange={(e) => setCode(e.target.value.toUpperCase())}
               className="text-center font-mono text-lg tracking-widest"

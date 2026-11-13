@@ -12,6 +12,9 @@ import { api } from '@/lib/api-client';
 import { PALETTES } from '@/lib/constants';
 import { registerForPush } from '@/lib/firebase-client';
 import { useAppStore } from '@/lib/store';
+import { displayStreak } from '@/lib/streak-display';
+import { canonicalZone, detectZone } from '@/lib/timezones';
+import { disconnectSocket } from '@/lib/socket-client';
 
 import { Avatar } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -91,21 +94,17 @@ export default function SettingsPage() {
     if (couple?.anniversary) {
       setAnniversary(String(couple.anniversary).slice(0, 10));
     }
-    if (couple?.timezone) setTimezone(couple.timezone);
+    if (couple?.timezone) setTimezone(canonicalZone(couple.timezone));
   }, [couple?.anniversary, couple?.timezone]);
 
   const detectedZone = useMemo(() => {
-    try {
-      return Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
-    } catch {
-      return 'UTC';
-    }
+    return detectZone();
   }, []);
 
   const zoneOptions = useMemo(() => {
     const set = new Set(COMMON_ZONES);
     if (detectedZone) set.add(detectedZone);
-    if (couple?.timezone) set.add(couple.timezone);
+    if (couple?.timezone) set.add(canonicalZone(couple.timezone));
     return Array.from(set).sort();
   }, [detectedZone, couple?.timezone]);
 
@@ -177,6 +176,8 @@ export default function SettingsPage() {
     setSigningOut(true);
     try {
       await api.post('/api/auth/logout');
+      disconnectSocket();
+      useAppStore.getState().reset();
       router.replace('/auth');
     } catch (e) {
       toast.error(e.message || 'Could not sign out');
@@ -210,7 +211,7 @@ export default function SettingsPage() {
           <div className="flex items-center gap-1.5 rounded-2xl bg-[rgb(var(--card)/0.5)] px-3 py-2">
             <Flame className="h-4 w-4 text-orange-500" />
             <span className="text-sm font-semibold text-[var(--text)]">
-              {couple?.streak_count ?? 0}
+              {displayStreak(couple)}
             </span>
           </div>
         </div>

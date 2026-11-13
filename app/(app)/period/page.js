@@ -208,18 +208,18 @@ function Settings({ tracker, onSave, saving }) {
 
   function toggleVisibility() {
     const next = shared ? 'private' : 'partner';
-    onSave({ visibility: next }, next === 'partner' ? 'Sharing summary with your partner 💞' : 'Back to private 🔒');
+    onSave({ visibility: next }, next === 'partner' ? 'Sharing summary with your partner 💞' : 'Back to private 🔒').catch(() => {});
   }
 
   function commitCycle() {
     const v = Math.max(15, Math.min(60, Number(cycle) || 28));
     setCycle(v);
-    if (v !== tracker.average_cycle) onSave({ averageCycle: v });
+    if (v !== tracker.average_cycle) onSave({ averageCycle: v }).catch(() => {});
   }
   function commitPeriod() {
     const v = Math.max(1, Math.min(15, Number(period) || 5));
     setPeriod(v);
-    if (v !== tracker.average_period) onSave({ averagePeriod: v });
+    if (v !== tracker.average_period) onSave({ averagePeriod: v }).catch(() => {});
   }
 
   return (
@@ -330,7 +330,7 @@ function LogPeriod({ tracker, onSave, saving }) {
         <Input type="date" max={todayStr()} value={start} onChange={(e) => setStart(e.target.value)} />
       </Field>
 
-      <Field label="Flow">
+      <Field label="Flow" group>
         <div className="grid grid-cols-3 gap-2">
           {FLOW_OPTIONS.map((f) => {
             const active = flow === f;
@@ -420,7 +420,7 @@ function LogMood({ tracker, onSave, saving }) {
         <Input type="date" max={todayStr()} value={date} onChange={(e) => setDate(e.target.value)} />
       </Field>
 
-      <Field label="How are you feeling?">
+      <Field label="How are you feeling?" group>
         <div className="flex flex-wrap gap-2">
           {MOOD_OPTIONS.map((m) => {
             const active = mood === m;
@@ -467,7 +467,7 @@ function CyclesList({ tracker, onSave }) {
     const next = (tracker.cycles || []).filter(
       (x) => !(x.start === c.start && x.end === c.end && x.flow === c.flow)
     );
-    onSave({ cycles: next }, 'Removed');
+    onSave({ cycles: next }, 'Removed').catch(() => {});
   }
 
   if (!cycles.length) return null;
@@ -526,7 +526,7 @@ function MoodsList({ tracker, onSave }) {
       }
       return true;
     });
-    onSave({ moods: next }, 'Removed');
+    onSave({ moods: next }, 'Removed').catch(() => {});
   }
 
   if (!moods.length) return null;

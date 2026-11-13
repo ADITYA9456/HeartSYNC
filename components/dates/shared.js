@@ -1,5 +1,5 @@
 'use client';
-import { differenceInCalendarDays, isToday, isPast } from 'date-fns';
+import { differenceInCalendarDays, isToday, isPast, startOfDay } from 'date-fns';
 
 export const CATEGORIES = [
   { value: 'anniversary', label: 'Anniversary', emoji: '💍' },
@@ -15,9 +15,21 @@ export const CATEGORY_EMOJI = {
   other: '📌',
 };
 
-// Pretty "in N days" / "today" / "N days ago" countdown.
-export function countdownLabel(dateStr) {
+// For recurring dates (birthdays, anniversaries) move the date to its next
+// yearly occurrence: this year, or next year if it already passed.
+export function nextOccurrence(dateStr, recurring = false) {
   const d = new Date(dateStr);
+  if (!recurring || Number.isNaN(d.getTime())) return d;
+  const today = startOfDay(new Date());
+  const next = new Date(d);
+  next.setFullYear(today.getFullYear());
+  if (startOfDay(next) < today) next.setFullYear(today.getFullYear() + 1);
+  return next;
+}
+
+// Pretty "in N days" / "today" / "N days ago" countdown.
+export function countdownLabel(dateStr, recurring = false) {
+  const d = nextOccurrence(dateStr, recurring);
   if (isToday(d)) return 'Today 🎉';
   const days = differenceInCalendarDays(d, new Date());
   if (days === 1) return 'Tomorrow';
@@ -26,8 +38,8 @@ export function countdownLabel(dateStr) {
   return `${Math.abs(days)} days ago`;
 }
 
-export function isUpcoming(dateStr) {
-  const d = new Date(dateStr);
+export function isUpcoming(dateStr, recurring = false) {
+  const d = nextOccurrence(dateStr, recurring);
   return isToday(d) || !isPast(d);
 }
 

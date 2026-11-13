@@ -13,13 +13,16 @@ export const Textarea = forwardRef(function Textarea({ className, ...props }, re
   return <textarea ref={ref} className={cn(base, 'min-h-24 resize-none', className)} {...props} />;
 });
 
-export function Field({ label, error, children, hint }) {
+// `group` renders a div[role=group] instead of a <label>, for button groups:
+// a <label> would forward clicks on its text to the first button inside.
+export function Field({ label, error, children, hint, group = false }) {
+  const Wrapper = group ? 'div' : 'label';
   return (
-    <label className="block space-y-1.5">
+    <Wrapper className="block space-y-1.5" {...(group ? { role: 'group', 'aria-label': label } : {})}>
       {label && <span className="text-sm font-medium text-[var(--text)]">{label}</span>}
       {children}
       {hint && !error && <span className="text-xs text-[var(--muted)]">{hint}</span>}
       {error && <span className="text-xs text-rose-500">{error}</span>}
-    </label>
+    </Wrapper>
   );
 }

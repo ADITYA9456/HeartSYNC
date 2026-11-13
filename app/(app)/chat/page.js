@@ -108,22 +108,26 @@ export default function ChatPage() {
 
   // --- infinite scroll upward ------------------------------------------------
   useEffect(() => {
+    // Wait for the first scroll-to-bottom, otherwise the top sentinel is in
+    // view on open and the prepend pushes the user 30 messages up.
+    if (!initialScrolled.current) return;
     if (!topInView || loading || loadingOlder || !hasMore || messages.length === 0) return;
     const oldest = messages[0];
     if (!oldest) return;
     setLoadingOlder(true);
     const el = scrollRef.current;
-    const prevHeight = el ? el.scrollHeight : 0;
 
     api
       .get(`/api/messages?before=${encodeURIComponent(oldest.created_at)}&limit=${PAGE_SIZE}`)
       .then((data) => {
         const older = data.messages || [];
+        const prevHeight = el ? el.scrollHeight : 0;
+        const prevTop = el ? el.scrollTop : 0;
         mergeMessages(older, 'prepend');
         setHasMore(!!data.hasMore);
         // Preserve scroll position after prepending.
         requestAnimationFrame(() => {
-          if (el) el.scrollTop = el.scrollHeight - prevHeight;
+          if (el) el.scrollTop = prevTop + (el.scrollHeight - prevHeight);
         });
       })
       .catch((err) => toast.error(err.message || 'Could not load older messages'))
@@ -505,6 +509,7 @@ export default function ChatPage() {
               onChange={handleTextChange}
               onKeyDown={onComposerKeyDown}
               placeholder="Write something sweet…"
+              aria-label="Message"
               className="flex-1"
               disabled={sending}
             />

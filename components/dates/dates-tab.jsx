@@ -14,6 +14,7 @@ import {
   CATEGORY_EMOJI,
   countdownLabel,
   isUpcoming,
+  nextOccurrence,
   dateInputToISO,
 } from '@/components/dates/shared';
 
@@ -98,8 +99,10 @@ export function DatesTab() {
     );
   }
 
-  const upcoming = dates.filter((d) => isUpcoming(d.date));
-  const past = dates.filter((d) => !isUpcoming(d.date));
+  const upcoming = dates
+    .filter((d) => isUpcoming(d.date, d.recurring))
+    .sort((a, b) => nextOccurrence(a.date, a.recurring) - nextOccurrence(b.date, b.recurring));
+  const past = dates.filter((d) => !isUpcoming(d.date, d.recurring));
 
   return (
     <div className="space-y-4">
@@ -153,7 +156,7 @@ export function DatesTab() {
               autoFocus
             />
           </Field>
-          <Field label="Category">
+          <Field label="Category" group>
             <div className="grid grid-cols-4 gap-2">
               {CATEGORIES.map((c) => (
                 <button
@@ -255,7 +258,7 @@ function DateCard({ date, index, onDelete, deleting, faded }) {
               })}
             </p>
             <span className="mt-1 inline-block rounded-full bg-[color-mix(in_srgb,var(--primary)_14%,transparent)] px-2 py-0.5 text-xs font-semibold text-[var(--primary)]">
-              {countdownLabel(date.date)}
+              {countdownLabel(date.date, date.recurring)}
             </span>
             {date.notes && (
               <p className="mt-1.5 text-sm text-[var(--muted)]">{date.notes}</p>

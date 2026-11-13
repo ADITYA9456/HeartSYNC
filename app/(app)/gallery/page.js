@@ -43,7 +43,7 @@ export default function GalleryPage() {
   const [memories, setMemories] = useState([]);
   const [cursor, setCursor] = useState(null);
   const [hasMore, setHasMore] = useState(true);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [initialLoaded, setInitialLoaded] = useState(false);
 
   // Filters
@@ -256,6 +256,7 @@ export default function GalleryPage() {
           onChange={(e) => setTagInput(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && applyTag()}
           placeholder="Filter by tag…"
+          aria-label="Filter by tag"
           className="h-10 py-2 text-sm"
         />
         {tag ? (
@@ -596,16 +597,19 @@ function Lightbox({ memory, user, partner, onClose, onPatched, onDeleted }) {
               value={caption}
               onChange={(e) => setCaption(e.target.value)}
               placeholder="Add a caption…"
+              aria-label="Caption"
             />
             <Input
               value={album}
               onChange={(e) => setAlbum(e.target.value)}
               placeholder="Album (e.g. Trips)"
+              aria-label="Album"
             />
             <Input
               value={tagsText}
               onChange={(e) => setTagsText(e.target.value)}
               placeholder="Tags, comma separated"
+              aria-label="Tags"
             />
             <div className="flex gap-2">
               <Button size="sm" loading={saving} onClick={save}>

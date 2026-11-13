@@ -165,7 +165,7 @@ export function TimelineTab() {
               onChange={(e) => setForm({ ...form, eventDate: e.target.value })}
             />
           </Field>
-          <Field label="Choose an emoji">
+          <Field label="Choose an emoji" group>
             <div className="flex flex-wrap gap-2">
               {EMOJIS.map((em) => (
                 <button

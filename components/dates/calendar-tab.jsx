@@ -300,7 +300,7 @@ export function CalendarTab() {
               />
             </div>
           </Field>
-          <Field label="Colour">
+          <Field label="Colour" group>
             <div className="flex gap-2">
               {COLORS.map((c) => (
                 <button

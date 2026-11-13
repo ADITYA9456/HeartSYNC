@@ -141,7 +141,7 @@ export function AuthClient() {
           <span className="h-px flex-1 bg-[rgb(var(--border)/0.2)]" />
         </div>
 
-          {googleReady && (
+          {googleReady && process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID && (
             <div className="flex justify-center [color-scheme:light]">
               <GoogleLogin
                 onSuccess={onGoogle}

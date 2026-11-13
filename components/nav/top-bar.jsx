@@ -2,6 +2,7 @@
 import Link from 'next/link';
 import { Flame, Settings } from 'lucide-react';
 import { useAppStore } from '@/lib/store';
+import { displayStreak } from '@/lib/streak-display';
 import { Avatar } from '@/components/ui/avatar';
 import { ThemeToggle } from './theme-toggle';
 import { NotificationBell } from './notification-bell';
@@ -17,7 +18,7 @@ export function TopBar() {
   const user = useAppStore((s) => s.user);
   const couple = useAppStore((s) => s.couple);
   const partner = useAppStore((s) => s.partner);
-  const streak = couple?.streak_count || 0;
+  const streak = displayStreak(couple);
 
   return (
     <header className="sticky top-0 z-30 px-4 pt-safe">

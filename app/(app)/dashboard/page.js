@@ -1,7 +1,8 @@
 'use client';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { differenceInCalendarDays } from 'date-fns';
+import { differenceInCalendarDays, parseISO } from 'date-fns';
+import { nextOccurrence } from '@/components/dates/shared';
 import { motion } from 'framer-motion';
 import { toast } from 'sonner';
 import { api } from '@/lib/api-client';
@@ -20,6 +21,14 @@ const QUICK = [
   { href: '/productivity', label: 'Tasks', icon: 'ListTodo' },
 ];
 
+function todayInCoupleZone(tz) {
+  try {
+    return new Intl.DateTimeFormat('en-CA', { timeZone: tz || 'UTC' }).format(new Date());
+  } catch {
+    return new Date().toISOString().slice(0, 10);
+  }
+}
+
 export default function DashboardPage() {
   const user = useAppStore((s) => s.user);
   const couple = useAppStore((s) => s.couple);
@@ -32,7 +41,7 @@ export default function DashboardPage() {
       .get('/api/dates')
       .then((d) => {
         const upcoming = (d.dates || [])
-          .map((x) => ({ ...x, ts: new Date(x.date).getTime() }))
+          .map((x) => ({ ...x, ts: nextOccurrence(x.date, x.recurring).getTime() }))
           .filter((x) => x.ts >= Date.now() - 86_400_000)
           .sort((a, b) => a.ts - b.ts);
         setNextDate(upcoming[0] || null);
@@ -43,7 +52,13 @@ export default function DashboardPage() {
   async function ping(type) {
     setPinging(type);
     try {
-      await api.post('/api/couple/ping', { type });
+      const res = await api.post('/api/couple/ping', { type });
+      // Reflect the bumped streak right away (server returns the new count).
+      if (typeof res?.streak === 'number') {
+        useAppStore.setState((s) =>
+          s.couple ? { couple: { ...s.couple, streak_count: res.streak, last_streak_date: todayInCoupleZone(s.couple.timezone) } } : s
+        );
+      }
       toast.success(type === 'hug' ? 'Hug sent' : 'They know you miss them');
     } catch (e) {
       toast.error(e.message);
@@ -53,7 +68,7 @@ export default function DashboardPage() {
   }
 
   const daysTogether = couple?.anniversary
-    ? differenceInCalendarDays(new Date(), new Date(couple.anniversary))
+    ? differenceInCalendarDays(new Date(), parseISO(String(couple.anniversary).slice(0, 10)))
     : null;
 
   return (
@@ -121,7 +136,7 @@ export default function DashboardPage() {
             <div className="min-w-0 flex-1">
               <p className="truncate text-sm font-semibold">{nextDate.title}</p>
               <p className="text-xs text-[var(--muted)]">
-                {new Date(nextDate.date).toLocaleDateString(undefined, { month: 'long', day: 'numeric' })}
+                {new Date(nextDate.ts).toLocaleDateString(undefined, { month: 'long', day: 'numeric' })}
               </p>
             </div>
             <Icon name="ChevronRight" size={18} className="text-[var(--muted)]" />
