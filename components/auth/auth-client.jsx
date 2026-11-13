@@ -42,7 +42,7 @@ export function AuthClient() {
       } else {
         const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
         await api.post('/api/auth/register', { ...values, timezone: tz });
-        toast.success('Welcome to HeartSYNC 💞');
+        toast.success('Welcome to HeartSYNC');
         go(false);
       }
     } catch (e) {
@@ -75,7 +75,7 @@ export function AuthClient() {
         <Logo size={44} priority />
         <div className="space-y-4">
           <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[var(--primary)]">A private space for two</p>
-          <h1 className="text-balance text-6xl font-black leading-[0.95] tracking-[-0.06em]">
+          <h1 className="text-balance font-display text-6xl font-semibold leading-[0.98] tracking-tight">
             Keep the little things close.
           </h1>
           <p className="max-w-sm text-base leading-relaxed text-[var(--muted)]">
@@ -95,7 +95,7 @@ export function AuthClient() {
         </div>
         <div className="surface-elevated p-6 sm:p-8">
           <div className="mb-7 space-y-2">
-            <h1 className="text-2xl font-bold tracking-tight">
+            <h1 className="font-display text-3xl font-semibold tracking-tight">
               {isLogin ? 'Welcome back.' : 'Start your shared space.'}
             </h1>
             <p className="text-sm text-[var(--muted)]">

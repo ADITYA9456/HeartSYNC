@@ -25,7 +25,7 @@ export default function DatesPage() {
   return (
     <div className="space-y-5">
       <div>
-        <h1 className="px-1 text-2xl font-black text-[var(--text)]">Our Moments</h1>
+        <h1 className="px-1 font-display text-4xl font-semibold tracking-tight">Dates</h1>
         <p className="px-1 text-sm text-[var(--muted)]">Dates, memories &amp; plans — together.</p>
       </div>
 
@@ -38,7 +38,7 @@ export default function DatesPage() {
               key={t.id}
               onClick={() => switchTo(t.id)}
               className="relative z-10 flex items-center justify-center gap-1.5 rounded-xl py-2 text-sm font-semibold transition-colors"
-              style={{ color: active ? '#fff' : 'var(--muted)' }}
+              style={{ color: active ? 'var(--on-primary)' : 'var(--muted)' }}
             >
               {active && (
                 <motion.span

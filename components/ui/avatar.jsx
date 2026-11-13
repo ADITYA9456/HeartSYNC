@@ -7,14 +7,14 @@ export function Avatar({ src, name = '', size = 40, className }) {
     <span
       style={dim}
       className={cn(
-        'inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full text-white font-semibold [background:linear-gradient(135deg,var(--primary),var(--primary-2))]',
+        'inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full text-[var(--on-primary)] font-semibold bg-[var(--primary)]',
         className
       )}
     >
       {src ? (
         <img src={src} alt={name} className="h-full w-full object-cover" />
       ) : (
-        <span style={{ fontSize: size * 0.4 }}>{initials(name) || '💞'}</span>
+        <span style={{ fontSize: size * 0.4 }}>{initials(name) || '?'}</span>
       )}
     </span>
   );

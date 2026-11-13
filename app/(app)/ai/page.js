@@ -61,7 +61,7 @@ export default function AiCopilotPage() {
   async function generate(overridePrompt) {
     const p = (overridePrompt ?? prompt).trim();
     if (!p) {
-      toast.error('Tell the Copilot what you have in mind first 💭');
+      toast.error('Tell the Copilot what you have in mind first');
       return;
     }
     if (p.length > MAX) {
@@ -88,7 +88,7 @@ export default function AiCopilotPage() {
   async function copyResult(text) {
     try {
       await navigator.clipboard.writeText(text);
-      toast.success('Copied 💌');
+      toast.success('Copied');
     } catch {
       toast.error('Could not copy');
     }
@@ -101,7 +101,7 @@ export default function AiCopilotPage() {
       const { entry } = await api.patch(`/api/ai/${result.entry.id}`, { favorite: true });
       setResult((r) => (r ? { ...r, entry } : r));
       setHistory((h) => h.map((x) => (x.id === entry.id ? entry : x)));
-      toast.success('Saved to favorites ⭐');
+      toast.success('Saved to favorites');
     } catch (e) {
       toast.error(e.message);
     } finally {
@@ -142,10 +142,7 @@ export default function AiCopilotPage() {
       {/* Header */}
       <header className="space-y-1.5">
         <div className="flex items-center gap-2">
-          <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[var(--primary)] text-white shadow-md shadow-black/8">
-            <Icon name="Sparkles" size={20} />
-          </span>
-          <h1 className="text-2xl font-black text-[var(--text)]">AI Copilot</h1>
+          <h1 className="font-display text-4xl font-semibold tracking-tight">Copilot</h1>
         </div>
         <p className="text-sm text-[var(--muted)]">
           Your little love assistant — date plans, captions, notes, apologies and gift ideas, made just for the two of you.
@@ -165,7 +162,7 @@ export default function AiCopilotPage() {
               className={[
                 'relative flex shrink-0 items-center gap-1.5 rounded-2xl px-3.5 py-2 text-sm font-semibold transition-all active:scale-[0.97]',
                 isActive
-                  ? 'text-white bg-[var(--primary)] shadow-md shadow-black/8'
+                  ? 'text-[var(--on-primary)] bg-[var(--primary)] shadow-md shadow-black/8'
                   : 'surface-flat text-[var(--text)]',
               ].join(' ')}
             >
@@ -208,7 +205,7 @@ export default function AiCopilotPage() {
               loading={generating}
               disabled={!prompt.trim()}
             >
-              {!generating && <Icon name="Sparkles" size={16} />}
+              {!generating && <Icon name="CopilotMark" size={16} />}
               {generating ? 'Conjuring…' : 'Generate'}
             </Button>
           </div>
@@ -225,7 +222,7 @@ export default function AiCopilotPage() {
               >
                 <GlassCard className="space-y-4">
                   <div className="flex items-center gap-2 text-[var(--primary)]">
-                    <Icon name="Sparkles" size={16} />
+                    <Icon name="CopilotMark" size={16} />
                     <span className="text-xs font-semibold uppercase tracking-wide">
                       {active.label}
                     </span>

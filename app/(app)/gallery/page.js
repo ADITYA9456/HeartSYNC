@@ -232,7 +232,7 @@ export default function GalleryPage() {
     <div className="space-y-4">
       <header className="flex items-end justify-between gap-3 px-1">
         <div>
-          <h1 className="text-2xl font-black text-[var(--text)]">Our Gallery</h1>
+          <h1 className="font-display text-4xl font-semibold tracking-tight">Gallery</h1>
           <p className="text-sm text-[var(--muted)]">Every moment, kept forever.</p>
         </div>
       </header>
@@ -344,7 +344,7 @@ export default function GalleryPage() {
       <button
         onClick={openPicker}
         aria-label="Add memory"
-        className="fixed bottom-28 right-5 z-30 flex h-14 w-14 items-center justify-center rounded-full bg-[var(--primary)] text-white shadow-md shadow-black/10 transition active:scale-95"
+        className="fixed bottom-[calc(var(--nav-h)+env(safe-area-inset-bottom)+1rem)] right-5 z-30 flex h-14 w-14 items-center justify-center rounded-full bg-[var(--primary)] text-[var(--on-primary)] shadow-md shadow-black/10 transition active:scale-95"
       >
         {uploadingCount > 0 ? (
           <Loader2 className="h-6 w-6 animate-spin" />
@@ -378,7 +378,7 @@ function Chip({ active, onClick, children }) {
       className={
         'shrink-0 whitespace-nowrap rounded-full px-4 py-1.5 text-sm font-medium capitalize transition ' +
         (active
-          ? 'bg-[var(--primary)] text-white'
+          ? 'bg-[var(--primary)] text-[var(--on-primary)]'
           : 'surface-flat text-[var(--text)]')
       }
     >

@@ -53,7 +53,7 @@ export function TimelineTab() {
       );
       setOpen(false);
       setForm(EMPTY_FORM);
-      toast.success('Added to your story 📖');
+      toast.success('Added to your story');
     } catch (err) {
       toast.error(err.message);
     } finally {
@@ -90,7 +90,7 @@ export function TimelineTab() {
       </Button>
 
       {events.length === 0 ? (
-        <EmptyState emoji="📖" title="Your story starts here">
+        <EmptyState icon="BookOpen" title="Your story starts here">
           Capture the moments that made you — first dates, trips, big leaps.
         </EmptyState>
       ) : (
@@ -107,8 +107,8 @@ export function TimelineTab() {
                 transition={{ delay: i * 0.05 }}
               >
                 {/* dot */}
-                <div className="absolute -left-[1.45rem] top-1 flex h-7 w-7 items-center justify-center rounded-full bg-[var(--primary)] text-sm text-white shadow-md shadow-black/8">
-                  {ev.emoji || <Icon name="Heart" size={14} className="text-white" />}
+                <div className="absolute -left-[1.45rem] top-1 flex h-7 w-7 items-center justify-center rounded-full bg-[var(--primary)] text-sm text-[var(--on-primary)] shadow-md shadow-black/8">
+                  {ev.emoji || <Icon name="Heart" size={14} className="text-[var(--on-primary)]" />}
                 </div>
                 <div className="glass-card p-4">
                   <div className="flex items-start justify-between gap-2">

@@ -406,7 +406,7 @@ export default function ChatPage() {
 
   // --- render ----------------------------------------------------------------
   return (
-    <div className="flex h-[calc(100dvh-9rem)] flex-col">
+    <div className="flex h-[calc(100dvh-var(--nav-h)-env(safe-area-inset-top)-env(safe-area-inset-bottom)-6.25rem)] min-h-80 flex-col">
       {/* Message list */}
       <div
         ref={scrollRef}
@@ -554,7 +554,7 @@ export default function ChatPage() {
             <button
               type="button"
               aria-label="Close"
-              className="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-full glass text-white"
+              className="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-full bg-white/15 text-white"
               onClick={() => setLightbox(null)}
             >
               <X className="h-5 w-5" />
@@ -564,7 +564,7 @@ export default function ChatPage() {
               src={lightbox}
               alt="Photo"
               onClick={(e) => e.stopPropagation()}
-              className="max-h-[85vh] max-w-full rounded-2xl object-contain"
+              className="max-h-[85dvh] max-w-full rounded-2xl object-contain"
             />
           </motion.div>
         )}

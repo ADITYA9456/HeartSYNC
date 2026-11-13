@@ -2,7 +2,7 @@
 import { useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { format } from 'date-fns';
-import { Check, CheckCheck, Smile, Trash2 } from 'lucide-react';
+import { Check, CheckCheck, Mic, Smile, Trash2 } from 'lucide-react';
 import { Avatar } from '@/components/ui/avatar';
 import { REACTION_EMOJIS } from '@/lib/constants';
 import { cn } from '@/lib/utils';
@@ -73,7 +73,7 @@ export function MessageBubble({
             className={cn(
               'relative rounded-3xl px-4 py-2.5 text-[15px] leading-relaxed shadow-sm',
               mine
-                ? '[background:linear-gradient(120deg,var(--primary),var(--primary-2))] text-white rounded-br-md'
+                ? 'bg-[var(--primary)] text-[var(--on-primary)] rounded-br-md'
                 : 'glass text-[var(--text)] rounded-bl-md'
             )}
           >
@@ -95,8 +95,9 @@ export function MessageBubble({
               <div className="flex flex-col gap-1">
                 <audio controls src={message.media_url} className="h-9 w-56 max-w-full" />
                 {message.media_duration ? (
-                  <span className={cn('text-[11px]', mine ? 'text-white/80' : 'text-[var(--muted)]')}>
-                    🎤 {formatDuration(message.media_duration)}
+                  <span className={cn('text-[11px]', mine ? 'text-[var(--on-primary)] opacity-80' : 'text-[var(--muted)]')}>
+                    <Mic className="mr-1 inline h-3 w-3" aria-hidden="true" />
+                    <span className="tnum">{formatDuration(message.media_duration)}</span>
                   </span>
                 ) : null}
               </div>

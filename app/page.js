@@ -1,55 +1,50 @@
 import Link from 'next/link';
-import { MessageCircle, Images, Sparkles, Heart } from 'lucide-react';
+import { MessageCircle, Images, Heart, CalendarHeart } from 'lucide-react';
 import { Logo } from '@/components/brand/logo';
 
 const features = [
   { icon: MessageCircle, label: 'Realtime chat' },
   { icon: Images, label: 'Shared gallery' },
-  { icon: Sparkles, label: 'AI copilot' },
-  { icon: Heart, label: 'Streaks & pings' },
+  { icon: CalendarHeart, label: 'Dates, anniversaries and reminders' },
+  { icon: Heart, label: 'Streaks, hugs and couple games' },
 ];
 
 export default function Landing() {
   return (
-    <main className="mx-auto flex min-h-dvh max-w-md flex-col items-center justify-center gap-16 px-8 text-center">
-      <div className="space-y-8">
-        <Logo size={72} withWordmark={false} priority className="mx-auto" />
-        <div className="space-y-4">
-          <h1 className="text-6xl font-serif font-medium tracking-tight">
-            Heart<span className="text-[var(--primary)] italic">SYNC</span>
+    <main className="page-enter mx-auto flex min-h-dvh max-w-md flex-col justify-center gap-12 px-6 py-12">
+      <div className="space-y-6">
+        <Logo size={56} withWordmark={false} priority />
+        <div className="space-y-3">
+          <h1 className="font-display text-6xl font-semibold leading-none tracking-tight">
+            Heart<span className="text-[var(--primary)]">SYNC</span>
           </h1>
-          <p className="mx-auto max-w-[280px] text-pretty text-lg font-light leading-relaxed text-[var(--muted)] italic">
+          <p className="max-w-[300px] text-pretty text-lg leading-relaxed text-[var(--muted)]">
             A private, beautiful little world for the two of you.
           </p>
         </div>
       </div>
 
-      <div className="grid w-full grid-cols-1 gap-4">
+      <ul className="space-y-1 border-y border-[rgb(var(--border)/0.1)] py-3">
         {features.map((f) => (
-          <div
-            key={f.label}
-            className="group flex items-center gap-4 rounded-3xl border border-[var(--primary)]/10 bg-white/50 px-6 py-5 text-left text-sm backdrop-blur-sm transition-all hover:bg-white/80 dark:bg-white/5 dark:hover:bg-white/10"
-          >
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-[var(--primary)]/10">
-              <f.icon size={20} strokeWidth={1.5} className="text-[var(--primary)]" />
-            </div>
-            <span className="text-base font-medium tracking-wide">{f.label}</span>
-          </div>
+          <li key={f.label} className="flex min-h-12 items-center gap-4 text-base">
+            <f.icon size={20} className="shrink-0 text-[var(--primary)]" aria-hidden="true" />
+            <span>{f.label}</span>
+          </li>
         ))}
-      </div>
+      </ul>
 
-      <div className="flex w-full flex-col gap-4">
+      <div className="flex w-full flex-col gap-3">
         <Link
           href="/auth"
-          className="flex h-14 items-center justify-center rounded-full bg-[var(--text)] font-medium text-[var(--bg-from)] shadow-xl transition-all hover:scale-[1.02] active:scale-[0.98] dark:bg-white dark:text-[var(--text)]"
+          className="flex h-14 items-center justify-center rounded-2xl bg-[var(--primary)] text-base font-semibold text-[var(--on-primary)] shadow-[var(--shadow-md)] transition hover:brightness-[1.08]"
         >
-          Enter your world
+          Create your space
         </Link>
         <Link
           href="/auth?mode=login"
-          className="text-sm font-light text-[var(--muted)] underline underline-offset-4 transition hover:text-[var(--text)]"
+          className="flex min-h-11 items-center justify-center text-sm font-medium text-[var(--muted)] underline-offset-4 transition hover:text-[var(--text)] hover:underline"
         >
-          Already have an account?
+          I already have an account
         </Link>
       </div>
     </main>

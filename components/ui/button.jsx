@@ -5,21 +5,21 @@ import { Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const buttonVariants = cva(
-  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-2xl text-sm font-semibold transition-[background-color,box-shadow,transform,opacity] active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] focus-visible:ring-offset-1 disabled:opacity-50 disabled:pointer-events-none select-none',
+  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-2xl text-sm font-semibold transition-[background-color,box-shadow,transform,opacity,filter] active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ring)] disabled:opacity-50 disabled:pointer-events-none select-none',
   {
     variants: {
       variant: {
         primary:
-          'bg-[var(--primary)] text-white shadow-md shadow-black/10 hover:brightness-110',
-        glass: 'glass text-[var(--text)] hover:bg-[rgb(var(--card)/0.8)]',
-        ghost: 'text-[var(--text)] hover:bg-[rgb(var(--card)/0.5)]',
+          'bg-[var(--primary)] text-[var(--on-primary)] shadow-[var(--shadow-sm)] hover:brightness-[1.08] active:brightness-95',
+        glass: 'bg-[var(--surface-2)] text-[var(--text)] hover:brightness-[0.97] dark:hover:brightness-110',
+        ghost: 'text-[var(--text)] hover:bg-[var(--surface-2)]',
         outline: 'border border-[var(--primary)] text-[var(--primary)] hover:bg-[color-mix(in_srgb,var(--primary)_10%,transparent)]',
-        danger: 'bg-rose-500 text-white hover:bg-rose-600',
+        danger: 'bg-rose-500 text-[var(--on-primary)] hover:bg-rose-600',
       },
       size: {
-        sm: 'h-9 px-3',
+        sm: 'h-10 px-3.5',
         md: 'h-11 px-5',
-        lg: 'h-13 px-7 text-base',
+        lg: 'h-12 px-7 text-base',
         icon: 'h-11 w-11',
       },
     },

@@ -35,7 +35,7 @@ export function ConnectClient() {
     setLoading(true);
     try {
       await api.post('/api/couple/connect', { code });
-      toast.success('Connected 💞');
+      toast.success('Connected');
       router.replace('/dashboard');
     } catch (e) {
       toast.error(e.message);
@@ -64,8 +64,8 @@ export function ConnectClient() {
     return (
       <main className="mx-auto flex min-h-dvh max-w-md flex-col justify-center gap-6 px-6 text-center">
         <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}>
-          <div className="text-5xl">💌</div>
-          <h1 className="mt-2 text-2xl font-bold">Your invite is ready</h1>
+          <Heart className="mx-auto h-11 w-11 text-[var(--primary)]" aria-hidden="true" />
+          <h1 className="mt-2 font-display text-3xl font-semibold">Your invite is ready</h1>
           <p className="text-sm text-[var(--muted)]">Share this code with your partner.</p>
         </motion.div>
 
@@ -92,7 +92,7 @@ export function ConnectClient() {
         <div className="text-5xl">
           <Heart className="mx-auto text-[var(--primary)]" size={48} fill="currentColor" />
         </div>
-        <h1 className="mt-2 text-2xl font-bold">Connect with your partner</h1>
+        <h1 className="mt-2 font-display text-3xl font-semibold">Connect with your partner</h1>
         <p className="text-sm text-[var(--muted)]">Start a new space or join with an invite code.</p>
       </div>
 
@@ -101,12 +101,12 @@ export function ConnectClient() {
           <button
             key={t}
             onClick={() => setTab(t)}
-            className={`relative flex-1 rounded-xl py-2 text-sm font-semibold capitalize ${tab === t ? 'text-white' : 'text-[var(--muted)]'}`}
+            className={`relative flex-1 rounded-xl py-2 text-sm font-semibold capitalize ${tab === t ? 'text-[var(--on-primary)]' : 'text-[var(--muted)]'}`}
           >
             {tab === t && (
               <motion.span
                 layoutId="connect-tab"
-                className="absolute inset-0 -z-10 rounded-xl [background:linear-gradient(120deg,var(--primary),var(--primary-2))]"
+                className="absolute inset-0 -z-10 rounded-xl bg-[var(--primary)]"
               />
             )}
             {t === 'create' ? 'Create' : 'Join'}

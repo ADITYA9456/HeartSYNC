@@ -109,7 +109,7 @@ export function CalendarTab() {
         setEvents((prev) => [...prev, event]);
       }
       setOpen(false);
-      toast.success('Event added 🗓️');
+      toast.success('Event added');
     } catch (err) {
       toast.error(err.message);
     } finally {
@@ -154,8 +154,8 @@ export function CalendarTab() {
           }}
           modifiersStyles={{
             selected: {
-              background: 'linear-gradient(120deg,var(--primary),var(--primary-2))',
-              color: '#fff',
+              background: 'var(--primary)',
+              color: 'var(--on-primary)',
             },
             today: { color: 'var(--primary)', fontWeight: 700 },
           }}
@@ -188,7 +188,7 @@ export function CalendarTab() {
             <Spinner />
           </div>
         ) : dayEvents.length === 0 ? (
-          <EmptyState emoji="🗓️" title="Nothing planned">
+          <EmptyState icon="CalendarDays" title="Nothing planned">
             Tap “Add event” to plan something together.
           </EmptyState>
         ) : (

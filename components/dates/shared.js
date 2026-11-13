@@ -2,11 +2,14 @@
 import { differenceInCalendarDays, isToday, isPast, startOfDay } from 'date-fns';
 
 export const CATEGORIES = [
-  { value: 'anniversary', label: 'Anniversary', emoji: '💍' },
-  { value: 'birthday', label: 'Birthday', emoji: '🎂' },
-  { value: 'milestone', label: 'Milestone', emoji: '⭐' },
-  { value: 'other', label: 'Other', emoji: '📌' },
+  { value: 'anniversary', label: 'Anniversary', emoji: '💍', icon: 'Gem' },
+  { value: 'birthday', label: 'Birthday', emoji: '🎂', icon: 'Cake' },
+  { value: 'milestone', label: 'Milestone', emoji: '⭐', icon: 'Star' },
+  { value: 'other', label: 'Other', emoji: '📌', icon: 'Pin' },
 ];
+
+// Icons (lucide) shown in the UI; the emoji map stays for any other callers.
+export const CATEGORY_ICON = { anniversary: 'Gem', birthday: 'Cake', milestone: 'Star', other: 'Pin' };
 
 export const CATEGORY_EMOJI = {
   anniversary: '💍',
@@ -30,7 +33,7 @@ export function nextOccurrence(dateStr, recurring = false) {
 // Pretty "in N days" / "today" / "N days ago" countdown.
 export function countdownLabel(dateStr, recurring = false) {
   const d = nextOccurrence(dateStr, recurring);
-  if (isToday(d)) return 'Today 🎉';
+  if (isToday(d)) return 'Today';
   const days = differenceInCalendarDays(d, new Date());
   if (days === 1) return 'Tomorrow';
   if (days > 1) return `in ${days} days`;

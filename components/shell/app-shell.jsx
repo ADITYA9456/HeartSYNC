@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { api } from '@/lib/api-client';
 import { useAppStore } from '@/lib/store';
@@ -12,6 +12,7 @@ import { FullPageSpinner } from '@/components/ui/spinner';
 
 export function AppShell({ children }) {
   const router = useRouter();
+  const pathname = usePathname();
   const ready = useAppStore((s) => s.ready);
   const user = useAppStore((s) => s.user);
   const setSession = useAppStore((s) => s.setSession);
@@ -108,7 +109,17 @@ export function AppShell({ children }) {
   return (
     <div className="mx-auto flex min-h-dvh w-full max-w-2xl flex-col">
       <TopBar />
-      <main className="flex-1 px-4 pb-28 pt-4">{children}</main>
+      <a
+        href="#main"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-xl focus:bg-[var(--surface)] focus:px-4 focus:py-2"
+      >
+        Skip to content
+      </a>
+      <main id="main" className="pb-nav flex-1 px-4 pt-3 sm:px-6">
+        <div key={pathname} className="page-enter">
+          {children}
+        </div>
+      </main>
       <BottomNav />
     </div>
   );

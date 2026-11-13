@@ -60,7 +60,7 @@ export default function PrivacyPolicyPage() {
           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-muted">
             Legal
           </p>
-          <h1 className="text-3xl font-black tracking-tight sm:text-4xl">Privacy Policy</h1>
+          <h1 className="font-display text-4xl font-semibold tracking-tight">Privacy Policy</h1>
           <p className="max-w-2xl text-sm leading-7 text-muted sm:text-base">
             This policy explains how HeartSYNC handles information inside your private couple space.
             It is meant to be simple, direct, and limited to the product you are using.

@@ -5,7 +5,7 @@ import { toast } from 'sonner';
 import { api } from '@/lib/api-client';
 import { useAppStore } from '@/lib/store';
 import { Button } from '@/components/ui/button';
-import { Input, Textarea } from '@/components/ui/input';
+import { Field, Input, Textarea } from '@/components/ui/input';
 import { GlassCard } from '@/components/ui/glass-card';
 import { Spinner, EmptyState } from '@/components/ui/spinner';
 import { Icon } from '@/components/ui/icon';
@@ -89,10 +89,7 @@ export default function ProductivityPage() {
     <div className="space-y-6 pb-6">
       <header className="space-y-1.5">
         <div className="flex items-center gap-2">
-          <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[var(--primary)] text-white">
-            <Icon name="ListTodo" size={20} />
-          </span>
-          <h1 className="text-2xl font-black">Productivity</h1>
+          <h1 className="font-display text-4xl font-semibold tracking-tight">Tasks</h1>
         </div>
         <p className="text-sm text-[var(--muted)]">{openCount} open {openCount === 1 ? 'task' : 'tasks'} for your shared plans.</p>
       </header>
@@ -100,8 +97,12 @@ export default function ProductivityPage() {
       <GlassCard>
         <form onSubmit={addTask} className="space-y-3">
           <h2 className="font-semibold">Add a shared task</h2>
-          <Input value={title} onChange={(event) => setTitle(event.target.value)} placeholder="What needs doing?" maxLength={160} />
-          <Textarea value={description} onChange={(event) => setDescription(event.target.value)} placeholder="Optional details…" rows={3} maxLength={1000} />
+          <Field label="Task">
+            <Input value={title} onChange={(event) => setTitle(event.target.value)} placeholder="What needs doing?" maxLength={160} required />
+          </Field>
+          <Field label="Details (optional)">
+            <Textarea value={description} onChange={(event) => setDescription(event.target.value)} placeholder="Anything to remember…" rows={3} maxLength={1000} />
+          </Field>
           <div className="grid gap-3 sm:grid-cols-2">
             <label className="space-y-1.5 text-sm font-medium">
               Assign to
@@ -135,7 +136,7 @@ export default function ProductivityPage() {
                 {task.description && <p className="mt-1 text-sm text-[var(--muted)]">{task.description}</p>}
                 <p className="mt-2 text-xs text-[var(--muted)]">
                   {task.assigned_to === user?.id ? 'Assigned to you' : task.assigned_to === partner?.id ? `Assigned to ${partner.name}` : 'Shared'}
-                  {task.due_at ? ` · Due ${new Date(task.due_at).toLocaleDateString()}` : ''}
+                  {task.due_at ? ` · Due ${new Date(task.due_at).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' })}` : ''}
                 </p>
               </div>
               <button type="button" aria-label="Delete task" onClick={() => deleteTask(task)} className="shrink-0 text-[var(--muted)] hover:text-rose-500">

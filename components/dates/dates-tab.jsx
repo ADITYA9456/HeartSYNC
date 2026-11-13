@@ -11,7 +11,7 @@ import { Icon } from '@/components/ui/icon';
 import { Modal } from '@/components/dates/modal';
 import {
   CATEGORIES,
-  CATEGORY_EMOJI,
+  CATEGORY_ICON,
   countdownLabel,
   isUpcoming,
   nextOccurrence,
@@ -51,7 +51,7 @@ export function DatesTab() {
 
   async function submit(e) {
     e.preventDefault();
-    if (!form.title.trim()) return toast.error('Give it a title 💕');
+    if (!form.title.trim()) return toast.error('Give it a title');
     if (!form.date) return toast.error('Pick a date');
     const remind = Math.max(0, Math.min(60, Number(form.remindDays) || 0));
     setSaving(true);
@@ -69,7 +69,7 @@ export function DatesTab() {
       );
       setOpen(false);
       setForm(EMPTY_FORM);
-      toast.success('Date saved 🎉');
+      toast.success('Date saved');
     } catch (err) {
       toast.error(err.message);
     } finally {
@@ -111,7 +111,7 @@ export function DatesTab() {
       </Button>
 
       {dates.length === 0 ? (
-        <EmptyState emoji="💝" title="No special dates yet">
+        <EmptyState icon="CalendarHeart" title="No special dates yet">
           Add anniversaries, birthdays and milestones so you never miss a moment.
         </EmptyState>
       ) : (
@@ -175,7 +175,7 @@ export function DatesTab() {
                         : 'transparent',
                   }}
                 >
-                  <span className="text-xl">{c.emoji}</span>
+                  <Icon name={c.icon} size={20} aria-hidden="true" />
                   {c.label}
                 </button>
               ))}
@@ -241,7 +241,7 @@ function DateCard({ date, index, onDelete, deleting, faded }) {
       <GlassCard className={faded ? 'opacity-70' : ''}>
         <div className="flex items-start gap-3">
           <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[rgb(var(--card)/0.6)] text-2xl">
-            {CATEGORY_EMOJI[date.category] || '📌'}
+            <Icon name={CATEGORY_ICON[date.category] || 'Pin'} size={22} className="text-[var(--primary)]" aria-hidden="true" />
           </div>
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2">
