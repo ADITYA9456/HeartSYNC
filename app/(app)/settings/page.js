@@ -276,7 +276,7 @@ export default function SettingsPage() {
 
       {/* Theme */}
       <Section id="theme-title" title="Theme" description="Light, dark, or follow your device.">
-        <div role="radiogroup" aria-labelledby="theme-title" className="grid grid-cols-3 gap-3">
+        <div role="radiogroup" aria-labelledby="theme-title" className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,6rem),1fr))] gap-3">
           {THEME_OPTIONS.map(({ id, label, Icon }) => {
             const active = activeTheme === id;
             return (
@@ -288,7 +288,7 @@ export default function SettingsPage() {
                 disabled={!mounted}
                 onClick={() => setTheme(id)}
                 className={cn(
-                  'space-y-2 rounded-2xl bg-[var(--surface-2)] p-2 text-left transition',
+                  'min-w-0 space-y-2 rounded-2xl bg-[var(--surface-2)] p-2 text-left transition',
                   active ? 'ring-2 ring-[var(--primary)]' : 'hover:bg-[color-mix(in_srgb,var(--surface-2)_70%,var(--text)_6%)]'
                 )}
               >
@@ -297,10 +297,10 @@ export default function SettingsPage() {
                 ) : (
                   <MiniPreview scheme={id} accent={currentPalette.accent[id === 'dark' ? 1 : 0]} />
                 )}
-                <span className="flex items-center gap-1.5 px-1 pb-1 text-sm font-medium">
+                <span className="flex min-w-0 flex-wrap items-center gap-x-1.5 gap-y-1 px-1 pb-1 text-sm font-medium">
                   <Icon className="h-4 w-4" aria-hidden="true" />
                   {label}
-                  {active && <Check className="ml-auto h-4 w-4 text-[var(--primary)]" aria-hidden="true" />}
+                  {active && <Check className="ml-auto h-4 w-4 shrink-0 text-[var(--primary)]" aria-hidden="true" />}
                 </span>
               </button>
             );
@@ -310,7 +310,7 @@ export default function SettingsPage() {
 
       {/* Palette */}
       <Section id="palette-title" title="Accent" description="Pick the colour you both love. It syncs to your partner.">
-        <div role="radiogroup" aria-labelledby="palette-title" className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <div role="radiogroup" aria-labelledby="palette-title" className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,7.5rem),1fr))] gap-3">
           {PALETTES.map((p) => {
             const active = palette === p.id;
             const scheme = mounted && resolvedTheme === 'dark' ? 'dark' : 'light';
@@ -322,15 +322,15 @@ export default function SettingsPage() {
                 aria-checked={active}
                 onClick={() => choosePalette(p.id)}
                 className={cn(
-                  'space-y-2 rounded-2xl bg-[var(--surface-2)] p-2 text-left transition',
+                  'min-w-0 space-y-2 rounded-2xl bg-[var(--surface-2)] p-2 text-left transition',
                   active ? 'ring-2 ring-[var(--primary)]' : 'hover:bg-[color-mix(in_srgb,var(--surface-2)_70%,var(--text)_6%)]'
                 )}
               >
                 <MiniPreview scheme={scheme} accent={p.accent[scheme === 'dark' ? 1 : 0]} />
-                <span className="flex items-center gap-2 px-1 pb-1 text-sm font-medium">
+                <span className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 px-1 pb-1 text-sm font-medium">
                   <span className="h-3 w-3 rounded-full" style={{ background: p.accent[scheme === 'dark' ? 1 : 0] }} aria-hidden="true" />
                   {p.name}
-                  {active && <Check className="ml-auto h-4 w-4 text-[var(--primary)]" aria-hidden="true" />}
+                  {active && <Check className="ml-auto h-4 w-4 shrink-0 text-[var(--primary)]" aria-hidden="true" />}
                 </span>
               </button>
             );

@@ -19,10 +19,10 @@ export function TopBar() {
         {/* Brand always top-left once signed in. */}
         <Logo href="/dashboard" size={30} priority />
 
-        <div className="ml-auto flex flex-wrap items-center justify-end gap-1">
+        <div className="ml-auto flex flex-wrap items-center justify-end gap-0.5">
           {streak > 0 && (
             <span
-              className="tnum mr-1 flex h-9 items-center gap-1 rounded-full bg-[color-mix(in_srgb,var(--secondary)_16%,transparent)] px-2.5 text-sm font-semibold text-[var(--secondary-text)]"
+              className="tnum flex h-9 items-center gap-1 rounded-full bg-[color-mix(in_srgb,var(--secondary)_16%,transparent)] px-2 text-sm font-semibold text-[var(--secondary-text)]"
               aria-label={`${streak} day streak`}
               title={`${streak} day streak`}
             >

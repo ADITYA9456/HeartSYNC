@@ -10,12 +10,12 @@ export function Logo({ size = 32, withWordmark = true, href, className, priority
     <span className={cn('inline-flex items-center gap-2.5', className)}>
       {/* Plain <img>: tiny static PNG, already in /public, no optimisation needed. */}
       <img
-        src="/icons/icon-192.png"
+        src="/icons/v2/icon-192.png"
         alt={withWordmark ? '' : 'HeartSYNC'}
         width={size}
         height={size}
         fetchPriority={priority ? 'high' : undefined}
-        className="shrink-0 rounded-[28%]"
+        className="shrink-0 rounded-[28%] ring-1 ring-[rgb(var(--border)/0.1)]"
         style={{ width: size, height: size }}
       />
       {withWordmark && (

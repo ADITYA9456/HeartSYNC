@@ -22,8 +22,8 @@ if (config.apiKey && config.projectId) {
     const title = payload.notification?.title || 'HeartSYNC 💞';
     const options = {
       body: payload.notification?.body || '',
-      icon: '/icons/icon-192.png',
-      badge: '/icons/badge-72.png',
+      icon: '/icons/v2/icon-192.png',
+      badge: '/icons/v2/badge-72.png',
       data: { link: payload.data?.link || '/dashboard' },
       vibrate: [80, 40, 80],
     };

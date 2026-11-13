@@ -42,7 +42,7 @@ function GameRow({ game }) {
           <Icon name={game.icon} size={20} />
         </span>
         <span className="min-w-0 flex-1">
-          <span className="block font-semibold leading-snug">{game.title}</span>
+          <span className="block font-semibold leading-snug [overflow-wrap:anywhere]">{game.title}</span>
           <span className="mt-0.5 block text-sm leading-snug text-[var(--muted)]">{game.rule}</span>
           <span className="mt-1 block text-xs text-[var(--muted)]">
             {game.players}
