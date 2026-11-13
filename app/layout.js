@@ -31,7 +31,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang='en' suppressHydrationWarning>
       <body
-        className={`${inter.variable} ${cormorant.variable} font-body min-h-dvh antialiased`
+        className={`${inter.variable} ${cormorant.variable} font-body min-h-dvh antialiased`}
       >
         <Providers>{children}</Providers>
       </body>
