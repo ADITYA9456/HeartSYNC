@@ -14,7 +14,7 @@ const buttonVariants = cva(
         glass: 'bg-[var(--surface-2)] text-[var(--text)] hover:brightness-[0.97] dark:hover:brightness-110',
         ghost: 'text-[var(--text)] hover:bg-[var(--surface-2)]',
         outline: 'border border-[var(--primary)] text-[var(--primary)] hover:bg-[color-mix(in_srgb,var(--primary)_10%,transparent)]',
-        danger: 'bg-rose-500 text-[var(--on-primary)] hover:bg-rose-600',
+        danger: 'bg-[var(--danger-solid)] text-white hover:brightness-110',
       },
       size: {
         sm: 'h-10 px-3.5',

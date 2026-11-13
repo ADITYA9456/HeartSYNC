@@ -184,7 +184,7 @@ export default function GamesPage() {
                     <Textarea value={answer} onChange={(event) => setAnswer(event.target.value)} placeholder="Write your answer…" rows={4} maxLength={500} />
                   </Field>
                   {submitError && (
-                    <div role="alert" className="flex items-center justify-between gap-3 rounded-2xl bg-[color-mix(in_srgb,var(--danger,#e11d48)_10%,transparent)] p-3 text-sm text-[var(--danger-text,#be123c)]">
+                    <div role="alert" className="flex items-center justify-between gap-3 rounded-2xl bg-[color-mix(in_srgb,var(--danger)_10%,transparent)] p-3 text-sm text-[var(--danger-text)]">
                       <span>{submitError}</span>
                       <Button type="button" size="sm" variant="ghost" onClick={submitAnswer} disabled={saving || !answer.trim()}>
                         Retry

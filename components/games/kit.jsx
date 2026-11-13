@@ -115,7 +115,7 @@ export function FinishScreen({ title, children, onReplay, replayLabel = 'Play ag
   return (
     <section className="surface-elevated space-y-5 p-6" aria-live="polite">
       <div className="space-y-1 text-center">
-        <Icon name="Trophy" size={30} className="mx-auto text-[var(--secondary,var(--primary))]" />
+        <Icon name="Trophy" size={30} className="mx-auto text-[var(--secondary)]" />
         <h2 className="font-display text-2xl font-semibold">{title}</h2>
       </div>
       {children}
@@ -211,7 +211,7 @@ export class GameErrorBoundary extends Component {
     if (this.state.error) {
       return (
         <div role="alert" className="surface-elevated space-y-4 p-6 text-center">
-          <Icon name="TriangleAlert" size={28} className="mx-auto text-rose-500" />
+          <Icon name="TriangleAlert" size={28} className="mx-auto text-[var(--danger-text)]" />
           <div>
             <p className="font-semibold">This game hit a snag.</p>
             <p className="text-sm text-[var(--muted)]">Nothing was lost. Try starting it again.</p>
@@ -250,7 +250,7 @@ export function Segmented({ label, options, value, onChange }) {
             onClick={() => onChange(o.value)}
             className={cn(
               'min-h-11 rounded-xl px-2 text-sm font-semibold transition',
-              value === o.value ? 'bg-[var(--primary)] text-[var(--on-primary,#fff)]' : 'text-[var(--muted)] hover:text-[var(--text)]'
+              value === o.value ? 'bg-[var(--primary)] text-[var(--on-primary)]' : 'text-[var(--muted)] hover:text-[var(--text)]'
             )}
           >
             {o.label}

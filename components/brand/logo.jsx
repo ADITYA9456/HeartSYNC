@@ -9,7 +9,6 @@ export function Logo({ size = 32, withWordmark = true, href, className, priority
   const content = (
     <span className={cn('inline-flex items-center gap-2.5', className)}>
       {/* Plain <img>: tiny static PNG, already in /public, no optimisation needed. */}
-      {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src="/icons/icon-192.png"
         alt={withWordmark ? '' : 'HeartSYNC'}

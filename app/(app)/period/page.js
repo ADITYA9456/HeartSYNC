@@ -8,7 +8,9 @@ import { useAppStore } from '@/lib/store';
 import { Button } from '@/components/ui/button';
 import { Input, Textarea, Field } from '@/components/ui/input';
 import { GlassCard } from '@/components/ui/glass-card';
-import { Spinner, EmptyState } from '@/components/ui/spinner';
+import { EmptyState, ErrorState } from '@/components/ui/spinner';
+import { Skeleton, PageSkeleton } from '@/components/ui/skeleton';
+import { friendlyError } from '@/lib/friendly-error';
 import { Icon } from '@/components/ui/icon';
 import {
   MOOD_OPTIONS,
@@ -33,6 +35,8 @@ export default function PeriodPage() {
   const [saving, setSaving] = useState(false);
   const [mine, setMine] = useState(null);
   const [partnerTracker, setPartnerTracker] = useState(null);
+  const [loadError, setLoadError] = useState(null);
+  const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
     let alive = true;
@@ -43,12 +47,14 @@ export default function PeriodPage() {
         setMine(d.mine || null);
         setPartnerTracker(d.partner || null);
       })
-      .catch((e) => toast.error(e.message))
+      .catch((e) => {
+        if (alive) setLoadError(friendlyError(e, 'Could not load your tracker.'));
+      })
       .finally(() => alive && setLoading(false));
     return () => {
       alive = false;
     };
-  }, []);
+  }, [reloadKey]);
 
   // Persist a partial change to my tracker. Always send full arrays.
   async function save(patch, successMsg) {
@@ -85,12 +91,15 @@ export default function PeriodPage() {
     }
   }
 
-  if (loading) {
+  if (loading) return <PageSkeleton rows={3} />;
+
+  // Never fall through to the opt-in screen on a failed load: enabling would
+  // overwrite an existing tracker with empty data.
+  if (loadError) {
     return (
-      <div className="flex flex-col items-center justify-center gap-3 py-24">
-        <Spinner />
-        <p className="text-sm text-[var(--muted)]">Opening your private space…</p>
-      </div>
+      <ErrorState title="Wellness did not load" onRetry={() => { setLoadError(null); setLoading(true); setReloadKey((k) => k + 1); }}>
+        {loadError}
+      </ErrorState>
     );
   }
 
@@ -499,7 +508,7 @@ function CyclesList({ tracker, onSave }) {
               </div>
               <button
                 onClick={() => remove(c)}
-                className="rounded-xl p-2 text-[var(--muted)] transition hover:text-rose-500"
+                className="rounded-xl p-2 text-[var(--muted)] transition hover:text-[var(--danger-text)]"
                 aria-label="Delete cycle"
               >
                 <Icon name="Trash2" size={16} />
@@ -554,7 +563,7 @@ function MoodsList({ tracker, onSave }) {
               </div>
               <button
                 onClick={() => remove(m, i)}
-                className="rounded-xl p-2 text-[var(--muted)] transition hover:text-rose-500"
+                className="rounded-xl p-2 text-[var(--muted)] transition hover:text-[var(--danger-text)]"
                 aria-label="Delete mood"
               >
                 <Icon name="Trash2" size={16} />

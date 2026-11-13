@@ -3,10 +3,12 @@ import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
 import { api } from '@/lib/api-client';
+import { friendlyError } from '@/lib/friendly-error';
+import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { Input, Textarea, Field } from '@/components/ui/input';
 import { GlassCard } from '@/components/ui/glass-card';
-import { Spinner, EmptyState } from '@/components/ui/spinner';
+import { EmptyState, ErrorState } from '@/components/ui/spinner';
 import { Icon } from '@/components/ui/icon';
 import { Modal } from '@/components/dates/modal';
 import {
@@ -34,6 +36,8 @@ export function DatesTab() {
   const [form, setForm] = useState(EMPTY_FORM);
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(null);
+  const [loadError, setLoadError] = useState(null);
+  const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
     let alive = true;
@@ -42,12 +46,14 @@ export function DatesTab() {
       .then((d) => {
         if (alive) setDates(d.dates || []);
       })
-      .catch((e) => toast.error(e.message))
+      .catch((e) => {
+        if (alive) setLoadError(friendlyError(e, 'Could not load this right now.'));
+      })
       .finally(() => alive && setLoading(false));
     return () => {
       alive = false;
     };
-  }, []);
+  }, [reloadKey]);
 
   async function submit(e) {
     e.preventDefault();
@@ -91,10 +97,20 @@ export function DatesTab() {
     }
   }
 
+  if (loadError) {
+    return (
+      <ErrorState title="Could not load" onRetry={() => { setLoadError(null); setLoading(true); setReloadKey((k) => k + 1); }}>
+        {loadError}
+      </ErrorState>
+    );
+  }
+
   if (loading) {
     return (
-      <div className="flex justify-center py-16">
-        <Spinner />
+      <div className="space-y-3" aria-busy="true" aria-label="Loading">
+        <Skeleton className="h-12 w-full" />
+        <Skeleton className="h-20 w-full" />
+        <Skeleton className="h-20 w-full" />
       </div>
     );
   }
@@ -267,7 +283,7 @@ function DateCard({ date, index, onDelete, deleting, faded }) {
           <Button
             variant="ghost"
             size="icon"
-            className="shrink-0 text-rose-500"
+            className="shrink-0 text-[var(--danger-text)]"
             loading={deleting}
             onClick={() => onDelete(date.id, date.title)}
             aria-label="Delete"

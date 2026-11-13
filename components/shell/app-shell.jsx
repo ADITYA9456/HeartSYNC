@@ -96,7 +96,7 @@ export function AppShell({ children }) {
             setLoadError(false);
             setAttempt((n) => n + 1);
           }}
-          className="h-11 rounded-2xl bg-[var(--primary)] px-6 text-sm font-semibold text-[var(--on-primary,#fff)]"
+          className="h-11 rounded-2xl bg-[var(--primary)] px-6 text-sm font-semibold text-[var(--on-primary)]"
         >
           Retry
         </button>

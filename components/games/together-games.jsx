@@ -220,7 +220,7 @@ export function CoupleBingo() {
               className={cn(
                 'flex aspect-square min-h-11 items-center justify-center rounded-xl p-1 text-center text-[10px] font-medium leading-tight transition sm:text-xs',
                 on ? 'bg-[color-mix(in_srgb,var(--primary)_18%,transparent)] text-[var(--text)]' : 'bg-[rgb(var(--card)/0.6)] text-[var(--muted)] hover:text-[var(--text)]',
-                inLine.has(i) && 'bg-[var(--primary)] text-[var(--on-primary,#fff)]',
+                inLine.has(i) && 'bg-[var(--primary)] text-[var(--on-primary)]',
                 i === FREE && 'font-semibold'
               )}
             >

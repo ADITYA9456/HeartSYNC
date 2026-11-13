@@ -124,7 +124,7 @@ export function MessageBubble({
                 type="button"
                 aria-label="Delete"
                 onClick={() => onDelete?.()}
-                className="grid h-7 w-7 place-items-center rounded-full glass text-[var(--muted)] hover:text-rose-500"
+                className="grid h-7 w-7 place-items-center rounded-full glass text-[var(--muted)] hover:text-[var(--danger-text)]"
               >
                 <Trash2 className="h-4 w-4" />
               </button>

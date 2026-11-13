@@ -47,7 +47,7 @@ export default function GamePage() {
       <div className="space-y-4 py-16 text-center">
         <p className="font-display text-2xl font-semibold">That game does not exist</p>
         <p className="text-sm text-[var(--muted)]">It may have been renamed. Pick one from the list.</p>
-        <Link href="/games" className="inline-flex h-11 items-center rounded-2xl bg-[var(--primary)] px-5 text-sm font-semibold text-[var(--on-primary,#fff)]">
+        <Link href="/games" className="inline-flex h-11 items-center rounded-2xl bg-[var(--primary)] px-5 text-sm font-semibold text-[var(--on-primary)]">
           Browse games
         </Link>
       </div>

@@ -103,7 +103,7 @@ export function TwoTruthsOneLie() {
             </label>
           </div>
         ))}
-        {touched && lie === null && <p className="text-xs text-rose-600 dark:text-rose-300">Mark which statement is the lie.</p>}
+        {touched && lie === null && <p className="text-xs text-[var(--danger-text)]">Mark which statement is the lie.</p>}
         <Button type="submit" className="w-full">Done, hide my answers</Button>
       </form>
     );

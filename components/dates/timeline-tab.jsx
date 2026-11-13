@@ -3,9 +3,11 @@ import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { toast } from 'sonner';
 import { api } from '@/lib/api-client';
+import { friendlyError } from '@/lib/friendly-error';
+import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { Input, Textarea, Field } from '@/components/ui/input';
-import { Spinner, EmptyState } from '@/components/ui/spinner';
+import { EmptyState, ErrorState } from '@/components/ui/spinner';
 import { Icon } from '@/components/ui/icon';
 import { Modal } from '@/components/dates/modal';
 import { dateInputToISO } from '@/components/dates/shared';
@@ -21,18 +23,22 @@ export function TimelineTab() {
   const [form, setForm] = useState(EMPTY_FORM);
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(null);
+  const [loadError, setLoadError] = useState(null);
+  const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
     let alive = true;
     api
       .get('/api/timeline')
       .then((d) => alive && setEvents(d.events || []))
-      .catch((e) => toast.error(e.message))
+      .catch((e) => {
+        if (alive) setLoadError(friendlyError(e, 'Could not load this right now.'));
+      })
       .finally(() => alive && setLoading(false));
     return () => {
       alive = false;
     };
-  }, []);
+  }, [reloadKey]);
 
   async function submit(e) {
     e.preventDefault();
@@ -75,10 +81,20 @@ export function TimelineTab() {
     }
   }
 
+  if (loadError) {
+    return (
+      <ErrorState title="Could not load" onRetry={() => { setLoadError(null); setLoading(true); setReloadKey((k) => k + 1); }}>
+        {loadError}
+      </ErrorState>
+    );
+  }
+
   if (loading) {
     return (
-      <div className="flex justify-center py-16">
-        <Spinner />
+      <div className="space-y-3" aria-busy="true" aria-label="Loading">
+        <Skeleton className="h-12 w-full" />
+        <Skeleton className="h-20 w-full" />
+        <Skeleton className="h-20 w-full" />
       </div>
     );
   }
@@ -125,7 +141,7 @@ export function TimelineTab() {
                     <button
                       onClick={() => remove(ev.id, ev.title)}
                       disabled={deleting === ev.id}
-                      className="shrink-0 rounded-full p-1.5 text-rose-500 transition hover:bg-rose-500/10 disabled:opacity-50"
+                      className="shrink-0 rounded-full p-1.5 text-[var(--danger-text)] transition hover:bg-[color-mix(in_srgb,var(--danger)_10%,transparent)] disabled:opacity-50"
                       aria-label="Delete"
                     >
                       <Icon name="Trash2" size={16} />

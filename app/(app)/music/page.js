@@ -13,7 +13,9 @@ import {
 import { toast } from 'sonner';
 import { api } from '@/lib/api-client';
 import { Button } from '@/components/ui/button';
-import { Spinner } from '@/components/ui/spinner';
+import { Spinner, ErrorState } from '@/components/ui/spinner';
+import { Skeleton } from '@/components/ui/skeleton';
+import { friendlyError } from '@/lib/friendly-error';
 
 const AUTH_URL = '/api/youtube/auth';
 
@@ -139,16 +141,18 @@ export default function MusicPage() {
     return api.get(`/api/youtube/playlists${qs}`);
   }, []);
 
+  const [loadError, setLoadError] = useState(null);
+
   const load = useCallback(async () => {
     setLoading(true);
+    setLoadError(null);
     try {
       const data = await fetchPlaylists();
       setConnected(!!data.connected);
       setPlaylists(data.playlists || []);
       setNextPageToken(data.nextPageToken || null);
     } catch (err) {
-      toast.error(err.message || 'Failed to load playlists');
-      setConnected(false);
+      setLoadError(friendlyError(err, 'Could not reach YouTube right now.'));
     } finally {
       setLoading(false);
     }
@@ -226,10 +230,13 @@ export default function MusicPage() {
       </header>
 
       {loading ? (
-        <div className="flex flex-col items-center justify-center gap-3 py-24">
-          <Spinner className="h-7 w-7" />
-          <p className="text-sm text-[var(--muted)]">Tuning in…</p>
+        <div className="mt-6 grid grid-cols-2 gap-3" aria-busy="true" aria-label="Loading playlists">
+          {[0, 1, 2, 3].map((i) => (
+            <Skeleton key={i} className="aspect-video w-full" />
+          ))}
         </div>
+      ) : loadError ? (
+        <ErrorState title="Playlists did not load" onRetry={load}>{loadError}</ErrorState>
       ) : !connected ? (
         <ConnectState onConnect={handleConnect} connecting={connecting} />
       ) : playlists.length === 0 ? (

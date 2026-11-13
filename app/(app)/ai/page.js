@@ -339,7 +339,7 @@ export default function AiCopilotPage() {
                               type="button"
                               onClick={() => deleteItem(item)}
                               aria-label="Delete"
-                              className="rounded-full p-1.5 text-[var(--muted)] transition hover:bg-rose-500/10 hover:text-rose-500"
+                              className="rounded-full p-1.5 text-[var(--muted)] transition hover:bg-[color-mix(in_srgb,var(--danger)_10%,transparent)] hover:text-[var(--danger-text)]"
                             >
                               <Icon name="Trash2" size={16} />
                             </button>
