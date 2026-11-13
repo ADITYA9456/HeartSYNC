@@ -1,7 +1,7 @@
 import { withAuth, json } from '@/lib/api';
 import { supabase } from '@/lib/supabase';
 
-// GET /api/notifications?limit=30 — my notifications + unread count.
+// GET /api/notifications?limit=30 - my notifications + unread count.
 export const GET = withAuth(async ({ req, user }) => {
   const limit = Math.min(Number(new URL(req.url).searchParams.get('limit')) || 30, 50);
   const { data } = await supabase
@@ -20,7 +20,7 @@ export const GET = withAuth(async ({ req, user }) => {
   return json({ notifications: data || [], unread: count || 0 });
 });
 
-// PATCH { ids?: string[], all?: boolean } — mark read.
+// PATCH { ids?: string[], all?: boolean } - mark read.
 export const PATCH = withAuth(async ({ req, user }) => {
   const body = await req.json().catch(() => ({}));
   let query = supabase.from('notifications').update({ read: true }).eq('recipient_id', user.id);

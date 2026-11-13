@@ -1,7 +1,7 @@
 import { withCouple, json, error } from '@/lib/api';
 import { supabase } from '@/lib/supabase';
 
-// PATCH { favorite } — toggle favorite.
+// PATCH { favorite } - toggle favorite.
 export const PATCH = withCouple(async ({ req, ctx, couple }) => {
   const { id } = await ctx.params;
   const body = await req.json().catch(() => ({}));

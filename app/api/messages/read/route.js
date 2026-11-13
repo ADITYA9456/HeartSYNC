@@ -2,7 +2,7 @@ import { withCouple, json } from '@/lib/api';
 import { supabase } from '@/lib/supabase';
 import { emitToCouple } from '@/lib/realtime';
 
-// POST — mark all of the partner's unread messages as read by me.
+// POST - mark all of the partner's unread messages as read by me.
 export const POST = withCouple(async ({ user, couple }) => {
   const now = new Date().toISOString();
   const { data: unread } = await supabase

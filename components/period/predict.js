@@ -1,4 +1,4 @@
-// Shared period-prediction helpers — pure functions, no React.
+// Shared period-prediction helpers - pure functions, no React.
 import { addDays, differenceInCalendarDays, parseISO, isValid } from 'date-fns';
 
 export const MOOD_OPTIONS = ['😀', '🙂', '😐', '😣', '😢', '😤', '🥰', '😴'];

@@ -91,7 +91,7 @@ export function TimelineTab() {
 
       {events.length === 0 ? (
         <EmptyState emoji="📖" title="Your story starts here">
-          Capture the moments that made you — first dates, trips, big leaps.
+          Capture the moments that made you - first dates, trips, big leaps.
         </EmptyState>
       ) : (
         <div className="relative pl-8">

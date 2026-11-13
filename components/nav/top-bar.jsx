@@ -4,13 +4,10 @@ import { Flame, Settings } from 'lucide-react';
 import { useAppStore } from '@/lib/store';
 import { Avatar } from '@/components/ui/avatar';
 import { ThemeToggle } from './theme-toggle';
-import { NotificationBell } from './notification-bell';
 
 function greeting() {
   const h = new Date().getHours();
-  if (h < 12) return 'Good morning';
-  if (h < 18) return 'Good afternoon';
-  return 'Good evening';
+  return h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening';
 }
 
 export function TopBar() {
@@ -19,42 +16,36 @@ export function TopBar() {
   const streak = couple?.streak_count || 0;
 
   return (
-    <header className="sticky top-0 z-30 px-6 pt-safe">
-      <div className="mx-auto flex max-w-2xl items-center justify-between py-6">
-        <div className="flex items-center gap-4">
+    <header className='sticky top-0 z-30 px-4 pt-safe'>
+      <div className='mx-auto flex max-w-2xl items-center justify-between py-4'>
+        <div className='flex items-center gap-3'>
           <Avatar
             src={user?.avatar_url}
             name={user?.name}
             size={44}
-            className="border-2 border-[var(--primary)]/10 ring-4 ring-white dark:ring-[var(--bg-from)]"
           />
-          <div className="hidden min-w-0 flex-1 sm:block">
-            <p className="ink-stamp text-[var(--primary)]">{greeting()}</p>
-            <h2 className="font-serif text-lg font-medium leading-none">
+          <div className='min-w-0'>
+            <p className='ink-stamp text-accent'>{greeting()}</p>
+            <h2 className='font-display text-lg font-medium leading-tight'>
               {user?.name?.split(' ')[0] || 'Love'}
             </h2>
           </div>
         </div>
-
-        <div className="flex items-center gap-2 rounded-2xl bg-white/40 p-1.5 backdrop-blur-md dark:bg-black/20">
+        <div className='flex items-center gap-2 rounded-2xl bg-white/40 p-1.5 backdrop-blur-md dark:bg-black/20'>
           {streak > 0 && (
-            <div className="flex h-9 items-center gap-1.5 rounded-xl bg-[var(--primary)] px-3 text-sm font-semibold text-white shadow-lg shadow-[var(--primary)]/20">
-              <Flame size={14} fill="currentColor" />
+            <div className='flex h-9 items-center gap-1.5 rounded-xl bg-accent px-3 text-sm font-semibold text-white shadow-lg shadow-accent/20'>
+              <Flame size={14} fill='currentColor' />
               <span>{streak}</span>
             </div>
           )}
-
-          <div className="flex items-center px-1">
-            <NotificationBell />
-            <ThemeToggle />
-            <Link
-              href="/settings"
-              aria-label="Settings"
-              className="flex h-9 w-9 items-center justify-center rounded-xl text-[var(--ink)] transition-colors hover:bg-[var(--primary)]/5 active:scale-95"
-            >
-              <Settings size={18} />
-            </Link>
-          </div>
+          <ThemeToggle />
+          <Link
+            href='/settings'
+            aria-label='Settings'
+            className='flex h-9 w-9 items-center justify-center rounded-xl text-text transition-colors hover:bg-accent/5 active:scale-95'
+          >
+            <Settings size={18} />
+          </Link>
         </div>
       </div>
     </header>

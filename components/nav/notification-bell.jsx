@@ -22,7 +22,7 @@ export function NotificationBell() {
 
   useEffect(() => {
     load();
-    const t = setInterval(load, 60_000);
+    const t = setInterval(load, 60000);
     return () => clearInterval(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

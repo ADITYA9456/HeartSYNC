@@ -29,7 +29,7 @@ export const GET = withCouple(async ({ req, couple }) => {
   return json({ memories: data || [], nextCursor });
 });
 
-// POST — record an uploaded Cloudinary asset as a memory.
+// POST - record an uploaded Cloudinary asset as a memory.
 export const POST = withCouple(async ({ req, user, couple }) => {
   const body = await req.json().catch(() => ({}));
   const parsed = memorySchema.safeParse(body);

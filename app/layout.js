@@ -1,10 +1,9 @@
-import { ServiceWorkerRegistrar } from '@/components/pwa/service-worker-registrar';
-import { Inter, Lora } from 'next/font/google';
-import './globals.css';
+import { Inter, Cormorant_Garamond as CormorantGaramond } from 'next/font/google';
 import { Providers } from './providers';
+import './globals.css';
 
-const inter = Inter({ subsets: ['latin'], variable: '--font-sans', display: 'swap' });
-const lora = Lora({ subsets: ['latin'], variable: '--font-serif', display: 'swap' });
+const inter = Inter({ subsets: ['latin'], variable: '--font-body' });
+const cormorant = CormorantGaramond({ subsets: ['latin'], variable: '--font-display' });
 
 export const metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'),
@@ -12,7 +11,11 @@ export const metadata = {
   description: 'A private space for two — chat, memories, dates, and a little AI magic.',
   applicationName: 'HeartSYNC',
   manifest: '/manifest.webmanifest',
-  appleWebApp: { capable: true, statusBarStyle: 'black-translucent', title: 'HeartSYNC' },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'black-translucent',
+    title: 'HeartSYNC',
+  },
   icons: {
     icon: '/icons/icon-192.png',
     apple: '/icons/icon-192.png',
@@ -24,22 +27,13 @@ export const metadata = {
   },
 };
 
-export const viewport = {
-  themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#f7eefe' },
-    { media: '(prefers-color-scheme: dark)', color: '#0b1026' },
-  ],
-  width: 'device-width',
-  initialScale: 1,
-  viewportFit: 'cover',
-};
-
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" data-palette="midnight" suppressHydrationWarning>
-      <body className={`${inter.variable} ${lora.variable} font-sans min-h-dvh antialiased`}>
+    <html lang='en' suppressHydrationWarning>
+      <body
+        className={`${inter.variable} ${cormorant.variable} font-body min-h-dvh antialiased`
+      >
         <Providers>{children}</Providers>
-        <ServiceWorkerRegistrar />
       </body>
     </html>
   );

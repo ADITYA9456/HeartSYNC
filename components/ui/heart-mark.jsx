@@ -1,10 +1,5 @@
-'use client';
 import { motion } from 'framer-motion';
 
-/**
- * Animated brand mark — two heart halves drawn with stroke animation.
- * Left half in --primary, right half in --primary-2. No fill, pure line work.
- */
 export function HeartMark({ size = 72, className = '' }) {
   const ease = [0.22, 1, 0.36, 1];
   return (

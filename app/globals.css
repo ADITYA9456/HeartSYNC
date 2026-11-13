@@ -1,220 +1,123 @@
-@import 'tailwindcss';
+/* New Design Tokens - HeartSYNC Journal Aesthetic */
 
-/* next-themes toggles the `dark` class on <html>. */
-@custom-variant dark (&:where(.dark, .dark *));
+:root {
+  /* Palette */
+  --accent: #FF6B6B;         /* Coral-rose primary */
+  --accent-2: #FF9A8B;       /* Soft peach secondary */
+  --neutral-light: #FFFBFA;  /* Warm ivory */
+  --neutral-dark: #1A1A2E;   /* Deep charcoal */
+  --neutral-muted: #6C757D;  /* Soft graphite */
 
-/* =========================================================================
-   Palette tokens. Defaults = Midnight Love (light). Each [data-palette] block
-   overrides the semantic variables; `.dark` variants tweak them for night.
-   ========================================================================= */
+  /* Typography */
+  --font-display: 'Cormorant Garamond', serif;
+  --font-body: 'DM Sans', sans-serif;
+  --text-xl: 2.25rem;  /* 36px */
+  --text-lg: 1.5rem;   /* 24px */
+  --text-base: 1rem;   /* 16px */
+  --text-sm: 0.875rem; /* 14px */
+  --text-xs: 0.75rem;  /* 12px */
+
+  /* Spacing */
+  --spacing-xs: 0.5rem;
+  --spacing-sm: 0.75rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+
+  /* Radii */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.5rem;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 6px rgba(0,0,0,0.05);
+
+  /* Safe Area */
+  --nav-height: 56px;
+}
+
+/* Light Mode */
 :root,
-[data-palette='midnight'] {
-  --bg-from: #fdfaf6;
-  --bg-to: #f4f0e8;
-  --primary: #5c4dff;
-  --primary-2: #8b7bff;
-  --accent: #ff6b6b;
-  --text: #1a181b;
-  --muted: #645f66;
-  --card: 255 255 255;
-  --paper: #ffffff;
-  --border: 0 0 0;
-  --ring: #5c4dff;
+[data-theme='light'] {
+  --bg-from: var(--neutral-light);
+  --bg-to: #FFF8F5;
+  --text: var(--neutral-dark);
+  --muted: var(--neutral-muted);
+  --paper: #FFFFFF;
+  --border: 220 220 220; /* #DCDCDC */
+  --ring: var(--accent);
 }
 
-[data-palette='pink'] {
-  --bg-from: #fff5f7;
-  --bg-to: #fbebed;
-  --primary: #e63970;
-  --primary-2: #ff758f;
-  --accent: #ffb3c1;
-  --text: #2b1a1f;
-  --muted: #8c6a73;
-  --card: 255 255 255;
-  --paper: #ffffff;
-  --border: 0 0 0;
-  --ring: #e63970;
+/* Dark Mode */
+.dark,
+[data-theme='dark'] {
+  --bg-from: #10101A;
+  --bg-to: #0A0A14;
+  --text: #F5F5F5;
+  --muted: #A0A0A0;
+  --paper: #1A1A2E;
+  --border: 50 50 50; /* #323232 */
+  --ring: var(--accent-2);
 }
 
-[data-palette='lavender'] {
-  --bg-from: #f8f7ff;
-  --bg-to: #eeebff;
-  --primary: #7c4dff;
-  --primary-2: #9e7aff;
-  --accent: #dcd6ff;
-  --text: #1e1a2b;
-  --muted: #6a638c;
-  --card: 255 255 255;
-  --paper: #ffffff;
-  --border: 0 0 0;
-  --ring: #7c4dff;
-}
-
-[data-palette='sunset'] {
-  --bg-from: #fff9f5;
-  --bg-to: #f5ede6;
-  --primary: #ff5c33;
-  --primary-2: #ff8c66;
-  --accent: #ffccbc;
-  --text: #2b1f1a;
-  --muted: #8c736a;
-  --card: 255 255 255;
-  --paper: #ffffff;
-  --border: 0 0 0;
-  --ring: #ff5c33;
-}
-
-/* ---- Dark overrides ---- */
-.dark[data-palette='midnight'],
-.dark:root,
-.dark {
-  --bg-from: #121113;
-  --bg-to: #1a191b;
-  --text: #ede9ec;
-  --muted: #a39ba4;
-  --card: 32 30 33;
-  --paper: #1e1d1f;
-  --border: 255 255 255;
-}
-
-.dark[data-palette='pink'] {
-  --bg-from: #1f1417;
-  --bg-to: #291a1e;
-  --text: #fcebed;
-  --muted: #b59ba2;
-  --card: 51 34 38;
-  --paper: #2d1d21;
-}
-
-.dark[data-palette='lavender'] {
-  --bg-from: #15131f;
-  --bg-to: #1c1a29;
-  --text: #f1edfc;
-  --muted: #a29ba2;
-  --card: 40 37 54;
-  --paper: #252233;
-}
-
-.dark[data-palette='sunset'] {
-  --bg-from: #1f1a14;
-  --bg-to: #29221a;
-  --text: #fcf1eb;
-  --muted: #b5a29b;
-  --card: 54 44 37;
-  --paper: #2d251d;
-}
-
-@theme inline {
-  --color-primary: var(--primary);
-  --color-primary-2: var(--primary-2);
-  --color-accent: var(--accent);
-  --color-ink: var(--text);
-  --color-muted: var(--muted);
-  --color-paper: var(--paper);
-  --font-sans: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
-  --font-serif: var(--font-serif), ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
-  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  --radius-glass: 1rem;
-  --radius-premium: 2.5rem;
-  --radius-stamp: 0.25rem;
-}
-
-* {
-  border-color: rgb(var(--border) / 0.08);
-}
-
-html,
-body {
-  height: 100%;
-  selection-background: var(--primary);
-  selection-color: white;
-}
-
-body {
-  color: var(--text);
-  background-color: var(--bg-from);
-  background-image: none;
-  -webkit-font-smoothing: antialiased;
+/* Base Styles */
+html {
   overscroll-behavior-y: none;
 }
 
-/* =========================================================================
-   Editorial Utilities
-   ========================================================================= */
-
-@utility vellum {
-  background: rgb(var(--card) / 0.7);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgb(var(--border) / 0.05);
+body {
+  background: linear-gradient(135deg, var(--bg-from), var(--bg-to));
+  min-height: 100dvh;
 }
 
-@utility journal-card {
-  background: var(--paper);
-  border: 1px solid rgb(var(--border) / 0.06);
-  box-shadow: 0 4px 24px -12px rgb(0 0 0 / 0.08), 0 1px 2px rgb(0 0 0 / 0.02);
-}
-.dark .journal-card {
-  box-shadow: 0 4px 24px -12px rgb(0 0 0 / 0.3);
-}
-
-@utility ink-stamp {
-  font-family: var(--font-mono);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  font-size: 0.65rem;
-  font-weight: 700;
-  opacity: 0.8;
-}
-
-@utility display-title {
-  font-family: var(--font-serif);
+/* Utility Classes */
+.display-title {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
   font-weight: 500;
   letter-spacing: -0.02em;
+  line-height: 1.1;
 }
 
-/* Hide scrollbars where we want a clean mobile feel */
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
-}
-.no-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-
-/* Keep the notification panel inside the viewport on narrow screens. */
-@media (max-width: 640px) {
-  .notification-popover {
-    position: fixed;
-    top: 7rem;
-    right: 1rem;
-    left: 1rem;
-    width: auto;
-    max-width: 20rem;
-    margin-inline: auto;
-  }
+.ink-stamp {
+  font-family: var(--font-body);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  opacity: 0.85;
 }
 
-/* Respect users who prefer reduced motion */
+.journal-card {
+  background: rgba(var(--paper), 0.95);
+  border: 1px solid rgba(var(--border), 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.dark .journal-card {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+/* Safe Area Padding */
+.pb-safe {
+  padding-bottom: calc(env(safe-area-inset-bottom) + var(--nav-height));
+}
+
+/* Focus States */
+:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+/* Reduced Motion */
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
+  *, *::before, *::after {
     animation-duration: 0.001ms !important;
     transition-duration: 0.001ms !important;
   }
-}
-
-@media (pointer: fine) {
-  html {
-    overscroll-behavior-y: none;
-  }
-}
-
-/* Safe-area padding for the bottom nav on notched phones */
-.pb-safe {
-  padding-bottom: calc(env(safe-area-inset-bottom) + 0.5rem);
-}
-.pt-safe {
-  padding-top: env(safe-area-inset-top);
 }

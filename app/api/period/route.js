@@ -2,7 +2,7 @@ import { withCouple, json, error } from '@/lib/api';
 import { supabase } from '@/lib/supabase';
 import { periodSchema } from '@/lib/validators';
 
-// GET — my tracker, plus my partner's only if they share it ('partner').
+// GET - my tracker, plus my partner's only if they share it ('partner').
 export const GET = withCouple(async ({ user, couple, partner }) => {
   const { data: mine } = await supabase
     .from('period_tracking')
@@ -24,7 +24,7 @@ export const GET = withCouple(async ({ user, couple, partner }) => {
   return json({ mine: mine || null, partner: partnerData });
 });
 
-// PUT — upsert my own tracker.
+// PUT - upsert my own tracker.
 export const PUT = withCouple(async ({ req, user, couple }) => {
   const body = await req.json().catch(() => ({}));
   const parsed = periodSchema.safeParse(body);
