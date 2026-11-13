@@ -1,8 +1,14 @@
-import { Inter, Cormorant_Garamond as CormorantGaramond } from 'next/font/google';
+import { Epilogue, DM_Sans as DMSans } from 'next/font/google';
+import Footer from '@/components/Footer';
+import { motion } from 'framer-motion';
+import { Providers } from './providers';
+import './globals.css';
+import { Logo } from '@/components/Logo';
 import { Providers } from './providers';
 import './globals.css';
 
-const inter = Inter({ subsets: ['latin'], variable: '--font-body' });
+const epilogue = Epilogue({ subsets: ['latin'], weight: ['900'], variable: '--font-headline' });
+const dmSans = DMSans({ subsets: ['latin'], weight: ['400'], variable: '--font-body' });
 const cormorant = CormorantGaramond({ subsets: ['latin'], variable: '--font-display' });
 
 export const metadata = {

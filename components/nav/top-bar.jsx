@@ -4,6 +4,7 @@ import { Flame, Settings } from 'lucide-react';
 import { useAppStore } from '@/lib/store';
 import { Avatar } from '@/components/ui/avatar';
 import { ThemeToggle } from './theme-toggle';
+import Logo from '@/components/Logo';
 
 function greeting() {
   const h = new Date().getHours();
@@ -19,6 +20,7 @@ export function TopBar() {
     <header className='sticky top-0 z-30 px-4 pt-safe'>
       <div className='mx-auto flex max-w-2xl items-center justify-between py-4'>
         <div className='flex items-center gap-3'>
+          <Logo type="header" width={120} height={40} className="object-contain" />
           <Avatar
             src={user?.avatar_url}
             name={user?.name}
