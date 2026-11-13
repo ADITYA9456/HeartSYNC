@@ -14,8 +14,12 @@ export const metadata = {
   manifest: '/manifest.webmanifest',
   appleWebApp: { capable: true, statusBarStyle: 'black-translucent', title: 'HeartSYNC' },
   icons: {
-    icon: '/icons/icon-192.png',
-    apple: '/icons/icon-192.png',
+    icon: [
+      { url: '/icons/icon-192.png', sizes: '192x192', type: 'image/png' },
+      { url: '/icons/icon-512.png', sizes: '512x512', type: 'image/png' },
+    ],
+    // icon-180.png existed in /public but was never referenced.
+    apple: [{ url: '/icons/icon-180.png', sizes: '180x180', type: 'image/png' }],
   },
   openGraph: {
     title: 'HeartSYNC',

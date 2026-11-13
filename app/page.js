@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { MessageCircle, Images, Sparkles, Heart } from 'lucide-react';
-import { HeartMark } from '@/components/ui/heart-mark';
+import { Logo } from '@/components/brand/logo';
 
 const features = [
   { icon: MessageCircle, label: 'Realtime chat' },
@@ -13,7 +13,7 @@ export default function Landing() {
   return (
     <main className="mx-auto flex min-h-dvh max-w-md flex-col items-center justify-center gap-16 px-8 text-center">
       <div className="space-y-8">
-        <HeartMark size={80} className="mx-auto opacity-90 drop-shadow-lg" />
+        <Logo size={72} withWordmark={false} priority className="mx-auto" />
         <div className="space-y-4">
           <h1 className="text-6xl font-serif font-medium tracking-tight">
             Heart<span className="text-[var(--primary)] italic">SYNC</span>
