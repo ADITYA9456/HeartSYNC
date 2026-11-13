@@ -10,6 +10,7 @@ import { Textarea } from '@/components/ui/input';
 import { GlassCard } from '@/components/ui/glass-card';
 import { Spinner, EmptyState } from '@/components/ui/spinner';
 import { Icon } from '@/components/ui/icon';
+import { friendlyError } from '@/lib/friendly-error';
 
 export default function GamesPage() {
   const user = useAppStore((state) => state.user);
@@ -19,6 +20,7 @@ export default function GamesPage() {
   const [answer, setAnswer] = useState('');
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [submitError, setSubmitError] = useState(null);
 
   async function load() {
     try {
@@ -49,6 +51,7 @@ export default function GamesPage() {
   async function submitAnswer() {
     if (!active || !answer.trim()) return;
     setSaving(true);
+    setSubmitError(null);
     try {
       const data = await api.patch('/api/games', { gameId: active.id, answer });
       setActive(data.game.status === 'completed' ? null : data.game);
@@ -58,7 +61,8 @@ export default function GamesPage() {
         load();
       }
     } catch (e) {
-      toast.error(e.message || 'Could not save answer');
+      // Keep the typed answer so Retry resends it.
+      setSubmitError(friendlyError(e, 'We could not save your answer. Please try again.'));
     } finally {
       setSaving(false);
     }
@@ -99,6 +103,12 @@ export default function GamesPage() {
           {myTurn ? (
             <>
               <Textarea value={answer} onChange={(event) => setAnswer(event.target.value)} placeholder="Write your answer…" rows={4} maxLength={500} />
+              {submitError && (
+                <div role="alert" className="flex items-start justify-between gap-3 rounded-2xl bg-rose-500/10 p-3 text-sm text-rose-600 dark:text-rose-300">
+                  <span>{submitError}</span>
+                  <Button size="sm" variant="ghost" onClick={submitAnswer} disabled={saving || !answer.trim()}>Retry</Button>
+                </div>
+              )}
               <Button onClick={submitAnswer} loading={saving} disabled={!answer.trim()}>Submit answer</Button>
             </>
           ) : (
