@@ -51,11 +51,11 @@ function MiniPreview({ scheme, accent }) {
   return (
     <span aria-hidden="true" className="block overflow-hidden rounded-xl" style={{ background: t.bg }}>
       <span className="block space-y-1.5 p-2.5">
-        <span className="block h-1.5 w-10 rounded-full" style={{ background: t.text, opacity: 0.85 }} />
+        <span className="block h-1.5 w-2/5 rounded-full" style={{ background: t.text, opacity: 0.85 }} />
         <span className="block rounded-lg p-2" style={{ background: t.surface }}>
-          <span className="block h-1 w-12 rounded-full" style={{ background: t.line }} />
-          <span className="mt-1.5 block h-1 w-8 rounded-full" style={{ background: t.line }} />
-          <span className="mt-2 block h-3 w-10 rounded-md" style={{ background: accent }} />
+          <span className="block h-1 w-4/5 rounded-full" style={{ background: t.line }} />
+          <span className="mt-1.5 block h-1 w-1/2 rounded-full" style={{ background: t.line }} />
+          <span className="mt-2 block h-3 w-3/5 rounded-md" style={{ background: accent }} />
         </span>
       </span>
     </span>
@@ -345,14 +345,14 @@ export default function SettingsPage() {
             type="button"
             onClick={enablePush}
             disabled={enablingPush}
-            className="flex min-h-14 w-full items-center gap-3 rounded-xl px-3 text-left hover:bg-[var(--surface-2)] disabled:opacity-60"
+            className="flex min-h-14 w-full flex-wrap items-center gap-3 rounded-xl px-3 py-2 text-left hover:bg-[var(--surface-2)] disabled:opacity-60"
           >
-            <Bell className="h-5 w-5 text-[var(--muted)]" aria-hidden="true" />
-            <span className="flex-1">
+            <Bell className="h-5 w-5 shrink-0 text-[var(--muted)]" aria-hidden="true" />
+            <span className="min-w-0 flex-1">
               <span className="block font-medium">Push notifications</span>
               <span className="block text-sm text-[var(--muted)]">Get nudged when your partner reaches out.</span>
             </span>
-            <span className="text-sm font-semibold text-[var(--primary)]">{enablingPush ? 'Enabling…' : 'Enable'}</span>
+            <span className="shrink-0 text-sm font-semibold text-[var(--primary)]">{enablingPush ? 'Enabling…' : 'Enable'}</span>
           </button>
           <button
             type="button"
@@ -371,7 +371,7 @@ export default function SettingsPage() {
         <div
           role="region"
           aria-label="Unsaved changes"
-          className="page-enter fixed inset-x-0 z-40 px-4"
+          className="sheet-enter fixed inset-x-0 z-40 px-4"
           style={{ bottom: 'calc(var(--nav-h) + env(safe-area-inset-bottom) + 0.75rem)' }}
         >
           <div className="mx-auto flex max-w-2xl flex-wrap items-center gap-3 rounded-2xl bg-[var(--surface)] p-3 shadow-[var(--shadow-lg)]">

@@ -294,8 +294,23 @@ input[type='time']::-webkit-calendar-picker-indicator {
     transform: none;
   }
 }
+/* Page content only fades: a transform (even a filled animation) on the
+   wrapper would become the containing block for position:fixed children
+   such as the gallery FAB and the settings save bar. */
+@keyframes hs-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
 .page-enter {
-  animation: hs-rise 280ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: hs-fade 240ms ease-out backwards;
+}
+/* Sheets and bars (already position:fixed) may rise in. */
+.sheet-enter {
+  animation: hs-rise 280ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
 }
 
 /* Respect users who prefer reduced motion */

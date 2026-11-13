@@ -114,10 +114,10 @@ export default function ProductivityPage() {
           <Field label="Details (optional)">
             <Textarea value={description} onChange={(event) => setDescription(event.target.value)} placeholder="Anything to remember…" rows={3} maxLength={1000} />
           </Field>
-          <div className="grid gap-3 sm:grid-cols-2">
+          <div className="grid min-w-0 gap-3 sm:grid-cols-2 [&>label]:min-w-0">
             <label className="space-y-1.5 text-sm font-medium">
               Assign to
-              <select value={assignedTo} onChange={(event) => setAssignedTo(event.target.value)} className="w-full rounded-2xl border border-[rgb(var(--border)/0.2)] bg-[rgb(var(--card)/0.5)] px-4 py-3 text-[var(--text)]">
+              <select value={assignedTo} onChange={(event) => setAssignedTo(event.target.value)} className="min-h-11 w-full min-w-0 rounded-2xl border border-[rgb(var(--border)/0.16)] bg-[var(--surface)] px-4 py-3 text-[var(--text)]">
                 <option value="">Anyone</option>
                 <option value={user?.id}>Me</option>
                 {partner && <option value={partner.id}>{partner.name}</option>}

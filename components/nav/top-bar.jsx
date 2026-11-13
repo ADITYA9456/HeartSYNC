@@ -15,11 +15,11 @@ export function TopBar() {
 
   return (
     <header className="sticky top-0 z-30 bg-[color-mix(in_srgb,var(--bg-from)_88%,transparent)] px-4 pt-safe backdrop-blur-md">
-      <div className="mx-auto flex h-16 max-w-2xl items-center gap-2">
+      <div className="mx-auto flex min-h-16 max-w-2xl flex-wrap items-center gap-x-2 gap-y-1 py-1">
         {/* Brand always top-left once signed in. */}
         <Logo href="/dashboard" size={30} priority />
 
-        <div className="ml-auto flex items-center gap-1">
+        <div className="ml-auto flex flex-wrap items-center justify-end gap-1">
           {streak > 0 && (
             <span
               className="tnum mr-1 flex h-9 items-center gap-1 rounded-full bg-[color-mix(in_srgb,var(--secondary)_16%,transparent)] px-2.5 text-sm font-semibold text-[var(--secondary-text)]"

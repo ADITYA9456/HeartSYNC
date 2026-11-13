@@ -205,7 +205,7 @@ export default function MusicPage() {
 
   return (
     <div>
-      <header className="flex items-start justify-between gap-3">
+      <header className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <h1 className="flex items-center gap-2 font-display text-4xl font-semibold tracking-tight">
             

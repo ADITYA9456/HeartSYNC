@@ -15,20 +15,20 @@ function NavItem({ href, label, icon, active, ...props }) {
       href={href}
       aria-current={active ? 'page' : undefined}
       className={cn(
-        'flex min-h-12 flex-1 flex-col items-center justify-center gap-1 rounded-2xl px-1 text-[11px] font-medium transition-colors',
+        'flex min-h-12 flex-1 flex-col items-center justify-center gap-1 rounded-2xl px-1 min-w-0 text-[11px] font-medium transition-colors',
         active ? 'text-[var(--primary)]' : 'text-[var(--muted)] hover:text-[var(--text)]'
       )}
       {...props}
     >
       <span
         className={cn(
-          'flex h-7 w-12 items-center justify-center rounded-full transition-colors',
+          'flex h-[28px] w-[48px] max-w-full items-center justify-center rounded-full transition-colors',
           active && 'bg-[color-mix(in_srgb,var(--primary)_14%,transparent)]'
         )}
       >
         <Icon name={icon} size={20} aria-hidden="true" />
       </span>
-      <span>{label}</span>
+      <span className="max-w-full truncate">{label}</span>
     </Link>
   );
 }
@@ -52,25 +52,25 @@ export function BottomNav() {
           <Dialog.Trigger
             aria-current={moreActive ? 'page' : undefined}
             className={cn(
-              'flex min-h-12 flex-1 flex-col items-center justify-center gap-1 rounded-2xl px-1 text-[11px] font-medium transition-colors',
+              'flex min-h-12 flex-1 flex-col items-center justify-center gap-1 rounded-2xl px-1 min-w-0 text-[11px] font-medium transition-colors',
               moreActive ? 'text-[var(--primary)]' : 'text-[var(--muted)] hover:text-[var(--text)]'
             )}
           >
             <span
               className={cn(
-                'flex h-7 w-12 items-center justify-center rounded-full',
+                'flex h-[28px] w-[48px] max-w-full items-center justify-center rounded-full',
                 moreActive && 'bg-[color-mix(in_srgb,var(--primary)_14%,transparent)]'
               )}
             >
               <Icon name="LayoutGrid" size={20} aria-hidden="true" />
             </span>
-            <span>More</span>
+            <span className="max-w-full truncate">More</span>
           </Dialog.Trigger>
 
           <Dialog.Portal>
             <Dialog.Overlay className="fixed inset-0 z-50 bg-black/40" />
             <Dialog.Content
-              className="page-enter fixed inset-x-0 bottom-0 z-50 mx-auto max-w-2xl rounded-t-[1.75rem] bg-[var(--surface)] px-4 pt-3 shadow-[var(--shadow-lg)] outline-none"
+              className="sheet-enter fixed inset-x-0 bottom-0 z-50 mx-auto max-w-2xl rounded-t-[1.75rem] bg-[var(--surface)] px-4 pt-3 shadow-[var(--shadow-lg)] outline-none"
               style={{ paddingBottom: 'calc(env(safe-area-inset-bottom) + 1rem)' }}
             >
               <div className="mx-auto mb-3 h-1 w-10 rounded-full bg-[rgb(var(--border)/0.2)]" aria-hidden="true" />
