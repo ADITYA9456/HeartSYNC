@@ -3,6 +3,7 @@ import { ThemeProvider } from 'next-themes';
 import { LazyMotion, MotionConfig } from 'framer-motion';
 import { Toaster } from 'sonner';
 import { PaletteProvider } from '@/components/providers/palette-provider';
+import { ServiceWorkerRegistrar } from '@/components/pwa/service-worker-registrar';
 
 // Animation features load after first paint instead of with the main bundle.
 const loadFeatures = () => import('@/lib/motion-features').then((mod) => mod.default);
@@ -14,6 +15,7 @@ export function Providers({ children }) {
         <MotionConfig reducedMotion="user">
           <PaletteProvider>
             {children}
+            <ServiceWorkerRegistrar />
             <Toaster
               position="top-center"
               richColors

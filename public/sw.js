@@ -1,7 +1,8 @@
-/* CoupleSpace service worker — app-shell + offline fallback.
+/* HeartSYNC service worker - app-shell + offline fallback.
    Network-first for navigations (so fresh content wins) with an offline page
-   fallback; cache-first for static assets. */
-const VERSION = 'cs-v3'; // v3: HeartSYNC brand icons
+   fallback; cache-first for static assets. A new worker waits until the page
+   sends SKIP_WAITING, so the user sees the "Update available" prompt first. */
+const VERSION = 'cs-v4'; // v4: robust offline fallback, update prompt
 const STATIC_CACHE = `${VERSION}-static`;
 const RUNTIME_CACHE = `${VERSION}-runtime`;
 const OFFLINE_URL = '/offline';
@@ -10,8 +11,15 @@ const PRECACHE = ['/offline', '/manifest.webmanifest', '/icons/pwa/icon-192.png'
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(STATIC_CACHE).then((cache) => cache.addAll(PRECACHE)).then(() => self.skipWaiting())
+    caches
+      .open(STATIC_CACHE)
+      // One unavailable asset must not fail the whole install.
+      .then((cache) => Promise.allSettled(PRECACHE.map((u) => cache.add(u))))
   );
+});
+
+self.addEventListener('message', (event) => {
+  if (event.data?.type === 'SKIP_WAITING') self.skipWaiting();
 });
 
 self.addEventListener('activate', (event) => {
@@ -24,6 +32,18 @@ self.addEventListener('activate', (event) => {
       .then(() => self.clients.claim())
   );
 });
+
+// Always resolves to a Response so the browser never shows its own error page.
+function offlineResponse() {
+  return caches.match(OFFLINE_URL).then(
+    (res) =>
+      res ||
+      new Response(
+        '<!doctype html><meta name="viewport" content="width=device-width"><body style="font-family:sans-serif;text-align:center;padding:4rem 1rem"><h1>You are offline</h1><p>Reconnect and try again.</p><a href="/dashboard">Retry</a>',
+        { status: 503, headers: { 'Content-Type': 'text/html; charset=utf-8' } }
+      )
+  );
+}
 
 self.addEventListener('fetch', (event) => {
   const { request } = event;
@@ -39,11 +59,19 @@ self.addEventListener('fetch', (event) => {
     event.respondWith(
       fetch(request)
         .then((res) => {
-          const copy = res.clone();
-          caches.open(RUNTIME_CACHE).then((c) => c.put(request, copy));
+          // Keep only plain successful pages (never redirects/errors).
+          if (res.ok && res.type === 'basic' && !res.redirected) {
+            const copy = res.clone();
+            caches.open(RUNTIME_CACHE).then((c) => c.put(request, copy)).catch(() => {});
+          }
           return res;
         })
-        .catch(() => caches.match(request).then((cached) => cached || caches.match(OFFLINE_URL)))
+        .catch(() =>
+          caches
+            .match(request)
+            .then((cached) => cached || offlineResponse())
+            .catch(offlineResponse)
+        )
     );
     return;
   }
@@ -55,8 +83,10 @@ self.addEventListener('fetch', (event) => {
         (cached) =>
           cached ||
           fetch(request).then((res) => {
-            const copy = res.clone();
-            caches.open(STATIC_CACHE).then((c) => c.put(request, copy));
+            if (res.ok) {
+              const copy = res.clone();
+              caches.open(STATIC_CACHE).then((c) => c.put(request, copy)).catch(() => {});
+            }
             return res;
           })
       )

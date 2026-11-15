@@ -1,4 +1,4 @@
-/* Firebase Cloud Messaging background handler.
+﻿/* Firebase Cloud Messaging background handler.
    The public Firebase web config is passed as query params when this worker is
    registered (see lib/firebase-client.js) so we don't hardcode project values. */
 importScripts('https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js');
@@ -19,7 +19,7 @@ if (config.apiKey && config.projectId) {
   const messaging = firebase.messaging();
 
   messaging.onBackgroundMessage((payload) => {
-    const title = payload.notification?.title || 'HeartSYNC 💞';
+    const title = payload.notification?.title || 'HeartSYNC';
     const options = {
       body: payload.notification?.body || '',
       icon: '/icons/v2/icon-192.png',

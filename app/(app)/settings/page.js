@@ -113,7 +113,7 @@ export default function SettingsPage() {
       syncCouple(next);
       toast.success('Palette updated');
     } catch {
-      // best-effort persistence â€” preview already applied
+      // best-effort persistence; preview already applied
       toast.error('Saved locally, but could not sync palette');
     }
   }

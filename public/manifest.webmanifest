@@ -2,6 +2,7 @@
   "name": "HeartSYNC",
   "short_name": "HeartSYNC",
   "description": "A private space for two - chat, memories, dates, and a little AI magic.",
+  "id": "/dashboard",
   "start_url": "/dashboard",
   "scope": "/",
   "display": "standalone",
