@@ -3,7 +3,7 @@ import { getCurrentUser } from '@/lib/api';
 import { youtubeAuthUrl } from '@/lib/google';
 import { generateCsrfToken } from '@/lib/csrf';
 
-// GET — kick off Google OAuth for YouTube (readonly playlists).
+// GET - kick off Google OAuth for YouTube (readonly playlists).
 export async function GET() {
   const user = await getCurrentUser();
   const appUrl = process.env.NEXT_PUBLIC_APP_URL;

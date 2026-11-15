@@ -95,14 +95,19 @@ export const PATCH = withCouple(async ({ req, user, members, couple }) => {
   answers.push({ userId: user.id, questionIndex, answer: body.answer, createdAt: new Date().toISOString() });
   scores[user.id] = (scores[user.id] || 0) + 1;
   const partner = members.find((member) => member.user_id !== user.id);
+  const opponent = partner;
   const previousAnswerer = questionAnswers[0]?.userId;
-  const complete = questionIndex >= COUPLE_QUIZ_QUESTIONS.length - 1 && !!previousAnswerer;
+  const complete = questionIndex >= COUPLE_QUIZ_QUESTIONS.length - 1;
   const nextTurn = complete ? null : previousAnswerer || partner?.user_id || null;
   const nextState = {
+<<<<<<< HEAD
+    questionIndex: complete ? questionIndex : questionIndex + (partner ? 1 : 0),
+=======
     // Advance only once both partners have answered the current question.
     // (Previously referenced an undefined `opponent`, which threw a
     // ReferenceError on every submit -> 500 "Internal server error".)
     questionIndex: complete ? questionIndex : questionIndex + (previousAnswerer ? 1 : 0),
+>>>>>>> origin/main
     answers,
     scores,
   };

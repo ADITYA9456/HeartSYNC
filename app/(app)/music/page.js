@@ -4,18 +4,25 @@ import { useCallback, useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
   Music,
-  Music2,
   Play,
   ExternalLink,
   Unplug,
   ListMusic,
+  Radio,
+  CassetteTape,
+  ArrowRight,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { api } from '@/lib/api-client';
 import { Button } from '@/components/ui/button';
+<<<<<<< HEAD
+import { Spinner } from '@/components/ui/spinner';
+import { cn } from '@/lib/utils';
+=======
 import { Spinner, ErrorState } from '@/components/ui/spinner';
 import { Skeleton } from '@/components/ui/skeleton';
 import { friendlyError } from '@/lib/friendly-error';
+>>>>>>> origin/main
 
 const AUTH_URL = '/api/youtube/auth';
 
@@ -30,11 +37,10 @@ function PlaylistCard({ playlist, index }) {
         delay: Math.min(index * 0.04, 0.4),
         ease: [0.22, 1, 0.36, 1],
       }}
-      className="glass-card overflow-hidden p-0"
+      className="journal-card overflow-hidden p-0 rounded-2xl"
     >
-      <div className="relative aspect-video w-full overflow-hidden">
+      <div className="relative aspect-square w-full overflow-hidden rounded-xl">
         {thumbnail ? (
-           
           <img
             src={thumbnail}
             alt={title || 'Playlist'}
@@ -42,31 +48,35 @@ function PlaylistCard({ playlist, index }) {
             className="h-full w-full object-cover"
           />
         ) : (
+<<<<<<< HEAD
+          <div className="flex h-full w-full items-center justify-center bg-[var(--ink)]/5">
+            <CassetteTape className="h-10 w-10 text-[var(--muted)]" />
+=======
           <div className="flex h-full w-full items-center justify-center bg-[var(--primary)]">
             <Music2 className="h-10 w-10 text-[var(--on-primary)]" />
+>>>>>>> origin/main
           </div>
         )}
         {count != null && (
-          <span className="absolute bottom-2 right-2 flex items-center gap-1 rounded-full bg-black/55 px-2 py-1 text-[11px] font-medium text-white backdrop-blur">
+          <span className="absolute bottom-2 right-2 flex items-center gap-1 rounded-full bg-black/55 px-2 py-1 ink-stamp text-white backdrop-blur">
             <ListMusic className="h-3 w-3" />
             {count}
           </span>
         )}
       </div>
       <div className="flex flex-col gap-3 p-4">
-        <h3 className="line-clamp-2 text-sm font-semibold text-[var(--text)]">
+        <h3 className="font-serif text-base font-medium line-clamp-2 text-[var(--text)]">
           {title || 'Untitled playlist'}
         </h3>
         <Button
-          variant="primary"
-          size="sm"
-          className="w-full"
+          variant="link"
+          className="inline-flex h-auto w-full items-center justify-center gap-1.5 px-0 py-0 text-sm font-medium text-[var(--primary)]"
           onClick={() =>
             window.open(url, '_blank', 'noopener,noreferrer')
           }
         >
-          <Play className="h-4 w-4" />
-          Open
+          <Play className="h-4 w-4 fill-[var(--primary)]" />
+          Listen
           <ExternalLink className="h-3.5 w-3.5 opacity-80" />
         </Button>
       </div>
@@ -80,18 +90,23 @@ function ConnectState({ onConnect, connecting }) {
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-      className="glass-card mt-6 flex flex-col items-center gap-4 p-8 text-center"
+      className="journal-card mx-auto mt-12 flex max-w-sm flex-col items-center gap-6 p-10 text-center"
     >
+<<<<<<< HEAD
+      <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-[var(--primary)]/10 shadow-inner shadow-black/5 dark:shadow-white/5">
+        <Radio className="h-10 w-10 text-[var(--primary)]" />
+=======
       <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-[var(--primary)] shadow-md shadow-black/8">
         <Music className="h-9 w-9 text-[var(--on-primary)]" />
+>>>>>>> origin/main
       </div>
-      <div className="space-y-1">
-        <h2 className="text-lg font-semibold text-[var(--text)]">
-          Connect your YouTube Music
+      <div className="space-y-2">
+        <h2 className="font-serif text-2xl font-medium text-[var(--text)]">
+          Tune In: Connect YouTube Music
         </h2>
-        <p className="mx-auto max-w-xs text-sm text-[var(--muted)]">
-          Link your account to see all your playlists in one cozy place. We
-          only read your playlists, never change them.
+        <p className="text-sm leading-relaxed text-[var(--muted)]">
+          Link your account to discover playlists for just the two of you.
+          We only read your public playlists, never change them.
         </p>
       </div>
       <Button
@@ -99,9 +114,8 @@ function ConnectState({ onConnect, connecting }) {
         size="lg"
         loading={connecting}
         onClick={onConnect}
-        className="mt-1"
+        className="w-full font-medium tracking-wide"
       >
-        <Music2 className="h-4 w-4" />
         Connect YouTube
       </Button>
     </motion.div>
@@ -204,6 +218,13 @@ export default function MusicPage() {
   };
 
   return (
+<<<<<<< HEAD
+    <div className="mx-auto max-w-2xl px-4 py-8">
+      <header className="mb-12 flex items-center justify-between">
+        <div>
+          <h1 className="display-title text-5xl">Our Soundtrack</h1>
+          <p className="ink-stamp mt-2 text-[var(--muted)]">Playlists for us</p>
+=======
     <div>
       <header className="flex flex-wrap items-start justify-between gap-3">
         <div>
@@ -214,26 +235,33 @@ export default function MusicPage() {
           <p className="mt-1 text-sm text-[var(--muted)]">
             Playlists for the two of you.
           </p>
+>>>>>>> origin/main
         </div>
         {connected && !loading && (
           <Button
-            variant="ghost"
+            variant="link"
             size="sm"
             loading={disconnecting}
             onClick={handleDisconnect}
-            className="shrink-0 text-[var(--muted)]"
+            className="flex items-center gap-1.5 text-sm text-rose-500 hover:underline"
           >
-            <Unplug className="h-4 w-4" />
+            <Unplug size={16} />
             Disconnect
           </Button>
         )}
       </header>
 
       {loading ? (
+<<<<<<< HEAD
+        <div className="flex flex-col items-center justify-center gap-3 py-24">
+          <Spinner className="h-7 w-7" />
+          <p className="ink-stamp text-[var(--muted)]">Tuning in…</p>
+=======
         <div className="mt-6 grid grid-cols-2 gap-3" aria-busy="true" aria-label="Loading playlists">
           {[0, 1, 2, 3].map((i) => (
             <Skeleton key={i} className="aspect-video w-full" />
           ))}
+>>>>>>> origin/main
         </div>
       ) : loadError ? (
         <ErrorState title="Playlists did not load" onRetry={load}>{loadError}</ErrorState>
@@ -243,17 +271,22 @@ export default function MusicPage() {
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          className="glass-card mt-6 flex flex-col items-center gap-2 p-10 text-center"
+          className="journal-card mt-6 flex flex-col items-center gap-4 p-10 text-center rounded-2xl"
         >
+<<<<<<< HEAD
+          <CassetteTape className="h-12 w-12 text-[var(--primary)]" />
+          <h3 className="font-serif text-xl font-medium">No playlists yet</h3>
+=======
           <Icon name="Music" size={36} className="text-[var(--primary)]" aria-hidden="true" />
           <h3 className="text-lg font-semibold">No playlists yet</h3>
+>>>>>>> origin/main
           <p className="max-w-xs text-sm text-[var(--muted)]">
-            We couldn&apos;t find any playlists on your YouTube account.
+            We couldn&apos;t find any playlists on your YouTube account. Create one to get started!
           </p>
         </motion.div>
       ) : (
         <>
-          <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
             <AnimatePresence initial={false}>
               {playlists.map((pl, i) => (
                 <PlaylistCard key={pl.id || i} playlist={pl} index={i} />
@@ -262,14 +295,15 @@ export default function MusicPage() {
           </div>
 
           {nextPageToken && (
-            <div className="mt-6 flex justify-center">
+            <div className="mt-12 flex justify-center">
               <Button
-                variant="glass"
+                variant="link"
                 size="md"
                 loading={loadingMore}
                 onClick={handleLoadMore}
+                className="font-serif text-lg font-medium text-[var(--primary)]"
               >
-                Load more
+                More tunes <ArrowRight size={16} />
               </Button>
             </div>
           )}

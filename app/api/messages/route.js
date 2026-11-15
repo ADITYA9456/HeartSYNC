@@ -27,7 +27,7 @@ export const GET = withCouple(async ({ req, couple }) => {
   return json({ messages, hasMore: (data?.length || 0) === limit });
 });
 
-// POST /api/messages  — send text / image / voice
+// POST /api/messages  - send text / image / voice
 export const POST = withCouple(async ({ req, user, couple, partner }) => {
   const body = await req.json().catch(() => ({}));
   const parsed = messageSchema.safeParse(body);

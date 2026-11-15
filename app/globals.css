@@ -4,6 +4,56 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 /* =========================================================================
+<<<<<<< HEAD
+   Tokens. Light and dark are designed separately, not inverted.
+   --card / --border are rgb triplets so they can take an alpha.
+   ========================================================================= */
+:root {
+  --nav-height: 76px;
+
+  /* Light: warm paper, ink text, deeper lilac so it holds 4.5:1 on paper */
+  --bg: #f7f4fb;
+  --bg-from: #f7f4fb;
+  --text: #1f1a33;
+  --ink: #1f1a33;
+  --muted: #5a5472;
+  --card: 255 255 255;
+  --card-2: 238 233 248;
+  --border: 31 26 51;
+  --primary: #5b3fd0;
+  --primary-2: #7a5ce6;
+  --accent: #5b3fd0;
+  --on-primary: #ffffff;
+  --ring: #5b3fd0;
+  --danger: #b4233f;
+}
+
+.dark {
+  /* Dark: deep violet-black, lifted lilac accent */
+  --bg: #12101c;
+  --bg-from: #12101c;
+  --text: #f1eefb;
+  --ink: #f1eefb;
+  --muted: #aaa4c4;
+  --card: 28 25 48;
+  --card-2: 38 34 64;
+  --border: 255 255 255;
+  --primary: #b9a6ff;
+  --primary-2: #cdbfff;
+  --accent: #b9a6ff;
+  --on-primary: #17112e;
+  --ring: #b9a6ff;
+  --danger: #ff8aa0;
+}
+
+/* Palettes only change the accent. */
+[data-palette='pink'] { --primary: #b8326a; --primary-2: #d4527f; --accent: #b8326a; --ring: #b8326a; }
+.dark[data-palette='pink'] { --primary: #ff9cc0; --primary-2: #ffb8d2; --accent: #ff9cc0; --ring: #ff9cc0; }
+[data-palette='lavender'] { --primary: #6d45c9; --primary-2: #8a68dc; --accent: #6d45c9; --ring: #6d45c9; }
+.dark[data-palette='lavender'] { --primary: #c4b0ff; --primary-2: #d6c9ff; --accent: #c4b0ff; --ring: #c4b0ff; }
+[data-palette='sunset'] { --primary: #b4452a; --primary-2: #d0603f; --accent: #b4452a; --ring: #b4452a; }
+.dark[data-palette='sunset'] { --primary: #ffb08f; --primary-2: #ffc7ae; --accent: #ffb08f; --ring: #ffb08f; }
+=======
    HeartSYNC design tokens — "keepsake paper and ink".
    One accent (per palette), one warm secondary (marigold, for streaks and
    highlights), and a warm neutral scale. Light and dark are designed
@@ -133,13 +183,56 @@
   --on-primary: #2e1206;
   --ring: #f0956c;
 }
+>>>>>>> origin/main
 
 @theme inline {
   --color-primary: var(--primary);
   --color-primary-2: var(--primary-2);
   --color-accent: var(--accent);
   --color-ink: var(--text);
+  --color-text: var(--text);
   --color-muted: var(--muted);
+<<<<<<< HEAD
+  --font-sans: var(--font-body-next), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-display-next), 'Cormorant Garamond', Georgia, serif;
+  --font-display: var(--font-display-next), 'Cormorant Garamond', Georgia, serif;
+}
+
+* {
+  border-color: rgb(var(--border) / 0.12);
+}
+
+html {
+  overscroll-behavior-y: none;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  color: var(--text);
+  background: var(--bg);
+  font-family: var(--font-body-next), system-ui, sans-serif;
+  line-height: 1.55;
+  min-height: 100dvh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Type scale: display / title / body / label / small */
+.display-title {
+  font-family: var(--font-display-next), Georgia, serif;
+  font-size: clamp(2rem, 7vw, 2.75rem);
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  line-height: 1.1;
+}
+
+.ink-stamp {
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.75rem;
+  font-weight: 600;
+=======
   --color-surface: var(--surface);
   --color-surface-2: var(--surface-2);
   --color-secondary: var(--secondary);
@@ -258,18 +351,35 @@ input[type='time']::-webkit-calendar-picker-indicator {
 
 /* Tabular numerals for counts, dates and timers. */
 .tnum {
+>>>>>>> origin/main
   font-variant-numeric: tabular-nums;
 }
 
-/* Hide scrollbars where we want a clean mobile feel */
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
+.tnum { font-variant-numeric: tabular-nums; }
+
+/* Two surface levels only.
+   .anchor-card = the one primary element on a screen.
+   .journal-card = secondary tonal surface, no border. */
+.anchor-card {
+  background: rgb(var(--card-2));
+  border-radius: 1.25rem;
 }
-.no-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+.journal-card {
+  background: rgb(var(--card));
+  border-radius: 1rem;
+}
+.dark .journal-card { background: rgb(var(--card)); }
+
+.vellum {
+  background: rgb(var(--card));
 }
 
+<<<<<<< HEAD
+.glass {
+  background: rgb(var(--card) / 0.9);
+}
+
+=======
 /* Keep the notification panel inside the viewport on narrow screens. */
 @media (max-width: 640px) {
   .notification-popover {
@@ -326,13 +436,71 @@ input[type='time']::-webkit-calendar-picker-indicator {
 }
 
 /* Safe-area helpers */
+>>>>>>> origin/main
 .pb-safe {
-  padding-bottom: calc(env(safe-area-inset-bottom) + 0.5rem);
+  padding-bottom: env(safe-area-inset-bottom);
 }
 .pt-safe {
   padding-top: env(safe-area-inset-top);
 }
+<<<<<<< HEAD
+.pb-nav {
+  padding-bottom: calc(var(--nav-height) + env(safe-area-inset-bottom) + 1rem);
+}
+
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+/* One short entrance per screen */
+@keyframes screen-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+.screen-in { animation: screen-in 0.4s ease-out both; }
+
+@keyframes sheet-in {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: none; }
+}
+.sheet-content { animation: sheet-in 0.3s ease-out both; }
+@keyframes fade-in { from { opacity: 0; } }
+.sheet-overlay { animation: fade-in 0.25s ease-out both; }
+
+@keyframes skeleton-pulse {
+  50% { opacity: 0.55; }
+}
+.skeleton {
+  background: rgb(var(--card-2));
+  border-radius: 0.75rem;
+  animation: skeleton-pulse 1.4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+=======
 /* Scrollable pages clear the fixed bottom nav (+ the home indicator). */
 .pb-nav {
   padding-bottom: calc(var(--nav-h) + env(safe-area-inset-bottom) + 1.5rem);
+>>>>>>> origin/main
 }

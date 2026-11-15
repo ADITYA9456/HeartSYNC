@@ -3,7 +3,7 @@ import { cookies } from 'next/headers';
 import { getCurrentUser } from '@/lib/api';
 import { exchangeYoutubeCode } from '@/lib/google';
 
-// GET — OAuth redirect target. Exchanges the code and stores tokens in an
+// GET - OAuth redirect target. Exchanges the code and stores tokens in an
 // HttpOnly cookie, then returns to /music.
 export async function GET(req) {
   const appUrl = process.env.NEXT_PUBLIC_APP_URL;

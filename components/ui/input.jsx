@@ -3,7 +3,11 @@ import { forwardRef } from 'react';
 import { cn } from '@/lib/utils';
 
 const base =
+<<<<<<< HEAD
+  'w-full min-h-11 rounded-xl bg-[rgb(var(--card-2))] border border-[rgb(var(--border)/0.3)] px-4 py-2.5 text-[var(--text)] placeholder:text-[var(--muted)] outline-none transition-[border-color] focus:border-[var(--primary)] focus-visible:outline-2 focus-visible:outline-[var(--ring)] focus-visible:outline-offset-2';
+=======
   'w-full min-h-11 rounded-2xl bg-[var(--surface)] border border-[rgb(var(--border)/0.16)] px-4 py-3 text-[var(--text)] placeholder:text-[color-mix(in_srgb,var(--muted)_85%,transparent)] outline-none transition-[border-color,box-shadow] focus:border-[var(--primary)] focus:ring-2 focus:ring-[color-mix(in_srgb,var(--primary)_25%,transparent)] aria-[invalid=true]:border-[var(--danger)] disabled:opacity-60';
+>>>>>>> origin/main
 
 export const Input = forwardRef(function Input({ className, ...props }, ref) {
   return <input ref={ref} className={cn(base, className)} {...props} />;
@@ -21,8 +25,14 @@ export function Field({ label, error, children, hint, group = false }) {
     <Wrapper className="block space-y-1.5" {...(group ? { role: 'group', 'aria-label': label } : {})}>
       {label && <span className="text-sm font-medium text-[var(--text)]">{label}</span>}
       {children}
+<<<<<<< HEAD
+      {hint && !error && <span className="block text-xs text-[var(--muted)]">{hint}</span>}
+      {error && <span role="alert" className="block text-xs text-[var(--danger)]">{error}</span>}
+    </label>
+=======
       {hint && !error && <span className="text-xs text-[var(--muted)]">{hint}</span>}
       {error && <span role="alert" className="block text-xs text-[var(--danger-text)]">{error}</span>}
     </Wrapper>
+>>>>>>> origin/main
   );
 }

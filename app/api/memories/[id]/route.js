@@ -3,7 +3,7 @@ import { supabase } from '@/lib/supabase';
 import { deleteAsset } from '@/lib/cloudinary';
 import { emitToCouple } from '@/lib/realtime';
 
-// PATCH — edit caption / album / tags.
+// PATCH - edit caption / album / tags.
 export const PATCH = withCouple(async ({ req, ctx, couple }) => {
   const { id } = await ctx.params;
   const body = await req.json().catch(() => ({}));
@@ -26,7 +26,7 @@ export const PATCH = withCouple(async ({ req, ctx, couple }) => {
   return json({ memory: data });
 });
 
-// DELETE — remove a memory and its Cloudinary asset.
+// DELETE - remove a memory and its Cloudinary asset.
 export const DELETE = withCouple(async ({ ctx, couple }) => {
   const { id } = await ctx.params;
   const { data: memory } = await supabase

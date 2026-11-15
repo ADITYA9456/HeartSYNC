@@ -1,20 +1,41 @@
 'use client';
 import { cn, initials } from '@/lib/utils';
 
-export function Avatar({ src, name = '', size = 40, className }) {
+export function Avatar({ src, name = '', size = 44, className, priority = false }) {
   const dim = { width: size, height: size };
   return (
     <span
       style={dim}
       className={cn(
+<<<<<<< HEAD
+        'inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full bg-[var(--primary)]/15',
+=======
         'inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full text-[var(--on-primary)] font-semibold bg-[var(--primary)]',
+>>>>>>> origin/main
         className
       )}
     >
       {src ? (
-        <img src={src} alt={name} className="h-full w-full object-cover" />
+        // Avatar hosts are user-supplied, so next/image's allow-list can't cover them.
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={src}
+          alt={name}
+          width={size}
+          height={size}
+          decoding='async'
+          loading={priority ? 'eager' : 'lazy'}
+          fetchPriority={priority ? 'high' : 'auto'}
+          className='h-full w-full object-cover'
+        />
       ) : (
+<<<<<<< HEAD
+        <span className='font-semibold text-[var(--primary)]' style={{ fontSize: size * 0.4 }}>
+          {initials(name) || '?'}
+        </span>
+=======
         <span style={{ fontSize: size * 0.4 }}>{initials(name) || '?'}</span>
+>>>>>>> origin/main
       )}
     </span>
   );

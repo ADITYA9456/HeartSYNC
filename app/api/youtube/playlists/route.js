@@ -68,7 +68,7 @@ export async function GET(req) {
   return res;
 }
 
-// DELETE — disconnect YouTube.
+// DELETE - disconnect YouTube.
 export async function DELETE() {
   const res = NextResponse.json({ ok: true });
   res.cookies.set('cs_yt', '', { path: '/', maxAge: 0 });

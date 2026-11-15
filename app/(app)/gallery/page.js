@@ -1,50 +1,34 @@
 'use client';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
-import Masonry from 'react-masonry-css';
 import { AnimatePresence, motion } from 'framer-motion';
-import { format } from 'date-fns';
-import {
-  Plus,
-  X,
-  Play,
-  Trash2,
-  Pencil,
-  Check,
-  Loader2,
-} from 'lucide-react';
 import { toast } from 'sonner';
+import { Plus, X, Loader2, ArrowRight } from 'lucide-react';
 import { api } from '@/lib/api-client';
 import { useAppStore } from '@/lib/store';
 import { uploadToCloudinary } from '@/lib/upload-client';
+<<<<<<< HEAD
+import { Spinner } from '@/components/ui/spinner';
+=======
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Spinner, EmptyState, ErrorState } from '@/components/ui/spinner';
 import { Skeleton } from '@/components/ui/skeleton';
 import { friendlyError } from '@/lib/friendly-error';
 import { Avatar } from '@/components/ui/avatar';
+>>>>>>> origin/main
 
 const PAGE_SIZE = 24;
-const ALL = '__all__';
-
-const BREAKPOINTS = { default: 3, 1024: 3, 640: 2 };
-
-function fmtDate(value) {
-  if (!value) return '';
-  try {
-    return format(new Date(value), 'MMM d, yyyy');
-  } catch {
-    return '';
-  }
-}
+const ALL = 'All Moments';
 
 export default function GalleryPage() {
-  const user = useAppStore((s) => s.user);
-  const partner = useAppStore((s) => s.partner);
-
   const [memories, setMemories] = useState([]);
   const [cursor, setCursor] = useState(null);
   const [hasMore, setHasMore] = useState(true);
+<<<<<<< HEAD
+  const [loading, setLoading] = useState(false);
+  const [album, setAlbum] = useState(ALL);
+=======
   const [loading, setLoading] = useState(true);
   const [initialLoaded, setInitialLoaded] = useState(false);
   const [loadError, setLoadError] = useState(null);
@@ -55,29 +39,29 @@ export default function GalleryPage() {
   const [tagInput, setTagInput] = useState('');
 
   // Upload
+>>>>>>> origin/main
   const fileRef = useRef(null);
-  const [uploads, setUploads] = useState([]); // [{id, name, status}]
-
-  // Lightbox
   const [activeId, setActiveId] = useState(null);
+  const { ref: sentinelRef, inView } = useInView();
 
-  const { ref: sentinelRef, inView } = useInView({ rootMargin: '600px 0px' });
-
-  // Guard against out-of-order responses when filters change quickly.
-  const reqIdRef = useRef(0);
-
-  const buildUrl = useCallback(
-    (nextCursor) => {
-      const p = new URLSearchParams();
-      p.set('limit', String(PAGE_SIZE));
+  const loadMemories = useCallback(async (nextCursor = null) => {
+    setLoading(true);
+    try {
+      const p = new URLSearchParams({ limit: PAGE_SIZE });
       if (nextCursor) p.set('cursor', nextCursor);
       if (album !== ALL) p.set('album', album);
-      if (tag) p.set('tag', tag);
-      return `/api/memories?${p.toString()}`;
-    },
-    [album, tag]
-  );
+      const data = await api.get(`/api/memories?${p.toString()}`);
+      setMemories((prev) => nextCursor ? [...prev, ...data.memories] : data.memories);
+      setCursor(data.nextCursor);
+      setHasMore(!!data.nextCursor);
+    } catch (e) { toast.error('Failed to load gallery'); }
+    finally { setLoading(false); }
+  }, [album]);
 
+<<<<<<< HEAD
+  useEffect(() => { loadMemories(); }, [loadMemories]);
+  useEffect(() => { if (inView && hasMore && !loading) loadMemories(cursor); }, [inView]);
+=======
   const loadFirst = useCallback(async () => {
     const myReq = ++reqIdRef.current;
     setLoading(true);
@@ -98,161 +82,50 @@ export default function GalleryPage() {
       }
     }
   }, [buildUrl]);
+>>>>>>> origin/main
 
-  const loadMore = useCallback(async () => {
-    if (loading || !hasMore || !cursor) return;
-    const myReq = reqIdRef.current;
-    setLoading(true);
-    try {
-      const data = await api.get(buildUrl(cursor));
-      if (myReq !== reqIdRef.current) return; // a filter change happened
-      setMemories((prev) => {
-        const seen = new Set(prev.map((m) => m.id));
-        const fresh = (data.memories || []).filter((m) => !seen.has(m.id));
-        return [...prev, ...fresh];
-      });
-      setCursor(data.nextCursor || null);
-      setHasMore(Boolean(data.nextCursor));
-    } catch (e) {
-      if (myReq === reqIdRef.current) toast.error(e.message || 'Could not load more');
-    } finally {
-      if (myReq === reqIdRef.current) setLoading(false);
-    }
-  }, [loading, hasMore, cursor, buildUrl]);
-
-  // Refetch from the top whenever the active filters change.
-  useEffect(() => {
-    loadFirst();
-  }, [loadFirst]);
-
-  // Infinite scroll trigger.
-  useEffect(() => {
-    if (inView && initialLoaded) loadMore();
-  }, [inView, initialLoaded, loadMore]);
-
-  // Albums derived from loaded memories (plus the currently selected one so it
-  // never disappears from the chip row while filtered).
-  const albums = useMemo(() => {
-    const set = new Set();
-    for (const m of memories) if (m.album) set.add(m.album);
-    if (album !== ALL) set.add(album);
-    return Array.from(set).sort((a, b) => a.localeCompare(b));
-  }, [memories, album]);
-
-  const activeMemory = useMemo(
-    () => memories.find((m) => m.id === activeId) || null,
-    [memories, activeId]
-  );
-
-  function applyTag() {
-    const t = tagInput.trim();
-    setTag(t);
-  }
-
-  function clearTag() {
-    setTagInput('');
-    setTag('');
-  }
-
-  // ---- Upload flow -------------------------------------------------------
-  function openPicker() {
-    fileRef.current?.click();
-  }
-
-  async function handleFiles(e) {
-    const files = Array.from(e.target.files || []);
-    e.target.value = ''; // allow re-selecting the same file later
-    if (!files.length) return;
-
-    const queued = files.map((f) => ({
-      id: `${f.name}-${f.size}-${f.lastModified}-${Math.random().toString(36).slice(2)}`,
-      name: f.name,
-      status: 'uploading',
-    }));
-    setUploads((prev) => [...queued, ...prev]);
-
-    await Promise.all(
-      files.map(async (file, i) => {
-        const u = queued[i];
-        try {
-          const isVideo = file.type?.startsWith('video/');
-          const asset = await uploadToCloudinary(file, {
-            folder: 'gallery',
-            resourceType: isVideo ? 'video' : 'image',
-          });
-          const { memory } = await api.post('/api/memories', {
-            resourceType: asset.resourceType,
-            publicId: asset.publicId,
-            secureUrl: asset.secureUrl,
-            ...(asset.thumbnailUrl ? { thumbnailUrl: asset.thumbnailUrl } : {}),
-            ...(asset.format ? { format: asset.format } : {}),
-            ...(Number.isInteger(asset.width) ? { width: asset.width } : {}),
-            ...(Number.isInteger(asset.height) ? { height: asset.height } : {}),
-            ...(Number.isInteger(asset.bytes) ? { bytes: asset.bytes } : {}),
-            ...(typeof asset.duration === 'number' ? { duration: asset.duration } : {}),
-            ...(album !== ALL ? { album } : {}),
-          });
-          // Only surface in the grid if it matches active filters.
-          const matchesAlbum = album === ALL || memory.album === album;
-          const matchesTag = !tag || (memory.tags || []).includes(tag);
-          if (matchesAlbum && matchesTag) {
-            setMemories((prev) =>
-              prev.some((m) => m.id === memory.id) ? prev : [memory, ...prev]
-            );
-          }
-          setUploads((prev) =>
-            prev.map((x) => (x.id === u.id ? { ...x, status: 'done' } : x))
-          );
-        } catch (err) {
-          setUploads((prev) =>
-            prev.map((x) => (x.id === u.id ? { ...x, status: 'error' } : x))
-          );
-          toast.error(`${file.name}: ${err.message || 'upload failed'}`);
-        }
-      })
-    );
-
-    const okCount = queued.length;
-    toast.success(okCount === 1 ? 'Memory added' : `${okCount} memories uploaded`);
-    // Clear finished chips shortly after.
-    setTimeout(() => {
-      setUploads((prev) => prev.filter((x) => x.status === 'uploading'));
-    }, 1500);
-  }
-
-  // ---- Lightbox edit/delete callbacks ------------------------------------
-  function patchInState(updated) {
-    setMemories((prev) => prev.map((m) => (m.id === updated.id ? { ...m, ...updated } : m)));
-  }
-
-  function removeFromState(id) {
-    setMemories((prev) => prev.filter((m) => m.id !== id));
-    setActiveId(null);
-  }
-
-  const uploadingCount = uploads.filter((u) => u.status === 'uploading').length;
+  const activeMemory = useMemo(() => memories.find((m) => m.id === activeId), [memories, activeId]);
 
   return (
+<<<<<<< HEAD
+    <div className="mx-auto max-w-4xl px-4 py-8">
+      <header className="mb-12 text-center">
+        <h1 className="display-title text-5xl">Our Archive</h1>
+        <p className="ink-stamp mt-2 text-[var(--muted)]">Shared memories</p>
+=======
     <div className="space-y-4">
       <header className="flex items-end justify-between gap-3 px-1">
         <div>
           <h1 className="font-display text-4xl font-semibold tracking-tight">Gallery</h1>
           <p className="text-sm text-[var(--muted)]">Every moment, kept forever.</p>
         </div>
+>>>>>>> origin/main
       </header>
 
-      {/* Album chips */}
-      <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-        <Chip active={album === ALL} onClick={() => setAlbum(ALL)}>
-          All
-        </Chip>
-        {albums.map((a) => (
-          <Chip key={a} active={album === a} onClick={() => setAlbum(a)}>
-            {a}
-          </Chip>
+      <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+        {memories.map((m, i) => (
+          <motion.button
+            key={m.id}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: i * 0.05 }}
+            onClick={() => setActiveId(m.id)}
+            className="journal-card group block aspect-square overflow-hidden p-1 transition-transform hover:-translate-y-1"
+          >
+            <img
+              src={m.thumbnail_url || m.secure_url}
+              alt={m.caption}
+              className="h-full w-full rounded-xl object-cover"
+            />
+          </motion.button>
         ))}
       </div>
 
+<<<<<<< HEAD
+      <button
+        onClick={() => fileRef.current?.click()}
+        className="fixed bottom-28 right-6 z-30 flex h-16 w-16 items-center justify-center rounded-full bg-[var(--ink)] text-white shadow-2xl transition-transform hover:scale-105 dark:bg-white dark:text-[var(--ink)]"
+=======
       {/* Tag filter */}
       <div className="flex items-center gap-2">
         <Input
@@ -363,31 +236,30 @@ export default function GalleryPage() {
         onClick={openPicker}
         aria-label="Add memory"
         className="fixed bottom-[calc(var(--nav-h)+env(safe-area-inset-bottom)+1rem)] right-5 z-30 flex h-14 w-14 items-center justify-center rounded-full bg-[var(--primary)] text-[var(--on-primary)] shadow-md shadow-black/10 transition active:scale-95"
+>>>>>>> origin/main
       >
-        {uploadingCount > 0 ? (
-          <Loader2 className="h-6 w-6 animate-spin" />
-        ) : (
-          <Plus className="h-7 w-7" />
-        )}
+        <Plus size={28} />
       </button>
 
-      {/* Lightbox */}
-      <AnimatePresence>
-        {activeMemory && (
-          <Lightbox
-            key={activeMemory.id}
-            memory={activeMemory}
-            user={user}
-            partner={partner}
-            onClose={() => setActiveId(null)}
-            onPatched={patchInState}
-            onDeleted={removeFromState}
-          />
-        )}
-      </AnimatePresence>
+      <input ref={fileRef} type="file" multiple className="hidden" onChange={async (e) => {
+        const files = Array.from(e.target.files);
+        for (const file of files) {
+          const asset = await uploadToCloudinary(file, { folder: 'gallery' });
+          await api.post('/api/memories', { secureUrl: asset.secureUrl, publicId: asset.publicId });
+        }
+        loadMemories();
+      }} />
+
+      {activeMemory && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4 backdrop-blur-sm" onClick={() => setActiveId(null)}>
+          <img src={activeMemory.secure_url} className="max-h-[90vh] rounded-3xl" />
+        </div>
+      )}
     </div>
   );
 }
+<<<<<<< HEAD
+=======
 
 function Chip({ active, onClick, children }) {
   return (
@@ -653,3 +525,4 @@ function Lightbox({ memory, user, partner, onClose, onPatched, onDeleted }) {
     </motion.div>
   );
 }
+>>>>>>> origin/main

@@ -14,9 +14,9 @@ import { cn } from '@/lib/utils';
  *  - mine: boolean (sent by current user)
  *  - partner: partner object {id,name,avatar_url} (for the left avatar)
  *  - partnerId: partner user id (for read-receipt + reaction attribution)
- *  - showReceipt: boolean — render ✓/✓✓ under this bubble (only my latest)
- *  - onReact(emoji), onDelete() — callbacks
- *  - onOpenImage(url) — open an image fullscreen
+ *  - showReceipt: boolean - render ✓/✓✓ under this bubble (only my latest)
+ *  - onReact(emoji), onDelete() - callbacks
+ *  - onOpenImage(url) - open an image fullscreen
  */
 export function MessageBubble({
   message,
