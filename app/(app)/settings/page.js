@@ -1,7 +1,8 @@
-'use client';
+﻿'use client';
 
-import { motion } from 'framer-motion';
 import { Bell, Check, Flame, Heart, LogOut, Monitor, Moon, Sun } from 'lucide-react';
+import { isoToDateInput } from '@/components/dates/shared';
+import { effectiveStreak } from '@/lib/streak-display';
 import { useTheme } from 'next-themes';
 import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
@@ -42,26 +43,15 @@ const THEME_OPTIONS = [
   { id: 'system', label: 'System', Icon: Monitor },
 ];
 
-const section = {
-  hidden: { opacity: 0, y: 16 },
-  show: (i) => ({
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.35, delay: i * 0.06, ease: [0.22, 1, 0.36, 1] },
-  }),
-};
-
-function Section({ index, title, subtitle, children }) {
+function Section({ title, subtitle, children }) {
   return (
-    <motion.div custom={index} variants={section} initial="hidden" animate="show">
-      <div className="journal-card p-6 space-y-4">
-        <div className="space-y-0.5">
-          <h2 className="font-serif text-xl font-medium text-[var(--text)]">{title}</h2>
-          {subtitle && <p className="ink-stamp text-xs text-[var(--muted)]">{subtitle}</p>}
-        </div>
-        {children}
+    <section className="journal-card space-y-4 p-5">
+      <div className="space-y-0.5">
+        <h2 className="font-serif text-xl font-medium text-[var(--text)]">{title}</h2>
+        {subtitle && <p className="text-sm text-[var(--muted)]">{subtitle}</p>}
       </div>
-    </motion.div>
+      {children}
+    </section>
   );
 }
 
@@ -89,7 +79,7 @@ export default function SettingsPage() {
   // Prefill from couple once available.
   useEffect(() => {
     if (couple?.anniversary) {
-      setAnniversary(String(couple.anniversary).slice(0, 10));
+      setAnniversary(isoToDateInput(couple.anniversary));
     }
     if (couple?.timezone) setTimezone(couple.timezone);
   }, [couple?.anniversary, couple?.timezone]);
@@ -121,9 +111,9 @@ export default function SettingsPage() {
     try {
       const { couple: next } = await api.patch('/api/couple', { theme: id });
       syncCouple(next);
-      toast.success('Palette updated 🎨');
+      toast.success('Palette updated');
     } catch {
-      // best-effort persistence — preview already applied
+      // best-effort persistence â€” preview already applied
       toast.error('Saved locally, but could not sync palette');
     }
   }
@@ -134,7 +124,7 @@ export default function SettingsPage() {
       const iso = anniversary ? new Date(anniversary).toISOString() : null;
       const { couple: next } = await api.patch('/api/couple', { anniversary: iso });
       syncCouple(next);
-      toast.success(iso ? 'Anniversary saved 💕' : 'Anniversary cleared');
+      toast.success(iso ? 'Anniversary saved' : 'Anniversary cleared');
     } catch (e) {
       toast.error(e.message || 'Could not save anniversary');
     } finally {
@@ -148,7 +138,7 @@ export default function SettingsPage() {
     try {
       const { couple: next } = await api.patch('/api/couple', { timezone: tz });
       syncCouple(next);
-      toast.success('Timezone updated 🌍');
+      toast.success('Timezone updated');
     } catch (e) {
       toast.error(e.message || 'Could not update timezone');
     } finally {
@@ -165,7 +155,7 @@ export default function SettingsPage() {
         return;
       }
       await api.post('/api/fcm', { token, userAgent: navigator.userAgent });
-      toast.success('Push notifications enabled 🔔');
+      toast.success('Push notifications enabled');
     } catch (e) {
       toast.error(e.message || 'Could not enable notifications');
     } finally {
@@ -184,45 +174,35 @@ export default function SettingsPage() {
     }
   }
 
+
   const activeTheme = mounted ? theme || 'system' : null;
 
   return (
-    <div className="mx-auto max-w-2xl px-4 py-8 space-y-8">
-      <motion.h1
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
-        className="display-title text-5xl text-center"
-      >
-        Settings
-      </motion.h1>
+    <div className="screen-in space-y-5 py-2">
+      <h1 className="display-title text-center">Settings</h1>
 
-      {/* 1. Profile */}
-      <Section index={0} title="Profile">
+      <Section title="Profile">
         <div className="flex items-center gap-4">
           <Avatar src={user?.avatar_url} name={user?.name} size={56} />
           <div className="min-w-0 flex-1">
             <p className="truncate font-serif text-lg font-medium text-[var(--text)]">
               {user?.name || 'You'}
             </p>
-            <p className="truncate ink-stamp text-sm text-[var(--muted)]">{user?.email}</p>
+            <p className="truncate text-sm text-[var(--muted)]">{user?.email}</p>
           </div>
-          <div className="flex items-center gap-1.5 rounded-2xl bg-[rgb(var(--card)/0.5)] px-3 py-2 journal-card">
-            <Flame className="h-4 w-4 text-orange-500" />
-            <span className="font-serif text-sm font-semibold text-[var(--text)]">
-              {couple?.streak_count ?? 0}
-            </span>
+          <div
+            className="flex min-h-11 items-center gap-1.5 rounded-xl bg-[var(--primary)]/15 px-3 text-[var(--primary)]"
+            role="status"
+            aria-label={`${effectiveStreak(couple)} day streak`}
+          >
+            <Flame className="h-4 w-4" aria-hidden="true" />
+            <span className="text-sm font-semibold tabular-nums">{effectiveStreak(couple)}</span>
           </div>
         </div>
       </Section>
 
-      {/* 2. Appearance — Palette */}
-      <Section
-        index={1}
-        title="Appearance"
-        subtitle="Pick a palette you both love."
-      >
-        <div className="grid grid-cols-2 gap-3">
+      <Section title="Appearance" subtitle="Pick a palette you both love.">
+        <div className="grid grid-cols-2 gap-2">
           {PALETTES.map((p) => {
             const active = palette === p.id;
             return (
@@ -231,47 +211,32 @@ export default function SettingsPage() {
                 type="button"
                 onClick={() => choosePalette(p.id)}
                 className={[
-                  'group relative flex items-center gap-3 rounded-2xl border p-3 text-left transition journal-card',
+                  'flex min-h-14 items-center gap-3 rounded-xl p-3 text-left transition-colors',
                   active
-                    ? 'border-[var(--primary)] bg-[color-mix(in_srgb,var(--primary)_10%,transparent)]'
-                    : 'border-[rgb(var(--border)/0.2)] hover:border-[rgb(var(--border)/0.4)]',
+                    ? 'bg-[var(--primary)]/15 text-[var(--text)]'
+                    : 'bg-[rgb(var(--card-2))] text-[var(--text)] hover:bg-[var(--primary)]/8',
                 ].join(' ')}
                 aria-pressed={active}
               >
-                <span
-                  className="h-9 w-9 shrink-0 rounded-full ring-1 ring-black/5"
-                  style={{
-                    backgroundImage: `linear-gradient(135deg, ${p.swatch[0]}, ${p.swatch[1]}, ${p.swatch[2]})`,
-                  }}
-                />
-                <span className="min-w-0 flex-1">
-                  <span className="block truncate text-sm font-medium text-[var(--text)]">
-                    {p.name}
-                  </span>
-                  <span className="mt-1 flex gap-1">
-                    {p.swatch.map((c) => (
-                      <span
-                        key={c}
-                        className="h-2.5 w-2.5 rounded-full ring-1 ring-black/5"
-                        style={{ backgroundColor: c }}
-                      />
-                    ))}
-                  </span>
+                <span className="flex shrink-0 -space-x-1.5" aria-hidden="true">
+                  {p.swatch.map((c) => (
+                    <span
+                      key={c}
+                      className="h-5 w-5 rounded-full ring-2 ring-[var(--bg)]"
+                      style={{ backgroundColor: c }}
+                    />
+                  ))}
                 </span>
-                {active && (
-                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-white [background:linear-gradient(120deg,var(--primary),var(--primary-2))]">
-                    <Check className="h-3.5 w-3.5" />
-                  </span>
-                )}
+                <span className="min-w-0 flex-1 truncate text-sm font-medium">{p.name}</span>
+                {active && <Check className="h-4 w-4 shrink-0 text-[var(--primary)]" aria-hidden="true" />}
               </button>
             );
           })}
         </div>
       </Section>
 
-      {/* 3. Appearance — Theme */}
-      <Section index={2} title="Theme" subtitle="Light, dark, or follow your device.">
-        <div className="grid grid-cols-3 gap-2 rounded-2xl bg-[rgb(var(--card)/0.5)] p-1">
+      <Section title="Theme" subtitle="Light, dark, or follow your device.">
+        <div className="grid grid-cols-3 gap-1 rounded-xl bg-[rgb(var(--card-2))] p-1" role="group" aria-label="Theme">
           {THEME_OPTIONS.map(({ id, label, Icon }) => {
             const active = activeTheme === id;
             return (
@@ -281,14 +246,14 @@ export default function SettingsPage() {
                 disabled={!mounted}
                 onClick={() => setTheme(id)}
                 className={[
-                  'flex items-center justify-center gap-1.5 rounded-xl px-2 py-2 text-sm font-medium transition',
+                  'flex min-h-11 items-center justify-center gap-1.5 rounded-lg px-2 text-sm font-medium transition-colors',
                   active
-                    ? 'text-white [background:linear-gradient(120deg,var(--primary),var(--primary-2))]'
+                    ? 'bg-[var(--primary)] text-[var(--on-primary)]'
                     : 'text-[var(--muted)] hover:text-[var(--text)]',
                 ].join(' ')}
                 aria-pressed={active}
               >
-                <Icon className="h-4 w-4" />
+                <Icon className="h-4 w-4" aria-hidden="true" />
                 {label}
               </button>
             );
@@ -296,38 +261,38 @@ export default function SettingsPage() {
         </div>
       </Section>
 
-      {/* 4. Relationship */}
-      <Section
-        index={3}
-        title="Relationship"
-        subtitle="Your shared details."
-      >
+      <Section title="Relationship" subtitle="Your shared details.">
         <div className="space-y-4">
-          <Field label="Anniversary" hint="When your story began.">
+          <div className="space-y-1.5">
+            <label htmlFor="anniversary" className="text-sm font-medium">
+              Anniversary
+            </label>
             <div className="flex gap-2">
               <Input
+                id="anniversary"
                 type="date"
                 value={anniversary}
                 onChange={(e) => setAnniversary(e.target.value)}
                 className="flex-1"
+                aria-describedby="anniversary-hint"
               />
-              <Button
-                variant="glass"
-                onClick={saveAnniversary}
-                loading={savingAnniv}
-                className="shrink-0"
-              >
+              <Button variant="glass" onClick={saveAnniversary} loading={savingAnniv} className="shrink-0">
                 Save
               </Button>
             </div>
-          </Field>
+            <p id="anniversary-hint" className="text-xs text-[var(--muted)]">When your story began.</p>
+          </div>
 
-          <Field label="Timezone" hint={`Detected: ${detectedZone}`}>
+          <div className="space-y-1.5">
+            <label htmlFor="timezone" className="text-sm font-medium">
+              Timezone
+            </label>
             <select
+              id="timezone"
               value={timezone || detectedZone}
               disabled={savingTz}
               onChange={(e) => saveTimezone(e.target.value)}
-              className="w-full rounded-2xl border border-[rgb(var(--border)/0.2)] bg-[rgb(var(--card)/0.5)] px-4 py-3 text-[var(--text)] outline-none transition focus:border-[var(--primary)] focus:ring-2 focus:ring-[color-mix(in_srgb,var(--primary)_30%,transparent)]"
+              className="min-h-11 w-full rounded-xl border border-[rgb(var(--border)/0.3)] bg-[rgb(var(--card-2))] px-4 py-2.5 text-[var(--text)] outline-none focus:border-[var(--primary)]"
             >
               {zoneOptions.map((z) => (
                 <option key={z} value={z}>
@@ -335,67 +300,45 @@ export default function SettingsPage() {
                 </option>
               ))}
             </select>
-          </Field>
+            <p className="text-xs text-[var(--muted)]">Detected: {detectedZone}</p>
+          </div>
 
-          <div className="border-t border-[rgb(var(--border)/0.2)] pt-4">
+          <div className="border-t border-[rgb(var(--border)/0.12)] pt-4">
             <p className="mb-2 text-sm font-medium text-[var(--text)]">Partner</p>
             {partner ? (
               <div className="flex items-center gap-3">
                 <Avatar src={partner.avatar_url} name={partner.name} size={44} />
                 <div className="min-w-0">
-                  <p className="truncate font-medium text-[var(--text)]">
-                    {partner.name}
-                  </p>
+                  <p className="truncate font-medium text-[var(--text)]">{partner.name}</p>
                   {partner.email && (
-                    <p className="truncate text-xs text-[var(--muted)]">
-                      {partner.email}
-                    </p>
+                    <p className="truncate text-xs text-[var(--muted)]">{partner.email}</p>
                   )}
                 </div>
               </div>
             ) : (
-              <div className="flex items-center gap-3 rounded-2xl bg-[rgb(var(--card)/0.5)] p-3">
-                <Heart className="h-5 w-5 text-[var(--primary)]" />
-                <p className="text-sm text-[var(--muted)]">
-                  Waiting for your partner to join 💞
-                </p>
+              <div className="flex items-center gap-3 rounded-xl bg-[rgb(var(--card-2))] p-3">
+                <Heart className="h-5 w-5 text-[var(--primary)]" aria-hidden="true" />
+                <p className="text-sm text-[var(--muted)]">Waiting for your partner to join</p>
               </div>
             )}
           </div>
         </div>
       </Section>
 
-      {/* 5. Notifications */}
-      <Section
-        index={4}
-        title="Notifications"
-        subtitle="Get nudged when your partner reaches out."
-      >
-        <Button
-          variant="glass"
-          onClick={enablePush}
-          loading={enablingPush}
-          className="w-full"
-        >
-          <Bell className="h-4 w-4" />
+      <Section title="Notifications" subtitle="Get nudged when your partner reaches out.">
+        <Button variant="glass" onClick={enablePush} loading={enablingPush} className="w-full">
+          <Bell className="h-4 w-4" aria-hidden="true" />
           Enable push notifications
         </Button>
       </Section>
 
-      {/* 6. Account */}
-      <Section index={5} title="Account">
-        <Button
-          variant="danger"
-          onClick={signOut}
-          loading={signingOut}
-          className="w-full"
-        >
-          <LogOut className="h-4 w-4" />
+      <Section title="Account">
+        <Button variant="danger" onClick={signOut} loading={signingOut} className="w-full">
+          <LogOut className="h-4 w-4" aria-hidden="true" />
           Sign out
         </Button>
         <p className="flex items-center justify-center gap-1.5 pt-1 text-xs text-[var(--muted)]">
-          Made with <Heart className="h-3.5 w-3.5 text-[var(--primary)]" /> for
-          HeartSYNC
+          Made with <Heart className="h-3.5 w-3.5 text-[var(--primary)]" aria-hidden="true" /> for HeartSYNC
         </p>
       </Section>
     </div>

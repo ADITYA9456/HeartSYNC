@@ -1,48 +1,20 @@
 import Image from 'next/image';
 import Link from 'next/link';
 
-const Logo = ({ type, altText, width, height, className }) => {
-  let src;
-  let defaultWidth = width;
-  let defaultHeight = height;
-
-  switch (type) {
-    case 'header':
-      src = '/logos/logo-horizontal.svg';
-      defaultWidth = defaultWidth || 150;
-      defaultHeight = defaultHeight || 50;
-      break;
-    case 'footer':
-      src = '/logos/logo-footer.svg';
-      defaultWidth = defaultWidth || 210;
-      defaultHeight = defaultHeight || 100;
-      break;
-    case 'favicon':
-    case 'pwa-192':
-    case 'pwa-512':
-    case 'apple-touch':
-      src = '/logos/logo-mark.svg';
-      defaultWidth = defaultWidth || 192; // Placeholder, PWA will use PNG
-      defaultHeight = defaultHeight || 192; // Placeholder, PWA will use PNG
-      break;
-    default:
-      src = '/logos/logo-horizontal.svg'; // Default to horizontal
-      defaultWidth = defaultWidth || 150;
-      defaultHeight = defaultHeight || 50;
-  }
-
-  return (
-    <Link href="/">
-      <Image
-        src={src}
-        alt={altText || "CoupleSpace"}
-        width={defaultWidth}
-        height={defaultHeight}
-        className={className}
-        priority={type === 'header'}
-      />
-    </Link>
-  );
-};
+// The brand mark ships as /icons/icon-192.png (the earlier /logos/*.svg files
+// were never added to /public, so they returned 404).
+const Logo = ({ altText = 'HeartSYNC', size = 36, href = '/', className, priority = false }) => (
+  <Link href={href} aria-label={altText} className="inline-flex shrink-0 rounded-xl">
+    <Image
+      src="/icons/icon-192.png"
+      alt=""
+      width={size}
+      height={size}
+      sizes={`${size}px`}
+      className={className}
+      priority={priority}
+    />
+  </Link>
+);
 
 export default Logo;

@@ -1,46 +1,45 @@
 'use client';
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import dynamic from 'next/dynamic';
 import { DatesTab } from '@/components/dates/dates-tab';
-import { TimelineTab } from '@/components/dates/timeline-tab';
-import { CalendarTab } from '@/components/dates/calendar-tab';
-import { Icon } from '@/components/ui/icon';
+import { Skeleton } from '@/components/ui/spinner';
 import { cn } from '@/lib/utils';
 
+const tabSkeleton = () => <Skeleton className="h-48 w-full" />;
+const TimelineTab = dynamic(() => import('@/components/dates/timeline-tab').then((m) => m.TimelineTab), { loading: tabSkeleton });
+const CalendarTab = dynamic(() => import('@/components/dates/calendar-tab').then((m) => m.CalendarTab), { loading: tabSkeleton });
+
 const TABS = [
-  { id: 'dates', label: 'Dates & Plans', icon: 'Heart' },
-  { id: 'timeline', label: 'Our Story', icon: 'BookOpen' },
-  { id: 'calendar', label: 'Calendar', icon: 'Calendar' },
+  { id: 'dates', label: 'Dates & Plans' },
+  { id: 'timeline', label: 'Our Story' },
+  { id: 'calendar', label: 'Calendar' },
 ];
 
 export default function DatesPage() {
   const [tab, setTab] = useState('dates');
-  const [seen, setSeen] = useState({ dates: true });
-
-  function switchTo(id) {
-    setTab(id);
-    setSeen((s) => (s[id] ? s : { ...s, [id]: true }));
-  }
 
   return (
-    <div className="mx-auto max-w-2xl px-4 py-8 space-y-8">
-      <header className="space-y-2 text-center">
-        <h1 className="display-title text-5xl">Moments & Plans</h1>
-        <p className="ink-stamp text-[var(--muted)]">Our shared history and future</p>
+    <div className="screen-in space-y-5 py-2">
+      <header className="space-y-1 text-center">
+        <h1 className="display-title">Moments &amp; Plans</h1>
+        <p className="text-sm text-[var(--muted)]">Our shared history and future</p>
       </header>
 
-      {/* Editorial Index Tabs */}
-      <div className="flex justify-center gap-2 border-b border-[var(--ink)]/10 pb-4">
+      <div role="tablist" aria-label="Dates sections" className="flex gap-1 overflow-x-auto rounded-xl bg-[rgb(var(--card-2))] p-1 no-scrollbar">
         {TABS.map((t) => {
           const active = tab === t.id;
           return (
             <button
               key={t.id}
-              onClick={() => switchTo(t.id)}
+              id={`tab-${t.id}`}
+              role="tab"
+              aria-selected={active}
+              aria-controls={`panel-${t.id}`}
+              onClick={() => setTab(t.id)}
               className={cn(
-                'relative px-5 py-2.5 rounded-full font-serif text-sm transition-all',
+                'min-h-11 flex-1 whitespace-nowrap rounded-lg px-3 text-sm font-medium transition-colors',
                 active
-                  ? 'bg-[var(--ink)] text-[var(--bg-from)] font-medium shadow-md dark:bg-white dark:text-[var(--ink)]'
+                  ? 'bg-[var(--primary)] text-[var(--on-primary)]'
                   : 'text-[var(--muted)] hover:text-[var(--text)]'
               )}
             >
@@ -50,19 +49,11 @@ export default function DatesPage() {
         })}
       </div>
 
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={tab}
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -10 }}
-          transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-        >
-          {tab === 'dates' && <DatesTab />}
-          {tab === 'timeline' && seen.timeline && <TimelineTab />}
-          {tab === 'calendar' && seen.calendar && <CalendarTab />}
-        </motion.div>
-      </AnimatePresence>
+      <div role="tabpanel" id={`panel-${tab}`} aria-labelledby={`tab-${tab}`}>
+        {tab === 'dates' && <DatesTab />}
+        {tab === 'timeline' && <TimelineTab />}
+        {tab === 'calendar' && <CalendarTab />}
+      </div>
     </div>
   );
 }

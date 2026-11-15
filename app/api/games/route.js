@@ -95,11 +95,12 @@ export const PATCH = withCouple(async ({ req, user, members, couple }) => {
   answers.push({ userId: user.id, questionIndex, answer: body.answer, createdAt: new Date().toISOString() });
   scores[user.id] = (scores[user.id] || 0) + 1;
   const partner = members.find((member) => member.user_id !== user.id);
+  const opponent = partner;
   const previousAnswerer = questionAnswers[0]?.userId;
-  const complete = questionIndex >= COUPLE_QUIZ_QUESTIONS.length - 1 && !!previousAnswerer;
+  const complete = questionIndex >= COUPLE_QUIZ_QUESTIONS.length - 1;
   const nextTurn = complete ? null : previousAnswerer || partner?.user_id || null;
   const nextState = {
-    questionIndex: complete ? questionIndex : questionIndex + (opponent ? 1 : 0),
+    questionIndex: complete ? questionIndex : questionIndex + (partner ? 1 : 0),
     answers,
     scores,
   };

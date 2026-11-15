@@ -1,33 +1,52 @@
 'use client';
-import { Loader2 } from 'lucide-react';
+import { Loader2, TriangleAlert } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Icon } from '@/components/ui/icon';
+import { Button } from '@/components/ui/button';
 
 export function Spinner({ className }) {
-  return <Loader2 className={cn('h-5 w-5 animate-spin text-accent', className)} />;
+  return <Loader2 className={cn('h-5 w-5 animate-spin text-[var(--primary)]', className)} aria-hidden='true' />;
 }
 
 export function FullPageSpinner({ label }) {
   return (
-    <div className='flex min-h-dvh flex-col items-center justify-center gap-4'>
+    <div role='status' className='flex min-h-dvh flex-col items-center justify-center gap-4'>
       <Spinner className='h-6 w-6' />
-      {label && <p className='text-sm text-muted'>{label}</p>}
+      {label && <p className='text-sm text-[var(--muted)]'>{label}</p>}
     </div>
   );
 }
 
-export function EmptyState({ icon, emoji, title, children }) {
+export function Skeleton({ className }) {
+  return <div aria-hidden='true' className={cn('skeleton', className)} />;
+}
+
+export function EmptyState({ icon, title, children, action }) {
   return (
-    <div className='flex flex-col items-center justify-center gap-3 py-16 text-center'>
-      {icon ? (
-        <div className='flex h-16 w-16 items-center justify-center rounded-full bg-accent/10'>
-          <Icon name={icon} size={28} className='text-accent' />
+    <div className='flex flex-col items-center justify-center gap-3 py-12 text-center'>
+      {icon && (
+        <div className='flex h-14 w-14 items-center justify-center rounded-full bg-[var(--primary)]/10'>
+          <Icon name={icon} size={26} className='text-[var(--primary)]' />
         </div>
-      ) : emoji ? (
-        <div className='text-5xl'>{emoji}</div>
-      ) : null}
+      )}
       <h3 className='text-base font-semibold'>{title}</h3>
       {children && (
-        <p className='max-w-[260px] text-sm leading-relaxed text-muted'>{children}</p>
+        <p className='max-w-[280px] text-sm leading-relaxed text-[var(--muted)]'>{children}</p>
+      )}
+      {action}
+    </div>
+  );
+}
+
+export function ErrorState({ message = 'Something went wrong.', onRetry }) {
+  return (
+    <div role='alert' className='flex flex-col items-center gap-3 py-12 text-center'>
+      <TriangleAlert size={26} className='text-[var(--danger)]' aria-hidden='true' />
+      <p className='max-w-[280px] text-sm text-[var(--muted)]'>{message}</p>
+      {onRetry && (
+        <Button variant='outline' size='sm' onClick={onRetry}>
+          Retry
+        </Button>
       )}
     </div>
   );

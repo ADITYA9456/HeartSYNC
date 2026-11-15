@@ -1,17 +1,17 @@
-import { Cormorant_Garamond, DM_Sans } from 'next/font/google';
+import { Cormorant_Garamond as CormorantGaramond, DM_Sans as DMSans } from 'next/font/google';
 import { Providers } from './providers';
 import './globals.css';
 
-const cormorant = Cormorant_Garamond({
-  subsets: ['latin'],
-  weight: ['400', '500', '600'],
-  display: 'swap',
-  variable: '--font-display-next',
-});
-const dmSans = DM_Sans({
+const dmSans = DMSans({
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-body-next',
+});
+const cormorant = CormorantGaramond({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  display: 'swap',
+  variable: '--font-display-next',
 });
 
 export const metadata = {
@@ -40,7 +40,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang='en' suppressHydrationWarning>
       <body
-        className={`${dmSans.variable} ${cormorant.variable} min-h-dvh antialiased`}
+        className={`${dmSans.variable} ${cormorant.variable} font-body min-h-dvh antialiased`}
       >
         <Providers>{children}</Providers>
       </body>

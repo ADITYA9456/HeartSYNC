@@ -1,53 +1,68 @@
 'use client';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Flame, Settings } from 'lucide-react';
+import { Flame } from 'lucide-react';
 import { useAppStore } from '@/lib/store';
+import { effectiveStreak, greetingForHour } from '@/lib/streak-display';
 import { Avatar } from '@/components/ui/avatar';
 import { ThemeToggle } from './theme-toggle';
-import Logo from '@/components/Logo';
+import { NotificationBell } from './notification-bell';
 
-function greeting() {
-  const h = new Date().getHours();
-  return h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening';
+// Computed after mount from the viewer's local clock, so the server render
+// never disagrees with the client (no hydration mismatch).
+function useGreeting() {
+  const [text, setText] = useState(null);
+  useEffect(() => {
+    const update = () => setText(greetingForHour(new Date().getHours()));
+    update();
+    const id = setInterval(update, 60_000);
+    return () => clearInterval(id);
+  }, []);
+  return text;
 }
 
 export function TopBar() {
   const user = useAppStore((s) => s.user);
   const couple = useAppStore((s) => s.couple);
-  const streak = couple?.streak_count || 0;
+  const [streak, setStreak] = useState(0);
+  const greeting = useGreeting();
+
+  useEffect(() => {
+    const update = () => setStreak(effectiveStreak(couple));
+    update();
+    const id = setInterval(update, 60_000);
+    return () => clearInterval(id);
+  }, [couple]);
 
   return (
-    <header className='sticky top-0 z-30 px-4 pt-safe'>
-      <div className='mx-auto flex max-w-2xl items-center justify-between py-4'>
-        <div className='flex items-center gap-3'>
-          <Logo type="header" width={120} height={40} className="object-contain" />
-          <Avatar
-            src={user?.avatar_url}
-            name={user?.name}
-            size={44}
-          />
-          <div className='min-w-0'>
-            <p className='ink-stamp text-accent'>{greeting()}</p>
-            <h2 className='font-display text-lg font-medium leading-tight'>
+    <header className="sticky top-0 z-30 bg-[var(--bg)] px-4 pt-safe">
+      <div className="mx-auto flex max-w-2xl items-center justify-between gap-2 py-3">
+        <Link
+          href="/settings"
+          aria-label="Profile and settings"
+          className="flex min-w-0 items-center gap-3 rounded-xl"
+        >
+          <Avatar src={user?.avatar_url} name={user?.name} size={44} priority />
+          <span className="min-w-0">
+            <span className="ink-stamp block min-h-4 text-[var(--primary)]">{greeting || '\u00a0'}</span>
+            <span className="block truncate font-serif text-lg font-medium leading-tight">
               {user?.name?.split(' ')[0] || 'Love'}
-            </h2>
-          </div>
-        </div>
-        <div className='flex items-center gap-2 rounded-2xl bg-white/40 p-1.5 backdrop-blur-md dark:bg-black/20'>
+            </span>
+          </span>
+        </Link>
+        <div className="flex shrink-0 items-center gap-1">
           {streak > 0 && (
-            <div className='flex h-9 items-center gap-1.5 rounded-xl bg-accent px-3 text-sm font-semibold text-white shadow-lg shadow-accent/20'>
-              <Flame size={14} fill='currentColor' />
+            <div
+              className="flex h-11 items-center gap-1.5 rounded-xl bg-[var(--primary)]/15 px-3 text-sm font-semibold tabular-nums text-[var(--primary)]"
+              role="status"
+              aria-label={`${streak} day streak`}
+            >
+              <Flame size={14} aria-hidden="true" />
               <span>{streak}</span>
             </div>
           )}
+          <NotificationBell />
           <ThemeToggle />
-          <Link
-            href='/settings'
-            aria-label='Settings'
-            className='flex h-9 w-9 items-center justify-center rounded-xl text-text transition-colors hover:bg-accent/5 active:scale-95'
-          >
-            <Settings size={18} />
-          </Link>
         </div>
       </div>
     </header>

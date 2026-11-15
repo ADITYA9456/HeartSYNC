@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { api } from '@/lib/api-client';
@@ -8,7 +8,8 @@ import { getSocket, useSocketStore } from '@/lib/socket-client';
 import { registerForPush, onForegroundMessage } from '@/lib/firebase-client';
 import { TopBar } from '@/components/nav/top-bar';
 import { BottomNav } from '@/components/nav/bottom-nav';
-import { FullPageSpinner } from '@/components/ui/spinner';
+import { Celebration } from '@/components/celebration/celebration';
+import { FullPageSpinner, ErrorState } from '@/components/ui/spinner';
 
 export function AppShell({ children }) {
   const router = useRouter();
@@ -18,6 +19,8 @@ export function AppShell({ children }) {
   const incUnread = useAppStore((s) => s.incUnread);
   const setConnected = useSocketStore((s) => s.setConnected);
   const pushDone = useRef(false);
+  const [loadError, setLoadError] = useState(null);
+  const [attempt, setAttempt] = useState(0);
 
   // Hydrate session.
   useEffect(() => {
@@ -30,12 +33,17 @@ export function AppShell({ children }) {
         if (!data.hasCouple) return router.replace('/connect');
         setSession(data);
       })
-      .catch(() => router.replace('/auth'));
+      .catch((e) => {
+        if (!active) return;
+        // Only a real 401 means "signed out"; a network blip should not log anyone out.
+        if (e?.status === 401) router.replace('/auth');
+        else setLoadError(e?.message || 'Could not reach the server.');
+      });
     return () => {
       active = false;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [attempt]);
 
   // Realtime + push, once a session exists.
   useEffect(() => {
@@ -74,13 +82,28 @@ export function AppShell({ children }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
+  if (loadError && (!ready || !user)) {
+    return (
+      <div className="flex min-h-dvh items-center justify-center px-4">
+        <ErrorState
+          message={loadError}
+          onRetry={() => {
+            setLoadError(null);
+            setAttempt((n) => n + 1);
+          }}
+        />
+      </div>
+    );
+  }
+
   if (!ready || !user) return <FullPageSpinner label="Opening your space…" />;
 
   return (
     <div className="mx-auto flex min-h-dvh w-full max-w-2xl flex-col">
       <TopBar />
-      <main className="flex-1 px-4 pb-28 pt-4">{children}</main>
+      <main className="pb-nav flex-1 px-4 pt-2">{children}</main>
       <BottomNav />
+      <Celebration />
     </div>
   );
 }

@@ -1,18 +1,19 @@
 'use client';
-import { useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { api } from '@/lib/api-client';
 import { Button } from '@/components/ui/button';
 import { Input, Textarea, Field } from '@/components/ui/input';
-import { Spinner, EmptyState } from '@/components/ui/spinner';
+import { Skeleton, EmptyState, ErrorState } from '@/components/ui/spinner';
 import { Icon } from '@/components/ui/icon';
 import { Modal } from '@/components/dates/modal';
 import {
   CATEGORIES,
-  CATEGORY_EMOJI,
+  CATEGORY_ICON,
   countdownLabel,
+  formatCalendarDate,
   isUpcoming,
+  nextOccurrence,
   dateInputToISO,
 } from '@/components/dates/shared';
 import { cn } from '@/lib/utils';
@@ -28,30 +29,34 @@ const EMPTY_FORM = {
 
 export function DatesTab() {
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(null);
   const [dates, setDates] = useState([]);
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState(EMPTY_FORM);
+  const [errors, setErrors] = useState({});
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(null);
 
-  useEffect(() => {
-    let alive = true;
-    api
+  const load = useCallback(() => {
+    setLoading(true);
+    setLoadError(null);
+    return api
       .get('/api/dates')
-      .then((d) => {
-        if (alive) setDates(d.dates || []);
-      })
-      .catch((e) => toast.error(e.message))
-      .finally(() => alive && setLoading(false));
-    return () => {
-      alive = false;
-    };
+      .then((d) => setDates(d.dates || []))
+      .catch((e) => setLoadError(e.message || 'Could not load your dates.'))
+      .finally(() => setLoading(false));
   }, []);
+
+  useEffect(() => {
+    load();
+  }, [load]);
 
   async function submit(e) {
     e.preventDefault();
-    if (!form.title.trim()) return toast.error('Give it a title 💕');
-    if (!form.date) return toast.error('Pick a date');
+    if (saving) return;
+    if (!form.title.trim()) return setErrors({ title: 'Give it a title' });
+    if (!form.date) return setErrors({ date: 'Pick a date' });
+    setErrors({});
     const remind = Math.max(0, Math.min(60, Number(form.remindDays) || 0));
     setSaving(true);
     try {
@@ -63,21 +68,19 @@ export function DatesTab() {
         remindDays: remind,
         notes: form.notes.trim() || undefined,
       });
-      setDates((prev) =>
-        [...prev, date].sort((a, b) => new Date(a.date) - new Date(b.date))
-      );
+      setDates((prev) => [...prev, date].sort((a, b) => new Date(a.date) - new Date(b.date)));
       setOpen(false);
       setForm(EMPTY_FORM);
-      toast.success('Date saved 🎉');
+      toast.success('Date saved');
     } catch (err) {
-      toast.error(err.message);
+      setErrors({ form: err.message || 'Could not save this date.' });
     } finally {
       setSaving(false);
     }
   }
 
   async function remove(id, title) {
-    if (!confirm(`Delete "${title}"?`)) return;
+    if (deleting || !confirm(`Delete "${title}"?`)) return;
     setDeleting(id);
     try {
       await api.del(`/api/dates/${id}`);
@@ -92,51 +95,44 @@ export function DatesTab() {
 
   if (loading) {
     return (
-      <div className="flex justify-center py-16">
-        <Spinner />
+      <div className="space-y-3" role="status" aria-label="Loading dates">
+        <Skeleton className="h-12 w-full" />
+        <Skeleton className="h-24 w-full" />
+        <Skeleton className="h-24 w-full" />
       </div>
     );
   }
 
-  const upcoming = dates.filter((d) => isUpcoming(d.date));
-  const past = dates.filter((d) => !isUpcoming(d.date));
+  if (loadError) return <ErrorState message={loadError} onRetry={load} />;
+
+  const upcoming = dates
+    .filter((d) => isUpcoming(d.date, d))
+    .sort((a, b) => nextOccurrence(a).days - nextOccurrence(b).days);
+  const past = dates.filter((d) => !isUpcoming(d.date, d));
 
   return (
     <div className="space-y-6">
-      <Button onClick={() => setOpen(true)} className="journal-card w-full py-3 font-serif text-lg font-medium transition-all hover:translate-y-[-2px]">
-        <Icon name="Plus" size={18} /> Add a special day
+      <Button onClick={() => setOpen(true)} className="w-full">
+        <Icon name="Plus" size={18} aria-hidden="true" /> Add a special day
       </Button>
 
       {dates.length === 0 ? (
-        <EmptyState title="No special dates yet">
+        <EmptyState icon="CalendarHeart" title="No special dates yet">
           Add anniversaries, birthdays and milestones so you never miss a moment.
         </EmptyState>
       ) : (
         <div className="space-y-8">
           {upcoming.length > 0 && (
             <Section title="Upcoming Memories">
-              {upcoming.map((d, i) => (
-                <DateCard
-                  key={d.id}
-                  date={d}
-                  index={i}
-                  onDelete={remove}
-                  deleting={deleting === d.id}
-                />
+              {upcoming.map((d) => (
+                <DateRow key={d.id} date={d} onDelete={remove} deleting={deleting === d.id} />
               ))}
             </Section>
           )}
           {past.length > 0 && (
             <Section title="Past Reflections">
-              {past.map((d, i) => (
-                <DateCard
-                  key={d.id}
-                  date={d}
-                  index={i}
-                  faded
-                  onDelete={remove}
-                  deleting={deleting === d.id}
-                />
+              {past.map((d) => (
+                <DateRow key={d.id} date={d} faded onDelete={remove} deleting={deleting === d.id} />
               ))}
             </Section>
           )}
@@ -144,46 +140,51 @@ export function DatesTab() {
       )}
 
       <Modal open={open} onClose={() => setOpen(false)} title="Add a special date">
-        <form onSubmit={submit} className="space-y-5">
-          <Field label="Title">
+        <form onSubmit={submit} className="space-y-5" noValidate>
+          <Field label="Title" error={errors.title}>
             <Input
               value={form.title}
               onChange={(e) => setForm({ ...form, title: e.target.value })}
               placeholder="Our anniversary"
+              maxLength={120}
               autoFocus
-              className="font-serif"
             />
           </Field>
-          <Field label="Category">
-            <div className="grid grid-cols-2 gap-3">
-              {CATEGORIES.map((c) => (
-                <button
-                  key={c.value}
-                  type="button"
-                  onClick={() => setForm({ ...form, category: c.value })}
-                  className={cn(
-                    'journal-card flex flex-col items-center gap-2 py-4 text-sm font-serif font-medium transition-all hover:bg-[var(--primary)]/5',
-                    form.category === c.value
-                      ? 'border-[var(--primary)] text-[var(--primary)] shadow-md'
-                      : 'border-[var(--ink)]/10 text-[var(--muted)]'
-                  )}
-                >
-                  <span className="text-3xl">{c.emoji}</span>
-                  {c.label}
-                </button>
-              ))}
+          <fieldset>
+            <legend className="mb-1.5 text-sm font-medium">Category</legend>
+            <div className="grid grid-cols-2 gap-2" role="radiogroup" aria-label="Category">
+              {CATEGORIES.map((c) => {
+                const active = form.category === c.value;
+                return (
+                  <button
+                    key={c.value}
+                    type="button"
+                    role="radio"
+                    aria-checked={active}
+                    onClick={() => setForm({ ...form, category: c.value })}
+                    className={cn(
+                      'flex min-h-11 items-center justify-center gap-2 rounded-xl text-sm font-medium transition-colors',
+                      active
+                        ? 'bg-[var(--primary)] text-[var(--on-primary)]'
+                        : 'bg-[rgb(var(--card-2))] text-[var(--muted)] hover:text-[var(--text)]'
+                    )}
+                  >
+                    <Icon name={c.icon} size={16} aria-hidden="true" />
+                    {c.label}
+                  </button>
+                );
+              })}
             </div>
-          </Field>
-          <Field label="Date">
+          </fieldset>
+          <Field label="Date" error={errors.date}>
             <Input
               type="date"
               value={form.date}
               onChange={(e) => setForm({ ...form, date: e.target.value })}
-              className="font-serif"
             />
           </Field>
-          <label className="journal-card flex items-center justify-between p-4">
-            <span className="font-serif text-base font-medium">Repeats every year</span>
+          <label className="flex min-h-11 items-center justify-between gap-3 rounded-xl bg-[rgb(var(--card-2))] px-4 py-2">
+            <span className="text-base font-medium">Repeats every year</span>
             <input
               type="checkbox"
               checked={form.recurring}
@@ -194,11 +195,11 @@ export function DatesTab() {
           <Field label="Remind me (days before)" hint="0–60">
             <Input
               type="number"
+              inputMode="numeric"
               min={0}
               max={60}
               value={form.remindDays}
               onChange={(e) => setForm({ ...form, remindDays: e.target.value })}
-              className="font-serif"
             />
           </Field>
           <Field label="Notes (optional)">
@@ -206,12 +207,15 @@ export function DatesTab() {
               value={form.notes}
               onChange={(e) => setForm({ ...form, notes: e.target.value })}
               placeholder="Why this day matters…"
-              className="font-serif"
+              maxLength={500}
             />
           </Field>
-          <Button type="submit" className="journal-card w-full py-3 font-serif text-lg font-medium transition-all hover:translate-y-[-2px]"
-            loading={saving}
-          >
+          {errors.form && (
+            <p role="alert" className="text-sm text-[var(--danger)]">
+              {errors.form}
+            </p>
+          )}
+          <Button type="submit" className="w-full" loading={saving}>
             Save this special day
           </Button>
         </form>
@@ -222,60 +226,44 @@ export function DatesTab() {
 
 function Section({ title, children }) {
   return (
-    <div className="space-y-4">
+    <section className="space-y-3">
       <h3 className="ink-stamp px-1 text-[var(--muted)]">{title}</h3>
-      <div className="space-y-4">{children}</div>
-    </div>
+      <ul className="space-y-2">{children}</ul>
+    </section>
   );
 }
 
-function DateCard({ date, index, onDelete, deleting, faded }) {
+function DateRow({ date, onDelete, deleting, faded }) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.04 }}
-      className="group"
-    >
-      <div className={cn(
-        "journal-card flex items-start gap-4 p-5 transition-all hover:translate-x-1",
-        faded ? 'opacity-70' : ''
-      )}>
-        <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-[var(--primary)]/10 text-3xl">
-          {CATEGORY_EMOJI[date.category] || '📌'}
-        </div>
-        <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-2">
-            <p className="font-serif text-lg font-medium truncate">{date.title}</p>
-            {date.recurring && (
-              <Icon name="Repeat" size={16} className="shrink-0 text-[var(--muted)]" />
-            )}
-          </div>
-          <p className="ink-stamp text-[var(--muted)]">
-            {new Date(date.date).toLocaleDateString(undefined, {
-              month: 'short',
-              day: 'numeric',
-              year: 'numeric',
-            })}
-          </p>
-          <span className="ink-stamp mt-2 inline-block rounded-full bg-[var(--primary)]/10 px-3 py-1 text-[var(--primary)]">
-            {countdownLabel(date.date)}
-          </span>
-          {date.notes && (
-            <p className="mt-3 font-serif text-sm leading-relaxed text-[var(--muted)]">{date.notes}</p>
+    <li className={cn('journal-card flex items-start gap-3 p-4', faded && 'opacity-75')}>
+      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[var(--primary)]/12 text-[var(--primary)]">
+        <Icon name={CATEGORY_ICON[date.category] || 'Pin'} size={22} aria-hidden="true" />
+      </div>
+      <div className="min-w-0 flex-1">
+        <div className="flex items-center gap-2">
+          <p className="truncate font-serif text-lg font-medium">{date.title}</p>
+          {date.recurring && (
+            <Icon name="Repeat" size={16} className="shrink-0 text-[var(--muted)]" aria-label="Repeats every year" />
           )}
         </div>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="shrink-0 text-rose-500 opacity-0 transition-opacity group-hover:opacity-100"
-          loading={deleting}
-          onClick={() => onDelete(date.id, date.title)}
-          aria-label="Delete"
-        >
-          {!deleting && <Icon name="Trash2" size={18} />}
-        </Button>
+        <p className="text-sm tabular-nums text-[var(--muted)]">{formatCalendarDate(date.date)}</p>
+        <span className="ink-stamp mt-1.5 inline-block text-[var(--primary)]">
+          {countdownLabel(date.date, date)}
+        </span>
+        {date.notes && (
+          <p className="mt-2 text-sm leading-relaxed text-[var(--muted)] [overflow-wrap:anywhere]">{date.notes}</p>
+        )}
       </div>
-    </motion.div>
+      <Button
+        variant="ghost"
+        size="icon"
+        className="shrink-0 text-[var(--muted)] hover:text-[var(--danger)]"
+        loading={deleting}
+        onClick={() => onDelete(date.id, date.title)}
+        aria-label={`Delete ${date.title}`}
+      >
+        {!deleting && <Icon name="Trash2" size={18} aria-hidden="true" />}
+      </Button>
+    </li>
   );
 }
