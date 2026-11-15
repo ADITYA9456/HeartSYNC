@@ -219,7 +219,7 @@ export default function SettingsPage() {
                 aria-pressed={active}
               >
                 <span className="flex shrink-0 -space-x-1.5" aria-hidden="true">
-                  {p.swatch.map((c) => (
+                  {p.accent.map((c) => (
                     <span
                       key={c}
                       className="h-5 w-5 rounded-full ring-2 ring-[var(--bg)]"
