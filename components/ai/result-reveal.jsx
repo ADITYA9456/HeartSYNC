@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { m } from 'framer-motion';
+import { m as lm } from 'framer-motion';
 
 // Lightweight typewriter-ish reveal: streams the text in word-by-word, then
 // settles into a static, selectable block (so copy / line-breaks still work).
@@ -26,7 +26,7 @@ export function ResultReveal({ text, className }) {
   }, [text]);
 
   return (
-    <m.p
+    <lm.p
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
@@ -34,6 +34,6 @@ export function ResultReveal({ text, className }) {
     >
       {done ? text : shown}
       {!done && <span className="ml-0.5 inline-block animate-pulse text-[var(--primary)]">▍</span>}
-    </m.p>
+    </lm.p>
   );
 }

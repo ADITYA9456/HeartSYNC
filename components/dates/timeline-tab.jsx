@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { m } from 'framer-motion';
+import { m as lm } from 'framer-motion';
 import { toast } from 'sonner';
 import { api } from '@/lib/api-client';
 import { Button } from '@/components/ui/button';
@@ -99,7 +99,7 @@ export function TimelineTab() {
           <div className="absolute left-3 top-2 bottom-2 w-px bg-[rgb(var(--border)/0.4)]" />
           <div className="space-y-5">
             {events.map((ev, i) => (
-              <m.div
+              <lm.div
                 key={ev.id}
                 className="relative"
                 initial={{ opacity: 0, x: 12 }}
@@ -142,7 +142,7 @@ export function TimelineTab() {
                     />
                   )}
                 </div>
-              </m.div>
+              </lm.div>
             ))}
           </div>
         </div>

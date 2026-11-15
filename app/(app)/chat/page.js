@@ -1,7 +1,7 @@
 'use client';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
-import { AnimatePresence, m } from 'framer-motion';
+import { AnimatePresence, m as lm } from 'framer-motion';
 import { toast } from 'sonner';
 import { ImagePlus, Mic, Send, Square, X } from 'lucide-react';
 import { api } from '@/lib/api-client';

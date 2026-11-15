@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { api } from '@/lib/api-client';
 import { disconnectSocket } from '@/lib/socket-client';
-import { AnimatePresence, m } from 'framer-motion';
+import { AnimatePresence, m as lm } from 'framer-motion';
 import { Check, Copy, Heart, LogOut } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -63,11 +63,11 @@ export function ConnectClient() {
   if (inviteCode) {
     return (
       <main className="mx-auto flex min-h-dvh max-w-md flex-col justify-center gap-6 px-6 text-center">
-        <m.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}>
+        <lm.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}>
           <Heart className="mx-auto h-11 w-11 text-[var(--primary)]" aria-hidden="true" />
           <h1 className="mt-2 font-display text-3xl font-semibold">Your invite is ready</h1>
           <p className="text-sm text-[var(--muted)]">Share this code with your partner.</p>
-        </m.div>
+        </lm.div>
 
         <div className="glass-card flex items-center justify-between gap-3 p-5">
           <span className="font-mono text-2xl font-bold tracking-widest">{inviteCode}</span>
@@ -104,7 +104,7 @@ export function ConnectClient() {
             className={`relative flex-1 rounded-xl py-2 text-sm font-semibold capitalize ${tab === t ? 'text-[var(--on-primary)]' : 'text-[var(--muted)]'}`}
           >
             {tab === t && (
-              <m.span
+              <lm.span
                 layoutId="connect-tab"
                 className="absolute inset-0 -z-10 rounded-xl bg-[var(--primary)]"
               />
@@ -116,16 +116,16 @@ export function ConnectClient() {
 
       <AnimatePresence mode="wait">
         {tab === 'create' ? (
-          <m.div key="c" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="glass-card space-y-4 p-5 text-center">
+          <lm.div key="c" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="glass-card space-y-4 p-5 text-center">
             <p className="text-sm text-[var(--muted)]">
               We&apos;ll generate a private invite code you can text to your partner.
             </p>
             <Button onClick={create} loading={loading} className="w-full">
               Create our space
             </Button>
-          </m.div>
+          </lm.div>
         ) : (
-          <m.div key="j" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="glass-card space-y-4 p-5">
+          <lm.div key="j" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="glass-card space-y-4 p-5">
             <Input
               placeholder="Enter invite code"
               aria-label="Invite code"
@@ -136,7 +136,7 @@ export function ConnectClient() {
             <Button onClick={join} loading={loading} className="w-full">
               Join space
             </Button>
-          </m.div>
+          </lm.div>
         )}
       </AnimatePresence>
 

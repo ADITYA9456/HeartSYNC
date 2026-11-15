@@ -1,7 +1,7 @@
 'use client';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
-import { AnimatePresence, m } from 'framer-motion';
+import { AnimatePresence, m as lm } from 'framer-motion';
 import { toast } from 'sonner';
 import { Plus, X, Loader2, ArrowRight } from 'lucide-react';
 import { api } from '@/lib/api-client';
@@ -50,7 +50,7 @@ export default function GalleryPage() {
 
       <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
         {memories.map((m, i) => (
-          <m.button
+          <lm.button
             key={m.id}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -63,7 +63,7 @@ export default function GalleryPage() {
               alt={m.caption}
               className="h-full w-full rounded-xl object-cover"
             />
-          </m.button>
+          </lm.button>
         ))}
       </div>
 
@@ -85,7 +85,7 @@ export default function GalleryPage() {
 
       {activeMemory && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4 backdrop-blur-sm" onClick={() => setActiveId(null)}>
-          <img src={activeMemory.secure_url} className="max-h-[90vh] rounded-3xl" />
+          <img src={activeMemory.secure_url} alt={activeMemory.caption || 'Shared memory'} className="max-h-[90vh] max-w-full rounded-3xl object-contain" />
         </div>
       )}
     </div>

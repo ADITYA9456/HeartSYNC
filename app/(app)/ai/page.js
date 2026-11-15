@@ -1,6 +1,6 @@
 'use client';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { m, AnimatePresence } from 'framer-motion';
+import { m as lm, AnimatePresence } from 'framer-motion';
 import { formatDistanceToNow } from 'date-fns';
 import { toast } from 'sonner';
 import { api } from '@/lib/api-client';
@@ -163,7 +163,7 @@ export default function AiCopilotPage() {
 
       {/* Workspace — animates between features */}
       <AnimatePresence mode="wait">
-        <m.div
+        <lm.div
           key={active.id}
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
@@ -201,7 +201,7 @@ export default function AiCopilotPage() {
           {/* Result */}
           <AnimatePresence mode="wait">
             {result && (
-              <m.div
+              <lm.div
                 key={result.entry?.id || 'result'}
                 initial={{ opacity: 0, y: 14 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -246,10 +246,10 @@ export default function AiCopilotPage() {
                     </Button>
                   </div>
                 </div>
-              </m.div>
+              </lm.div>
             )}
           </AnimatePresence>
-        </m.div>
+        </lm.div>
       </AnimatePresence>
 
       {/* History */}
@@ -269,14 +269,14 @@ export default function AiCopilotPage() {
               </span>
             )}
           </span>
-          <m.span animate={{ rotate: historyOpen ? 180 : 0 }} transition={{ duration: 0.2 }}>
+          <lm.span animate={{ rotate: historyOpen ? 180 : 0 }} transition={{ duration: 0.2 }}>
             <Icon name="ChevronDown" size={18} className="text-[var(--muted)]" />
-          </m.span>
+          </lm.span>
         </button>
 
         <AnimatePresence initial={false}>
           {historyOpen && (
-            <m.div
+            <lm.div
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
@@ -296,7 +296,7 @@ export default function AiCopilotPage() {
                   history.map((item) => {
                     const isOpen = !!expanded[item.id];
                     return (
-                      <m.div
+                      <lm.div
                         key={item.id}
                         layout
                         initial={{ opacity: 0, y: 8 }}
@@ -378,12 +378,12 @@ export default function AiCopilotPage() {
                             </button>
                           </div>
                         </div>
-                      </m.div>
+                      </lm.div>
                     );
                   })
                 )}
               </div>
-            </m.div>
+            </lm.div>
           )}
         </AnimatePresence>
       </section>
