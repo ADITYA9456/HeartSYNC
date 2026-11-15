@@ -2,9 +2,16 @@
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { api } from '@/lib/api-client';
+import { friendlyError } from '@/lib/friendly-error';
+import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { Input, Textarea, Field } from '@/components/ui/input';
+<<<<<<< HEAD
 import { Skeleton, EmptyState, ErrorState } from '@/components/ui/spinner';
+=======
+import { GlassCard } from '@/components/ui/glass-card';
+import { EmptyState, ErrorState } from '@/components/ui/spinner';
+>>>>>>> origin/main
 import { Icon } from '@/components/ui/icon';
 import { Modal } from '@/components/dates/modal';
 import {
@@ -36,16 +43,32 @@ export function DatesTab() {
   const [errors, setErrors] = useState({});
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(null);
+  const [loadError, setLoadError] = useState(null);
+  const [reloadKey, setReloadKey] = useState(0);
 
   const load = useCallback(() => {
     setLoading(true);
     setLoadError(null);
     return api
       .get('/api/dates')
+<<<<<<< HEAD
       .then((d) => setDates(d.dates || []))
       .catch((e) => setLoadError(e.message || 'Could not load your dates.'))
       .finally(() => setLoading(false));
   }, []);
+=======
+      .then((d) => {
+        if (alive) setDates(d.dates || []);
+      })
+      .catch((e) => {
+        if (alive) setLoadError(friendlyError(e, 'Could not load this right now.'));
+      })
+      .finally(() => alive && setLoading(false));
+    return () => {
+      alive = false;
+    };
+  }, [reloadKey]);
+>>>>>>> origin/main
 
   useEffect(() => {
     load();
@@ -53,10 +76,15 @@ export function DatesTab() {
 
   async function submit(e) {
     e.preventDefault();
+<<<<<<< HEAD
     if (saving) return;
     if (!form.title.trim()) return setErrors({ title: 'Give it a title' });
     if (!form.date) return setErrors({ date: 'Pick a date' });
     setErrors({});
+=======
+    if (!form.title.trim()) return toast.error('Give it a title');
+    if (!form.date) return toast.error('Pick a date');
+>>>>>>> origin/main
     const remind = Math.max(0, Math.min(60, Number(form.remindDays) || 0));
     setSaving(true);
     try {
@@ -93,22 +121,44 @@ export function DatesTab() {
     }
   }
 
+  if (loadError) {
+    return (
+      <ErrorState title="Could not load" onRetry={() => { setLoadError(null); setLoading(true); setReloadKey((k) => k + 1); }}>
+        {loadError}
+      </ErrorState>
+    );
+  }
+
   if (loading) {
     return (
+<<<<<<< HEAD
       <div className="space-y-3" role="status" aria-label="Loading dates">
         <Skeleton className="h-12 w-full" />
         <Skeleton className="h-24 w-full" />
         <Skeleton className="h-24 w-full" />
+=======
+      <div className="space-y-3" aria-busy="true" aria-label="Loading">
+        <Skeleton className="h-12 w-full" />
+        <Skeleton className="h-20 w-full" />
+        <Skeleton className="h-20 w-full" />
+>>>>>>> origin/main
       </div>
     );
   }
 
+<<<<<<< HEAD
   if (loadError) return <ErrorState message={loadError} onRetry={load} />;
 
   const upcoming = dates
     .filter((d) => isUpcoming(d.date, d))
     .sort((a, b) => nextOccurrence(a).days - nextOccurrence(b).days);
   const past = dates.filter((d) => !isUpcoming(d.date, d));
+=======
+  const upcoming = dates
+    .filter((d) => isUpcoming(d.date, d.recurring))
+    .sort((a, b) => nextOccurrence(a.date, a.recurring) - nextOccurrence(b.date, b.recurring));
+  const past = dates.filter((d) => !isUpcoming(d.date, d.recurring));
+>>>>>>> origin/main
 
   return (
     <div className="space-y-6">
@@ -150,6 +200,7 @@ export function DatesTab() {
               autoFocus
             />
           </Field>
+<<<<<<< HEAD
           <fieldset>
             <legend className="mb-1.5 text-sm font-medium">Category</legend>
             <div className="grid grid-cols-2 gap-2" role="radiogroup" aria-label="Category">
@@ -174,6 +225,31 @@ export function DatesTab() {
                   </button>
                 );
               })}
+=======
+          <Field label="Category" group>
+            <div className="grid grid-cols-4 gap-2">
+              {CATEGORIES.map((c) => (
+                <button
+                  key={c.value}
+                  type="button"
+                  onClick={() => setForm({ ...form, category: c.value })}
+                  className="flex flex-col items-center gap-1 rounded-2xl border px-1 py-2 text-xs font-medium transition"
+                  style={{
+                    borderColor:
+                      form.category === c.value
+                        ? 'var(--primary)'
+                        : 'rgb(var(--border)/0.2)',
+                    background:
+                      form.category === c.value
+                        ? 'color-mix(in srgb, var(--primary) 12%, transparent)'
+                        : 'transparent',
+                  }}
+                >
+                  <Icon name={c.icon} size={20} aria-hidden="true" />
+                  {c.label}
+                </button>
+              ))}
+>>>>>>> origin/main
             </div>
           </fieldset>
           <Field label="Date" error={errors.date}>
@@ -235,6 +311,7 @@ function Section({ title, children }) {
 
 function DateRow({ date, onDelete, deleting, faded }) {
   return (
+<<<<<<< HEAD
     <li className={cn('journal-card flex items-start gap-3 p-4', faded && 'opacity-75')}>
       <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[var(--primary)]/12 text-[var(--primary)]">
         <Icon name={CATEGORY_ICON[date.category] || 'Pin'} size={22} aria-hidden="true" />
@@ -245,6 +322,49 @@ function DateRow({ date, onDelete, deleting, faded }) {
           {date.recurring && (
             <Icon name="Repeat" size={16} className="shrink-0 text-[var(--muted)]" aria-label="Repeats every year" />
           )}
+=======
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: index * 0.04 }}
+    >
+      <GlassCard className={faded ? 'opacity-70' : ''}>
+        <div className="flex items-start gap-3">
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[rgb(var(--card)/0.6)] text-2xl">
+            <Icon name={CATEGORY_ICON[date.category] || 'Pin'} size={22} className="text-[var(--primary)]" aria-hidden="true" />
+          </div>
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-2">
+              <p className="truncate font-semibold">{date.title}</p>
+              {date.recurring && (
+                <Icon name="Repeat" size={13} className="shrink-0 text-[var(--muted)]" />
+              )}
+            </div>
+            <p className="text-xs text-[var(--muted)]">
+              {new Date(date.date).toLocaleDateString(undefined, {
+                month: 'long',
+                day: 'numeric',
+                year: 'numeric',
+              })}
+            </p>
+            <span className="mt-1 inline-block rounded-full bg-[color-mix(in_srgb,var(--primary)_14%,transparent)] px-2 py-0.5 text-xs font-semibold text-[var(--primary)]">
+              {countdownLabel(date.date, date.recurring)}
+            </span>
+            {date.notes && (
+              <p className="mt-1.5 text-sm text-[var(--muted)]">{date.notes}</p>
+            )}
+          </div>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="shrink-0 text-[var(--danger-text)]"
+            loading={deleting}
+            onClick={() => onDelete(date.id, date.title)}
+            aria-label="Delete"
+          >
+            {!deleting && <Icon name="Trash2" size={18} />}
+          </Button>
+>>>>>>> origin/main
         </div>
         <p className="text-sm tabular-nums text-[var(--muted)]">{formatCalendarDate(date.date)}</p>
         <span className="ink-stamp mt-1.5 inline-block text-[var(--primary)]">

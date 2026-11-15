@@ -1,4 +1,5 @@
 'use client';
+import { Icon } from '@/components/ui/icon';
 import { useCallback, useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
@@ -14,8 +15,14 @@ import {
 import { toast } from 'sonner';
 import { api } from '@/lib/api-client';
 import { Button } from '@/components/ui/button';
+<<<<<<< HEAD
 import { Spinner } from '@/components/ui/spinner';
 import { cn } from '@/lib/utils';
+=======
+import { Spinner, ErrorState } from '@/components/ui/spinner';
+import { Skeleton } from '@/components/ui/skeleton';
+import { friendlyError } from '@/lib/friendly-error';
+>>>>>>> origin/main
 
 const AUTH_URL = '/api/youtube/auth';
 
@@ -41,8 +48,13 @@ function PlaylistCard({ playlist, index }) {
             className="h-full w-full object-cover"
           />
         ) : (
+<<<<<<< HEAD
           <div className="flex h-full w-full items-center justify-center bg-[var(--ink)]/5">
             <CassetteTape className="h-10 w-10 text-[var(--muted)]" />
+=======
+          <div className="flex h-full w-full items-center justify-center bg-[var(--primary)]">
+            <Music2 className="h-10 w-10 text-[var(--on-primary)]" />
+>>>>>>> origin/main
           </div>
         )}
         {count != null && (
@@ -80,8 +92,13 @@ function ConnectState({ onConnect, connecting }) {
       transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
       className="journal-card mx-auto mt-12 flex max-w-sm flex-col items-center gap-6 p-10 text-center"
     >
+<<<<<<< HEAD
       <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-[var(--primary)]/10 shadow-inner shadow-black/5 dark:shadow-white/5">
         <Radio className="h-10 w-10 text-[var(--primary)]" />
+=======
+      <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-[var(--primary)] shadow-md shadow-black/8">
+        <Music className="h-9 w-9 text-[var(--on-primary)]" />
+>>>>>>> origin/main
       </div>
       <div className="space-y-2">
         <h2 className="font-serif text-2xl font-medium text-[var(--text)]">
@@ -119,7 +136,7 @@ export default function MusicPage() {
     const params = new URLSearchParams(window.location.search);
     const yt = params.get('yt');
     if (yt === 'connected') {
-      toast.success('YouTube connected 🎶');
+      toast.success('YouTube connected');
     } else if (yt === 'error') {
       toast.error('Could not connect YouTube');
     }
@@ -138,16 +155,18 @@ export default function MusicPage() {
     return api.get(`/api/youtube/playlists${qs}`);
   }, []);
 
+  const [loadError, setLoadError] = useState(null);
+
   const load = useCallback(async () => {
     setLoading(true);
+    setLoadError(null);
     try {
       const data = await fetchPlaylists();
       setConnected(!!data.connected);
       setPlaylists(data.playlists || []);
       setNextPageToken(data.nextPageToken || null);
     } catch (err) {
-      toast.error(err.message || 'Failed to load playlists');
-      setConnected(false);
+      setLoadError(friendlyError(err, 'Could not reach YouTube right now.'));
     } finally {
       setLoading(false);
     }
@@ -199,11 +218,24 @@ export default function MusicPage() {
   };
 
   return (
+<<<<<<< HEAD
     <div className="mx-auto max-w-2xl px-4 py-8">
       <header className="mb-12 flex items-center justify-between">
         <div>
           <h1 className="display-title text-5xl">Our Soundtrack</h1>
           <p className="ink-stamp mt-2 text-[var(--muted)]">Playlists for us</p>
+=======
+    <div>
+      <header className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <h1 className="flex items-center gap-2 font-display text-4xl font-semibold tracking-tight">
+            
+            Music
+          </h1>
+          <p className="mt-1 text-sm text-[var(--muted)]">
+            Playlists for the two of you.
+          </p>
+>>>>>>> origin/main
         </div>
         {connected && !loading && (
           <Button
@@ -220,10 +252,19 @@ export default function MusicPage() {
       </header>
 
       {loading ? (
+<<<<<<< HEAD
         <div className="flex flex-col items-center justify-center gap-3 py-24">
           <Spinner className="h-7 w-7" />
           <p className="ink-stamp text-[var(--muted)]">Tuning in…</p>
+=======
+        <div className="mt-6 grid grid-cols-2 gap-3" aria-busy="true" aria-label="Loading playlists">
+          {[0, 1, 2, 3].map((i) => (
+            <Skeleton key={i} className="aspect-video w-full" />
+          ))}
+>>>>>>> origin/main
         </div>
+      ) : loadError ? (
+        <ErrorState title="Playlists did not load" onRetry={load}>{loadError}</ErrorState>
       ) : !connected ? (
         <ConnectState onConnect={handleConnect} connecting={connecting} />
       ) : playlists.length === 0 ? (
@@ -232,8 +273,13 @@ export default function MusicPage() {
           animate={{ opacity: 1, y: 0 }}
           className="journal-card mt-6 flex flex-col items-center gap-4 p-10 text-center rounded-2xl"
         >
+<<<<<<< HEAD
           <CassetteTape className="h-12 w-12 text-[var(--primary)]" />
           <h3 className="font-serif text-xl font-medium">No playlists yet</h3>
+=======
+          <Icon name="Music" size={36} className="text-[var(--primary)]" aria-hidden="true" />
+          <h3 className="text-lg font-semibold">No playlists yet</h3>
+>>>>>>> origin/main
           <p className="max-w-xs text-sm text-[var(--muted)]">
             We couldn&apos;t find any playlists on your YouTube account. Create one to get started!
           </p>

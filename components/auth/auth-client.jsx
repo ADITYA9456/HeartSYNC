@@ -10,7 +10,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
-import { HeartMark } from '@/components/ui/heart-mark';
+import { Logo } from '@/components/brand/logo';
 
 export function AuthClient() {
   const router = useRouter();
@@ -42,7 +42,7 @@ export function AuthClient() {
       } else {
         const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
         await api.post('/api/auth/register', { ...values, timezone: tz });
-        toast.success('Welcome to HeartSYNC 💞');
+        toast.success('Welcome to HeartSYNC');
         go(false);
       }
     } catch (e) {
@@ -72,10 +72,10 @@ export function AuthClient() {
   return (
     <main className="mx-auto grid min-h-dvh w-full max-w-5xl items-center gap-10 px-6 py-10 lg:grid-cols-[1fr_0.8fr] lg:gap-20 lg:px-12">
       <section className="hidden max-w-md space-y-8 lg:block">
-        <HeartMark size={64} />
+        <Logo size={44} priority />
         <div className="space-y-4">
           <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[var(--primary)]">A private space for two</p>
-          <h1 className="text-balance text-6xl font-black leading-[0.95] tracking-[-0.06em]">
+          <h1 className="text-balance font-display text-6xl font-semibold leading-[0.98] tracking-tight">
             Keep the little things close.
           </h1>
           <p className="max-w-sm text-base leading-relaxed text-[var(--muted)]">
@@ -91,12 +91,11 @@ export function AuthClient() {
 
       <section className="mx-auto w-full max-w-md">
         <div className="mb-8 lg:hidden">
-          <HeartMark size={52} className="mb-5" />
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--primary)]">HeartSYNC</p>
+          <Logo size={40} priority />
         </div>
         <div className="surface-elevated p-6 sm:p-8">
           <div className="mb-7 space-y-2">
-            <h1 className="text-2xl font-bold tracking-tight">
+            <h1 className="font-display text-3xl font-semibold tracking-tight">
               {isLogin ? 'Welcome back.' : 'Start your shared space.'}
             </h1>
             <p className="text-sm text-[var(--muted)]">
@@ -141,7 +140,7 @@ export function AuthClient() {
           <span className="h-px flex-1 bg-[rgb(var(--border)/0.2)]" />
         </div>
 
-          {googleReady && (
+          {googleReady && process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID && (
             <div className="flex justify-center [color-scheme:light]">
               <GoogleLogin
                 onSuccess={onGoogle}

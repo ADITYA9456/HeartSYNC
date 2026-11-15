@@ -5,8 +5,16 @@ import { toast } from 'sonner';
 import { api } from '@/lib/api-client';
 import { useAppStore } from '@/lib/store';
 import { Button } from '@/components/ui/button';
+<<<<<<< HEAD
 import { Input, Textarea } from '@/components/ui/input';
 import { Spinner, EmptyState } from '@/components/ui/spinner';
+=======
+import { Field, Input, Textarea } from '@/components/ui/input';
+import { GlassCard } from '@/components/ui/glass-card';
+import { EmptyState, ErrorState } from '@/components/ui/spinner';
+import { PageSkeleton } from '@/components/ui/skeleton';
+import { friendlyError } from '@/lib/friendly-error';
+>>>>>>> origin/main
 import { Icon } from '@/components/ui/icon';
 import { cn } from '@/lib/utils';
 
@@ -20,13 +28,15 @@ export default function ProductivityPage() {
   const [dueAt, setDueAt] = useState('');
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [loadError, setLoadError] = useState(null);
 
   async function load() {
     try {
+      setLoadError(null);
       const data = await api.get('/api/productivity/tasks');
       setTasks(data.tasks || []);
     } catch (e) {
-      toast.error(e.message || 'Could not load tasks');
+      setLoadError(friendlyError(e, 'Could not load your tasks.'));
     } finally {
       setLoading(false);
     }
@@ -54,7 +64,7 @@ export default function ProductivityPage() {
       setDueAt('');
       toast.success('Task added');
     } catch (e) {
-      toast.error(e.message || 'Could not add task');
+      toast.error(friendlyError(e, 'Could not add the task. Try again.'));
     } finally {
       setSaving(false);
     }
@@ -83,9 +93,17 @@ export default function ProductivityPage() {
 
   const openCount = useMemo(() => tasks.filter((task) => task.status !== 'done').length, [tasks]);
 
-  if (loading) return <div className="flex justify-center py-16"><Spinner /></div>;
+  if (loading) return <PageSkeleton rows={3} />;
+  if (loadError) {
+    return (
+      <ErrorState title="Tasks did not load" onRetry={() => { setLoading(true); load(); }}>
+        {loadError}
+      </ErrorState>
+    );
+  }
 
   return (
+<<<<<<< HEAD
     <div className="mx-auto max-w-2xl px-4 py-8 space-y-8">
       <header className="text-center">
         <h1 className="display-title text-5xl">Our Shared Ledger</h1>
@@ -120,6 +138,29 @@ export default function ProductivityPage() {
                 onChange={(event) => setAssignedTo(event.target.value)}
                 className="w-full rounded-xl border border-[var(--ink)]/10 bg-[var(--paper)] px-4 py-3 text-[var(--text)] outline-none focus:border-[var(--primary)] transition"
               >
+=======
+    <div className="space-y-6 pb-6">
+      <header className="space-y-1.5">
+        <div className="flex items-center gap-2">
+          <h1 className="font-display text-4xl font-semibold tracking-tight">Tasks</h1>
+        </div>
+        <p className="text-sm text-[var(--muted)]">{openCount} open {openCount === 1 ? 'task' : 'tasks'} for your shared plans.</p>
+      </header>
+
+      <GlassCard>
+        <form onSubmit={addTask} className="space-y-3">
+          <h2 className="font-semibold">Add a shared task</h2>
+          <Field label="Task">
+            <Input id="task-title" value={title} onChange={(event) => setTitle(event.target.value)} placeholder="What needs doing?" maxLength={160} required />
+          </Field>
+          <Field label="Details (optional)">
+            <Textarea value={description} onChange={(event) => setDescription(event.target.value)} placeholder="Anything to remember…" rows={3} maxLength={1000} />
+          </Field>
+          <div className="grid min-w-0 gap-3 sm:grid-cols-2 [&>label]:min-w-0">
+            <label className="space-y-1.5 text-sm font-medium">
+              Assign to
+              <select value={assignedTo} onChange={(event) => setAssignedTo(event.target.value)} className="min-h-11 w-full min-w-0 rounded-2xl border border-[rgb(var(--border)/0.16)] bg-[var(--surface)] px-4 py-3 text-[var(--text)]">
+>>>>>>> origin/main
                 <option value="">Anyone</option>
                 <option value={user?.id}>Me</option>
                 {partner && <option value={partner.id}>{partner.name}</option>}
@@ -143,7 +184,17 @@ export default function ProductivityPage() {
       <section className="space-y-4">
         <h2 className="ink-stamp px-1 text-[var(--muted)]">Our Shared Tasks</h2>
         {tasks.length === 0 ? (
+<<<<<<< HEAD
           <EmptyState title="Nothing planned yet">Add a task to start organizing life together.</EmptyState>
+=======
+          <EmptyState
+            icon="ListTodo"
+            title="Nothing planned yet"
+            action={<Button variant="glass" onClick={() => document.getElementById('task-title')?.focus()}>Add the first task</Button>}
+          >
+            Add a task to start organizing life together.
+          </EmptyState>
+>>>>>>> origin/main
         ) : (
           tasks.map((task) => (
             <div key={task.id}
@@ -158,6 +209,7 @@ export default function ProductivityPage() {
                 <Icon name={task.status === 'done' ? 'CheckSquare' : 'Square'} size={22} />
               </button>
               <div className="min-w-0 flex-1">
+<<<<<<< HEAD
                 <p className={cn("font-serif text-lg font-medium truncate", task.status === 'done' ? 'line-through text-[var(--muted)]' : '')}>{task.title}</p>
                 {task.description && <p className="mt-1 font-serif text-sm leading-relaxed text-[var(--muted)]">{task.description}</p>}
                 <p className="ink-stamp mt-2 text-[var(--muted)]">
@@ -169,6 +221,16 @@ export default function ProductivityPage() {
                 className="shrink-0 text-rose-500 opacity-0 transition-opacity group-hover:opacity-100"
                 variant="ghost" size="icon"
               >
+=======
+                <p className={`font-semibold ${task.status === 'done' ? 'line-through' : ''}`}>{task.title}</p>
+                {task.description && <p className="mt-1 text-sm text-[var(--muted)]">{task.description}</p>}
+                <p className="mt-2 text-xs text-[var(--muted)]">
+                  {task.assigned_to === user?.id ? 'Assigned to you' : task.assigned_to === partner?.id ? `Assigned to ${partner.name}` : 'Shared'}
+                  {task.due_at ? ` · Due ${new Date(task.due_at).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' })}` : ''}
+                </p>
+              </div>
+              <button type="button" aria-label="Delete task" onClick={() => deleteTask(task)} className="shrink-0 text-[var(--muted)] hover:text-[var(--danger-text)]">
+>>>>>>> origin/main
                 <Icon name="Trash2" size={18} />
               </Button>
             </div>

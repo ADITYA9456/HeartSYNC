@@ -19,11 +19,19 @@ export default function DatesPage() {
   const [tab, setTab] = useState('dates');
 
   return (
+<<<<<<< HEAD
     <div className="screen-in space-y-5 py-2">
       <header className="space-y-1 text-center">
         <h1 className="display-title">Moments &amp; Plans</h1>
         <p className="text-sm text-[var(--muted)]">Our shared history and future</p>
       </header>
+=======
+    <div className="space-y-5">
+      <div>
+        <h1 className="px-1 font-display text-4xl font-semibold tracking-tight">Dates</h1>
+        <p className="px-1 text-sm text-[var(--muted)]">Dates, memories &amp; plans — together.</p>
+      </div>
+>>>>>>> origin/main
 
       <div role="tablist" aria-label="Dates sections" className="flex gap-1 overflow-x-auto rounded-xl bg-[rgb(var(--card-2))] p-1 no-scrollbar">
         {TABS.map((t) => {
@@ -31,6 +39,7 @@ export default function DatesPage() {
           return (
             <button
               key={t.id}
+<<<<<<< HEAD
               id={`tab-${t.id}`}
               role="tab"
               aria-selected={active}
@@ -41,6 +50,18 @@ export default function DatesPage() {
                 active
                   ? 'bg-[var(--primary)] text-[var(--on-primary)]'
                   : 'text-[var(--muted)] hover:text-[var(--text)]'
+=======
+              onClick={() => switchTo(t.id)}
+              className="relative z-10 flex items-center justify-center gap-1.5 rounded-xl py-2 text-sm font-semibold transition-colors"
+              style={{ color: active ? 'var(--on-primary)' : 'var(--muted)' }}
+            >
+              {active && (
+                <motion.span
+                  layoutId="tab-pill"
+                  className="absolute inset-0 -z-10 rounded-xl bg-[var(--primary)] shadow-md shadow-black/8"
+                  transition={{ type: 'spring', damping: 24, stiffness: 320 }}
+                />
+>>>>>>> origin/main
               )}
             >
               {t.label}

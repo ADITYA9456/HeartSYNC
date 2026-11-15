@@ -1,4 +1,5 @@
 'use client';
+<<<<<<< HEAD
 
 export const CATEGORIES = [
   { value: 'anniversary', label: 'Anniversary', icon: 'Gem' },
@@ -68,15 +69,59 @@ export function countdownLabel(iso, event) {
   const days = event ? nextOccurrence({ ...event, date: iso })?.days : daysFromToday(iso);
   if (days == null) return '';
   if (days === 0) return 'Today';
+=======
+import { differenceInCalendarDays, isToday, isPast, startOfDay } from 'date-fns';
+
+export const CATEGORIES = [
+  { value: 'anniversary', label: 'Anniversary', emoji: '💍', icon: 'Gem' },
+  { value: 'birthday', label: 'Birthday', emoji: '🎂', icon: 'Cake' },
+  { value: 'milestone', label: 'Milestone', emoji: '⭐', icon: 'Star' },
+  { value: 'other', label: 'Other', emoji: '📌', icon: 'Pin' },
+];
+
+// Icons (lucide) shown in the UI; the emoji map stays for any other callers.
+export const CATEGORY_ICON = { anniversary: 'Gem', birthday: 'Cake', milestone: 'Star', other: 'Pin' };
+
+export const CATEGORY_EMOJI = {
+  anniversary: '💍',
+  birthday: '🎂',
+  milestone: '⭐',
+  other: '📌',
+};
+
+// For recurring dates (birthdays, anniversaries) move the date to its next
+// yearly occurrence: this year, or next year if it already passed.
+export function nextOccurrence(dateStr, recurring = false) {
+  const d = new Date(dateStr);
+  if (!recurring || Number.isNaN(d.getTime())) return d;
+  const today = startOfDay(new Date());
+  const next = new Date(d);
+  next.setFullYear(today.getFullYear());
+  if (startOfDay(next) < today) next.setFullYear(today.getFullYear() + 1);
+  return next;
+}
+
+// Pretty "in N days" / "today" / "N days ago" countdown.
+export function countdownLabel(dateStr, recurring = false) {
+  const d = nextOccurrence(dateStr, recurring);
+  if (isToday(d)) return 'Today';
+  const days = differenceInCalendarDays(d, new Date());
+>>>>>>> origin/main
   if (days === 1) return 'Tomorrow';
   if (days > 1) return `in ${days} days`;
   if (days === -1) return 'Yesterday';
   return `${Math.abs(days)} days ago`;
 }
 
+<<<<<<< HEAD
 export function isUpcoming(iso, event) {
   const days = event ? nextOccurrence({ ...event, date: iso })?.days : daysFromToday(iso);
   return days != null && days >= 0;
+=======
+export function isUpcoming(dateStr, recurring = false) {
+  const d = nextOccurrence(dateStr, recurring);
+  return isToday(d) || !isPast(d);
+>>>>>>> origin/main
 }
 
 // Convert a local <input type="date"> value (yyyy-MM-dd) to an ISO string.

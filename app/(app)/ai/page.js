@@ -27,6 +27,10 @@ export default function AiCopilotPage() {
   const [expanded, setExpanded] = useState({}); // entryId -> bool
 
   const lastPromptRef = useRef('');
+  const activeIdRef = useRef(activeId);
+  useEffect(() => {
+    activeIdRef.current = activeId;
+  }, [activeId]);
 
   const active = useMemo(
     () => AI_FEATURES.find((f) => f.id === activeId) || AI_FEATURES[0],
@@ -57,7 +61,7 @@ export default function AiCopilotPage() {
   async function generate(overridePrompt) {
     const p = (overridePrompt ?? prompt).trim();
     if (!p) {
-      toast.error('Tell the Copilot what you have in mind first 💭');
+      toast.error('Tell the Copilot what you have in mind first');
       return;
     }
     if (p.length > MAX) {
@@ -66,10 +70,13 @@ export default function AiCopilotPage() {
     }
     setGenerating(true);
     lastPromptRef.current = p;
+    const feature = activeId;
     try {
-      const data = await api.post('/api/ai', { feature: activeId, prompt: p });
+      const data = await api.post('/api/ai', { feature, prompt: p });
+      // Ignore a late answer if the user switched feature meanwhile.
+      if (activeIdRef.current !== feature) return;
       setResult(data);
-      loadHistory(activeId);
+      loadHistory(feature);
     } catch (e) {
       // 429 = too fast, 502 = copilot unavailable — both come through as err.message.
       toast.error(e.message);
@@ -81,7 +88,7 @@ export default function AiCopilotPage() {
   async function copyResult(text) {
     try {
       await navigator.clipboard.writeText(text);
-      toast.success('Copied 💌');
+      toast.success('Copied');
     } catch {
       toast.error('Could not copy');
     }
@@ -94,7 +101,7 @@ export default function AiCopilotPage() {
       const { entry } = await api.patch(`/api/ai/${result.entry.id}`, { favorite: true });
       setResult((r) => (r ? { ...r, entry } : r));
       setHistory((h) => h.map((x) => (x.id === entry.id ? entry : x)));
-      toast.success('Saved to favorites ⭐');
+      toast.success('Saved to favorites');
     } catch (e) {
       toast.error(e.message);
     } finally {
@@ -132,9 +139,20 @@ export default function AiCopilotPage() {
 
   return (
     <div className="space-y-6 pb-6">
+<<<<<<< HEAD
       <header className="space-y-2 text-center">
         <h1 className="display-title text-5xl">Our AI Copilot</h1>
         <p className="ink-stamp text-[var(--muted)]">Your little love assistant</p>
+=======
+      {/* Header */}
+      <header className="space-y-1.5">
+        <div className="flex items-center gap-2">
+          <h1 className="font-display text-4xl font-semibold tracking-tight">Copilot</h1>
+        </div>
+        <p className="text-sm text-[var(--muted)]">
+          Your little love assistant — date plans, captions, notes, apologies and gift ideas, made just for the two of you.
+        </p>
+>>>>>>> origin/main
       </header>
 
       {/* Feature selector */}
@@ -150,8 +168,13 @@ export default function AiCopilotPage() {
               className={[
                 'relative flex shrink-0 items-center gap-1.5 rounded-2xl px-3.5 py-2 text-sm font-semibold transition-all active:scale-[0.97]',
                 isActive
+<<<<<<< HEAD
                   ? 'journal-card text-[var(--primary)] shadow-md'
                   : 'journal-card text-[var(--muted)] hover:text-[var(--text)]',
+=======
+                  ? 'text-[var(--on-primary)] bg-[var(--primary)] shadow-md shadow-black/8'
+                  : 'surface-flat text-[var(--text)]',
+>>>>>>> origin/main
               ].join(' ')}
             >
               <Icon name={f.icon} size={16} />
@@ -179,6 +202,7 @@ export default function AiCopilotPage() {
             value={prompt}
             onChange={(e) => setPrompt(e.target.value.slice(0, MAX))}
             placeholder={`e.g. ${active.placeholder}`}
+            aria-label={`${active.label} prompt`}
             rows={4}
             disabled={generating}
             className="journal-card font-serif"
@@ -193,7 +217,7 @@ export default function AiCopilotPage() {
               loading={generating}
               disabled={!prompt.trim()}
             >
-              {!generating && <Icon name="Sparkles" size={16} />}
+              {!generating && <Icon name="CopilotMark" size={16} />}
               {generating ? 'Conjuring…' : 'Generate'}
             </Button>
           </div>
@@ -208,9 +232,15 @@ export default function AiCopilotPage() {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
               >
+<<<<<<< HEAD
                 <div className="journal-card space-y-4 p-5">
                   <div className="flex items-center gap-2 ink-stamp text-[var(--primary)]">
                     <Icon name="Sparkles" size={16} />
+=======
+                <GlassCard className="space-y-4">
+                  <div className="flex items-center gap-2 text-[var(--primary)]">
+                    <Icon name="CopilotMark" size={16} />
+>>>>>>> origin/main
                     <span className="text-xs font-semibold uppercase tracking-wide">
                       {active.label}
                     </span>
@@ -329,7 +359,7 @@ export default function AiCopilotPage() {
                               type="button"
                               onClick={() => deleteItem(item)}
                               aria-label="Delete"
-                              className="rounded-full p-1.5 text-[var(--muted)] transition hover:bg-rose-500/10 hover:text-rose-500"
+                              className="rounded-full p-1.5 text-[var(--muted)] transition hover:bg-[color-mix(in_srgb,var(--danger)_10%,transparent)] hover:text-[var(--danger-text)]"
                             >
                               <Icon name="Trash2" size={16} />
                             </button>

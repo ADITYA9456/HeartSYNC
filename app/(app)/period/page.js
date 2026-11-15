@@ -5,7 +5,14 @@ import { api } from '@/lib/api-client';
 import { useAppStore } from '@/lib/store';
 import { Button } from '@/components/ui/button';
 import { Input, Textarea, Field } from '@/components/ui/input';
+<<<<<<< HEAD
 import { Skeleton, ErrorState } from '@/components/ui/spinner';
+=======
+import { GlassCard } from '@/components/ui/glass-card';
+import { EmptyState, ErrorState } from '@/components/ui/spinner';
+import { Skeleton, PageSkeleton } from '@/components/ui/skeleton';
+import { friendlyError } from '@/lib/friendly-error';
+>>>>>>> origin/main
 import { Icon } from '@/components/ui/icon';
 import { MoodFace } from '@/components/period/mood-face';
 import {
@@ -39,7 +46,10 @@ export default function PeriodPage() {
   const [saving, setSaving] = useState(false);
   const [mine, setMine] = useState(null);
   const [partnerTracker, setPartnerTracker] = useState(null);
+  const [loadError, setLoadError] = useState(null);
+  const [reloadKey, setReloadKey] = useState(0);
 
+<<<<<<< HEAD
   // Always re-read both trackers from the server (no cached copy).
   const refresh = useCallback(async ({ silent = false } = {}) => {
     try {
@@ -53,6 +63,25 @@ export default function PeriodPage() {
       setLoading(false);
     }
   }, []);
+=======
+  useEffect(() => {
+    let alive = true;
+    api
+      .get('/api/period')
+      .then((d) => {
+        if (!alive) return;
+        setMine(d.mine || null);
+        setPartnerTracker(d.partner || null);
+      })
+      .catch((e) => {
+        if (alive) setLoadError(friendlyError(e, 'Could not load your tracker.'));
+      })
+      .finally(() => alive && setLoading(false));
+    return () => {
+      alive = false;
+    };
+  }, [reloadKey]);
+>>>>>>> origin/main
 
   useEffect(() => {
     refresh();
@@ -99,24 +128,42 @@ export default function PeriodPage() {
     }
   }
 
-  if (loading) {
+  if (loading) return <PageSkeleton rows={3} />;
+
+  // Never fall through to the opt-in screen on a failed load: enabling would
+  // overwrite an existing tracker with empty data.
+  if (loadError) {
     return (
+<<<<<<< HEAD
       <div className="mx-auto max-w-2xl space-y-4 px-1 py-6" role="status" aria-label="Loading wellness">
         <Skeleton className="mx-auto h-10 w-56" />
         <Skeleton className="h-40 w-full" />
         <Skeleton className="h-32 w-full" />
       </div>
+=======
+      <ErrorState title="Wellness did not load" onRetry={() => { setLoadError(null); setLoading(true); setReloadKey((k) => k + 1); }}>
+        {loadError}
+      </ErrorState>
+>>>>>>> origin/main
     );
   }
 
   if (loadError) return <ErrorState message={loadError} onRetry={() => { setLoading(true); refresh(); }} />;
 
   return (
+<<<<<<< HEAD
     <div className="screen-in mx-auto max-w-2xl space-y-6 py-4">
       <header className="space-y-1 text-center">
         <h1 className="display-title">Wellness Tracker</h1>
         <p className="text-sm text-[var(--muted)]">
           A private space to track your cycle and moods, gently and intimately.
+=======
+    <div className="space-y-5">
+      <div>
+        <h1 className="px-1 font-display text-4xl font-semibold tracking-tight">Wellness</h1>
+        <p className="px-1 text-sm text-[var(--muted)]">
+          A private space to track your cycle and moods.
+>>>>>>> origin/main
         </p>
       </header>
 
@@ -142,6 +189,7 @@ export default function PeriodPage() {
 /* ---------- Opt-in ---------- */
 function OptIn({ onEnable, enabling }) {
   return (
+<<<<<<< HEAD
     <div className="anchor-card space-y-5 p-8 text-center">
       <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[var(--primary)]/15 text-[var(--primary)]">
         <Icon name="Flower2" size={26} />
@@ -153,6 +201,14 @@ function OptIn({ onEnable, enabling }) {
         </p>
       </div>
       <Button onClick={onEnable} loading={enabling}>
+=======
+    <GlassCard className="text-center">
+      <EmptyState icon="Flower2" title="A space that's just yours">
+        Track your cycle and moods, gently and privately. Nothing is shared unless
+        you choose to. You can turn this off any time.
+      </EmptyState>
+      <Button onClick={onEnable} loading={enabling} className="mx-auto">
+>>>>>>> origin/main
         Enable tracker
       </Button>
       <p className="flex items-center justify-center gap-1.5 ink-stamp text-[var(--muted)]">
@@ -175,11 +231,21 @@ function PredictionCard({ tracker }) {
 
   if (!p?.hasCycle) {
     return (
+<<<<<<< HEAD
       <div className="anchor-card space-y-4 p-8 text-center">
         <Icon name="CalendarDays" size={28} className="mx-auto text-[var(--primary)]" />
         <h2 className="font-serif text-2xl font-medium">No cycles logged yet</h2>
         <Button onClick={scrollToLog}>Log a period</Button>
       </div>
+=======
+      <GlassCard className="text-center">
+        <Icon name="CalendarDays" size={32} className="mx-auto text-[var(--primary)]" aria-hidden="true" />
+        <p className="mt-2 font-semibold">No cycles logged yet</p>
+        <p className="mt-1 text-sm text-[var(--muted)]">
+          Log your first period below to start seeing gentle predictions.
+        </p>
+      </GlassCard>
+>>>>>>> origin/main
     );
   }
 
@@ -257,7 +323,11 @@ function Settings({ tracker, onSave, saving }) {
         className="flex min-h-14 w-full items-center justify-between gap-4 rounded-xl bg-[rgb(var(--card-2))] p-4 text-left disabled:opacity-60"
       >
         <span className="flex items-center gap-3">
+<<<<<<< HEAD
           <Icon name={shared ? 'Heart' : 'Lock'} size={22} className="text-[var(--primary)]" />
+=======
+          <Icon name={shared ? 'Users' : 'Lock'} size={22} className="text-[var(--primary)]" aria-hidden="true" />
+>>>>>>> origin/main
           <span>
             <span className="block font-serif text-lg font-medium">
               {shared ? 'Shared with partner' : 'Private'}
@@ -268,8 +338,17 @@ function Settings({ tracker, onSave, saving }) {
           </span>
         </span>
         <span
+<<<<<<< HEAD
           aria-hidden="true"
           className={'flex h-6 w-11 shrink-0 items-center rounded-full p-0.5 transition-colors ' + (shared ? 'bg-[var(--primary)]' : 'bg-[var(--muted)]/40')}
+=======
+          className={
+            'relative h-6 w-11 shrink-0 rounded-full transition-colors ' +
+            (shared
+              ? 'bg-[var(--primary)]'
+              : 'bg-[rgb(var(--border)/0.4)]')
+          }
+>>>>>>> origin/main
         >
           <span
             className={'h-5 w-5 rounded-full bg-[var(--bg)] transition-transform ' + (shared ? 'translate-x-5' : '')}
@@ -354,9 +433,14 @@ function LogPeriod({ tracker, onSave, saving }) {
         <Input type="date" max={todayStr()} value={start} onChange={(e) => setStart(e.target.value)} />
       </Field>
 
+<<<<<<< HEAD
       <fieldset>
         <legend className="mb-1.5 text-sm font-medium">Flow</legend>
         <div className="grid grid-cols-3 gap-2" role="radiogroup" aria-label="Flow">
+=======
+      <Field label="Flow" group>
+        <div className="grid grid-cols-3 gap-2">
+>>>>>>> origin/main
           {FLOW_OPTIONS.map((f) => {
             const active = flow === f;
             return (
@@ -369,8 +453,13 @@ function LogPeriod({ tracker, onSave, saving }) {
                 className={
                   'min-h-11 rounded-xl text-sm font-medium capitalize transition-colors ' +
                   (active
+<<<<<<< HEAD
                     ? 'bg-[var(--primary)] text-[var(--on-primary)]'
                     : 'bg-[rgb(var(--card-2))] text-[var(--muted)] hover:text-[var(--text)]')
+=======
+                    ? 'text-[var(--on-primary)] bg-[var(--primary)]'
+                    : 'glass text-[var(--muted)]')
+>>>>>>> origin/main
                 }
               >
                 {f}
@@ -440,9 +529,14 @@ function LogMood({ tracker, onSave, saving }) {
         <Input type="date" max={todayStr()} value={date} onChange={(e) => setDate(e.target.value)} />
       </Field>
 
+<<<<<<< HEAD
       <fieldset>
         <legend className="mb-1.5 text-sm font-medium">How are you feeling?</legend>
         <div className="flex flex-wrap gap-2" role="radiogroup" aria-label="Mood">
+=======
+      <Field label="How are you feeling?" group>
+        <div className="flex flex-wrap gap-2">
+>>>>>>> origin/main
           {MOOD_OPTIONS.map((m) => {
             const active = mood === m;
             return (
@@ -455,8 +549,13 @@ function LogMood({ tracker, onSave, saving }) {
                 className={
                   'flex h-12 w-12 items-center justify-center rounded-xl transition-colors ' +
                   (active
+<<<<<<< HEAD
                     ? 'bg-[var(--primary)] text-[var(--on-primary)]'
                     : 'bg-[rgb(var(--card-2))] text-[var(--text)] hover:text-[var(--primary)]')
+=======
+                    ? 'scale-110 bg-[var(--primary)] shadow-lg'
+                    : 'glass')
+>>>>>>> origin/main
                 }
               >
                 <MoodFace mood={m} size={28} />
@@ -516,10 +615,32 @@ function CyclesList({ tracker, onSave, saving }) {
               className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-[var(--muted)] transition-colors hover:text-[var(--danger)] disabled:opacity-50"
               aria-label={`Delete cycle starting ${fmtDate(c.start)}`}
             >
+<<<<<<< HEAD
               <Icon name="Trash2" size={16} />
             </button>
           </li>
         ))}
+=======
+              <div className="min-w-0">
+                <p className="text-sm font-medium">
+                  {fmtDate(c.start)}
+                  {c.end ? ` – ${fmtDate(c.end)}` : ' · ongoing'}
+                </p>
+                {c.flow && (
+                  <p className="text-xs capitalize text-[var(--muted)]">{c.flow} flow</p>
+                )}
+              </div>
+              <button
+                onClick={() => remove(c)}
+                className="rounded-xl p-2 text-[var(--muted)] transition hover:text-[var(--danger-text)]"
+                aria-label="Delete cycle"
+              >
+                <Icon name="Trash2" size={16} />
+              </button>
+            </motion.li>
+          ))}
+        </AnimatePresence>
+>>>>>>> origin/main
       </ul>
     </section>
   );
@@ -562,10 +683,28 @@ function MoodsList({ tracker, onSave, saving }) {
               className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-[var(--muted)] transition-colors hover:text-[var(--danger)] disabled:opacity-50"
               aria-label={`Delete mood from ${fmtDate(m.date)}`}
             >
+<<<<<<< HEAD
               <Icon name="Trash2" size={16} />
             </button>
           </li>
         ))}
+=======
+              <span className="text-2xl">{m.mood}</span>
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-medium">{fmtDate(m.date)}</p>
+                {m.notes && <p className="truncate text-xs text-[var(--muted)]">{m.notes}</p>}
+              </div>
+              <button
+                onClick={() => remove(m, i)}
+                className="rounded-xl p-2 text-[var(--muted)] transition hover:text-[var(--danger-text)]"
+                aria-label="Delete mood"
+              >
+                <Icon name="Trash2" size={16} />
+              </button>
+            </motion.li>
+          ))}
+        </AnimatePresence>
+>>>>>>> origin/main
       </ul>
     </section>
   );
@@ -588,11 +727,19 @@ function PartnerCard({ tracker, partner }) {
   }
 
   return (
+<<<<<<< HEAD
     <section className="journal-card space-y-2 p-5" aria-labelledby="partner-wellness">
       <h2 id="partner-wellness" className="flex items-center gap-2 font-serif text-lg font-medium">
         <Icon name="Heart" size={18} className="text-[var(--primary)]" />
         {name ? `${name}'s wellness` : 'Partner'}
       </h2>
+=======
+    <GlassCard className="border border-[color-mix(in_srgb,var(--primary)_20%,transparent)]">
+      <div className="flex items-center gap-2">
+        <Icon name="HeartPulse" size={20} className="text-[var(--primary)]" aria-hidden="true" />
+        <h2 className="font-semibold">{name ? `${name}'s wellness` : 'Partner'}</h2>
+      </div>
+>>>>>>> origin/main
       {p?.hasCycle ? (
         <div className="space-y-1 text-sm">
           {p.isActive ? (

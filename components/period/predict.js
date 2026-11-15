@@ -45,7 +45,11 @@ export function predict(tracker) {
   // Is a period active right now? (within avgPeriod days of last start, no end past)
   const lastEnd = last.end ? toDate(last.end) : addDays(lastStart, avgPeriod - 1);
   const cycleDay = differenceInCalendarDays(today, lastStart) + 1;
+<<<<<<< HEAD
   const isActive = cycleDay >= 1 && !!lastEnd && differenceInCalendarDays(today, lastEnd) <= 0;
+=======
+  const isActive = cycleDay >= 1 && differenceInCalendarDays(today, lastEnd) <= 0;
+>>>>>>> origin/main
 
   return {
     avgCycle,

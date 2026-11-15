@@ -7,7 +7,11 @@ export function Avatar({ src, name = '', size = 44, className, priority = false 
     <span
       style={dim}
       className={cn(
+<<<<<<< HEAD
         'inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full bg-[var(--primary)]/15',
+=======
+        'inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full text-[var(--on-primary)] font-semibold bg-[var(--primary)]',
+>>>>>>> origin/main
         className
       )}
     >
@@ -25,9 +29,13 @@ export function Avatar({ src, name = '', size = 44, className, priority = false 
           className='h-full w-full object-cover'
         />
       ) : (
+<<<<<<< HEAD
         <span className='font-semibold text-[var(--primary)]' style={{ fontSize: size * 0.4 }}>
           {initials(name) || '?'}
         </span>
+=======
+        <span style={{ fontSize: size * 0.4 }}>{initials(name) || '?'}</span>
+>>>>>>> origin/main
       )}
     </span>
   );
