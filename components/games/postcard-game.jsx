@@ -18,12 +18,12 @@ export function PostcardPrompt({ game }) {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState(null);
   const [sent, setSent] = useState(false);
+  // Same prompt for both partners: chosen by the UTC day number.
+  const [day] = useState(() => Math.floor(Date.now() / 86_400_000));
 
   if (status === 'loading') return <Skeleton className="h-48 w-full" />;
   if (status === 'error') return <ErrorState message="Could not load this game." onRetry={retry} />;
 
-  // Same prompt for both partners: chosen by the UTC day number.
-  const day = Math.floor(Date.now() / 86_400_000);
   const prompt = data[day % data.length];
 
   async function onFile(e) {

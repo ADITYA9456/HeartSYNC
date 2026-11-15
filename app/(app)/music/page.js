@@ -9,6 +9,7 @@ import {
   ListMusic,
   Radio,
   CassetteTape,
+  ArrowRight,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { api } from '@/lib/api-client';
