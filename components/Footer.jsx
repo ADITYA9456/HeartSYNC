@@ -1,6 +1,6 @@
 'use client';
 import React, { useEffect, useRef } from 'react';
-import { motion, useMotionValue, useTransform, animate } from 'framer-motion';
+import { m as lm, useMotionValue, useTransform, animate } from 'framer-motion';
 import { useReducedMotion } from 'framer-motion';
 
 const Footer = () => {
