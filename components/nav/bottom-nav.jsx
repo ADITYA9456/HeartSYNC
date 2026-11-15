@@ -28,6 +28,8 @@ export function BottomNav() {
   const pathname = usePathname();
   const [moreOpen, setMoreOpen] = useState(false);
   const moreActive = MORE_ITEMS.some((i) => isActive(pathname, i.href));
+  const primaryIndex = PRIMARY_NAV.findIndex((i) => isActive(pathname, i.href));
+  const markerIndex = primaryIndex >= 0 ? primaryIndex : moreActive ? PRIMARY_NAV.length : -1;
 
   return (
     <>
@@ -36,11 +38,14 @@ export function BottomNav() {
         className="fixed inset-x-0 bottom-0 z-40 bg-[var(--bg)] pb-safe"
         style={{ boxShadow: '0 -1px 0 rgb(var(--border) / 0.1)' }}
       >
-        <ul className="mx-auto flex h-[var(--nav-height)] w-full max-w-md items-center justify-around px-2">
+        <ul className="relative mx-auto grid h-[var(--nav-height)] w-full max-w-md grid-cols-5 items-center px-2">
+          <li aria-hidden="true" className="nav-marker pointer-events-none absolute inset-y-0 left-2 flex w-[calc((100%-1rem)/5)] items-start justify-center" style={{ transform: `translate3d(${markerIndex * 100}%, 0, 0)`, opacity: markerIndex < 0 ? 0 : 1 }}>
+            <span className="h-[3px] w-8 rounded-b-full bg-[var(--primary)]" />
+          </li>
           {PRIMARY_NAV.map((item) => {
             const active = isActive(pathname, item.href);
             return (
-              <li key={item.href}>
+              <li key={item.href} className="flex justify-center">
                 <Link
                   href={item.href}
                   prefetch
@@ -52,7 +57,7 @@ export function BottomNav() {
               </li>
             );
           })}
-          <li>
+          <li className="flex justify-center">
             <button
               type="button"
               onClick={() => setMoreOpen(true)}
@@ -75,7 +80,7 @@ export function BottomNav() {
                 prefetch
                 onClick={() => setMoreOpen(false)}
                 aria-current={isActive(pathname, item.href) ? 'page' : undefined}
-                className="flex min-h-14 items-center gap-4 rounded-xl px-2 text-lg hover:bg-[var(--primary)]/10"
+                className="press flex min-h-14 items-center gap-4 rounded-xl px-2 text-lg hover:bg-[var(--primary)]/10"
               >
                 <Icon name={item.icon} size={22} className="text-[var(--primary)]" aria-hidden="true" />
                 <span className="font-serif font-medium">{item.label}</span>

@@ -1,4 +1,5 @@
 'use client';
+import Image from 'next/image';
 import { Loader2, TriangleAlert } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Icon } from '@/components/ui/icon';
@@ -10,9 +11,16 @@ export function Spinner({ className }) {
 
 export function FullPageSpinner({ label }) {
   return (
-    <div role='status' className='flex min-h-dvh flex-col items-center justify-center gap-4'>
-      <Spinner className='h-6 w-6' />
-      {label && <p className='text-sm text-[var(--muted)]'>{label}</p>}
+    <div role='status' aria-live='polite' className='flex min-h-dvh flex-col items-center justify-center gap-5'>
+      <Image
+        src='/brand/mark-160.png'
+        alt=''
+        width={72}
+        height={72}
+        priority
+        className='brand-breathe rounded-[24%] bg-black'
+      />
+      {label ? <p className='text-sm text-[var(--muted)]'>{label}</p> : <span className='sr-only'>Loading</span>}
     </div>
   );
 }

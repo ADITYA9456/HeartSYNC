@@ -9,7 +9,8 @@ import { registerForPush, onForegroundMessage } from '@/lib/firebase-client';
 import { TopBar } from '@/components/nav/top-bar';
 import { BottomNav } from '@/components/nav/bottom-nav';
 import { Celebration } from '@/components/celebration/celebration';
-import { FullPageSpinner, ErrorState } from '@/components/ui/spinner';
+import { ErrorState } from '@/components/ui/spinner';
+import { PageSkeleton } from '@/components/ui/skeleton';
 
 export function AppShell({ children }) {
   const router = useRouter();
@@ -96,14 +97,17 @@ export function AppShell({ children }) {
     );
   }
 
-  if (!ready || !user) return <FullPageSpinner label="Opening your space…" />;
+  // The frame (logo, nav) paints at once; only the page area waits for the session.
+  const sessionReady = ready && !!user;
 
   return (
     <div className="mx-auto flex min-h-dvh w-full max-w-2xl flex-col">
       <TopBar />
-      <main className="pb-nav flex-1 px-4 pt-2">{children}</main>
+      <main className="pb-nav flex-1 px-4 pt-2" aria-busy={!sessionReady}>
+        {sessionReady ? children : <PageSkeleton />}
+      </main>
       <BottomNav />
-      <Celebration />
+      {sessionReady && <Celebration />}
     </div>
   );
 }

@@ -1,12 +1,12 @@
 /* CoupleSpace service worker — app-shell + offline fallback.
    Network-first for navigations (so fresh content wins) with an offline page
    fallback; cache-first for static assets. */
-const VERSION = 'cs-v2'; // v2: new icon set
+const VERSION = 'cs-v3'; // v3: HeartSYNC brand icons
 const STATIC_CACHE = `${VERSION}-static`;
 const RUNTIME_CACHE = `${VERSION}-runtime`;
 const OFFLINE_URL = '/offline';
 
-const PRECACHE = ['/offline', '/manifest.webmanifest', '/icons/v2/icon-192.png'];
+const PRECACHE = ['/offline', '/manifest.webmanifest', '/icons/pwa/icon-192.png', '/brand/mark-160.png'];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
@@ -49,7 +49,7 @@ self.addEventListener('fetch', (event) => {
   }
 
   // Static assets: cache-first.
-  if (url.pathname.startsWith('/_next/static') || url.pathname.startsWith('/icons')) {
+  if (url.pathname.startsWith('/_next/static') || url.pathname.startsWith('/icons') || url.pathname.startsWith('/brand')) {
     event.respondWith(
       caches.match(request).then(
         (cached) =>

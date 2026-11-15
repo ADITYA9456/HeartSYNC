@@ -1,6 +1,8 @@
+import Image from 'next/image';
 import Link from 'next/link';
-import { MessageCircle, Images, Sparkles, Heart } from 'lucide-react';
-import { HeartMark } from '@/components/ui/heart-mark';
+import { MessageCircle, Images, Sparkles, Heart, ArrowRight } from 'lucide-react';
+
+export const metadata = { title: 'A quiet digital home for your relationship' };
 
 const features = [
   { icon: MessageCircle, label: 'Whisper in private', description: 'A safe space for your most personal conversations.' },
@@ -11,61 +13,81 @@ const features = [
 
 export default function Landing() {
   return (
-    <main className="mx-auto flex min-h-dvh max-w-md flex-col px-8 py-20 lg:max-w-4xl lg:flex-row lg:items-center lg:gap-20">
-      {/* Hero Section */}
-      <div className="flex-1 space-y-12 text-left">
-        <div className="space-y-6">
-          <div className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--primary)]/5">
-            <HeartMark size={32} className="opacity-80" />
+    <main>
+      {/* Always-dark opening: the logo artwork sits on true black, so the hero uses the dark tokens in every theme. */}
+      <section className="dark relative flex min-h-dvh flex-col items-center justify-center overflow-hidden bg-black px-6 pb-16 pt-[max(4rem,env(safe-area-inset-top))] text-center text-[var(--text)]">
+        <div className="stagger mx-auto flex max-w-xl flex-col items-center">
+          <div className="logo-in">
+            <div className="float-slow">
+              <Image
+                src="/brand/logo-full-640.png"
+                alt="HeartSYNC"
+                width={640}
+                height={640}
+                priority
+                sizes="(max-width: 640px) 78vw, 360px"
+                className="h-auto w-[min(78vw,22.5rem)]"
+              />
+            </div>
           </div>
-          <div className="space-y-2">
-            <h1 className="display-title text-6xl tracking-tight lg:text-7xl">
-              Heart<span className="italic text-[var(--primary)]">Sync</span>
-            </h1>
-            <p className="max-w-xs font-serif text-xl leading-relaxed text-[var(--muted)] italic">
-              A quiet digital home for your relationship.
-            </p>
+          <h1 className="font-serif text-[clamp(1.75rem,6vw,2.5rem)] font-medium italic leading-snug text-balance text-[var(--muted)]">
+            A quiet digital home for your relationship.
+          </h1>
+          <div className="mt-9 flex w-full max-w-xs flex-col gap-3">
+            <Link
+              href="/auth"
+              className="press flex min-h-12 items-center justify-center gap-2 rounded-full bg-[var(--primary)] px-8 font-medium text-[var(--on-primary)] hover:bg-[var(--primary-2)]"
+            >
+              Begin your story
+              <ArrowRight size={18} aria-hidden="true" />
+            </Link>
+            <Link
+              href="/auth?mode=login"
+              className="press flex min-h-12 items-center justify-center rounded-full bg-white/10 px-8 text-sm font-medium text-[var(--text)] hover:bg-white/15"
+            >
+              I&apos;ve been here before
+            </Link>
           </div>
         </div>
+      </section>
 
-        <div className="flex flex-col gap-4 sm:flex-row lg:flex-col">
+      <section aria-labelledby="made-for-two" className="mx-auto max-w-2xl px-6 py-20">
+        <h2 id="made-for-two" className="reveal display-title mb-10 text-balance">
+          Made for the two of you
+        </h2>
+        <ul className="divide-y divide-[rgb(var(--border)/0.12)]">
+          {features.map((f) => (
+            <li key={f.label} className="reveal">
+              <div className="row-link flex items-start gap-5 py-7">
+                <span className="mt-1 flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[var(--primary)]/12 text-[var(--primary)]">
+                  <f.icon size={22} strokeWidth={1.6} aria-hidden="true" />
+                </span>
+                <div className="min-w-0 space-y-1">
+                  <h3 className="font-serif text-2xl font-medium leading-tight">{f.label}</h3>
+                  <p className="max-w-[46ch] text-[var(--muted)]">{f.description}</p>
+                </div>
+              </div>
+            </li>
+          ))}
+        </ul>
+        <div className="reveal mt-12 flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between">
           <Link
             href="/auth"
-            className="flex h-14 items-center justify-center rounded-full bg-[var(--ink)] px-8 font-medium text-[var(--bg-from)] transition-all hover:scale-[1.02] active:scale-[0.98] dark:bg-white dark:text-[var(--ink)]"
+            className="press inline-flex min-h-12 items-center gap-2 rounded-full bg-[var(--primary)] px-8 font-medium text-[var(--on-primary)] hover:bg-[var(--primary-2)]"
           >
             Begin your story
+            <ArrowRight size={18} aria-hidden="true" />
           </Link>
-          <Link
-            href="/auth?mode=login"
-            className="flex h-14 items-center justify-center rounded-full border border-[var(--ink)]/10 px-8 text-sm font-medium transition-all hover:bg-[var(--ink)]/5"
-          >
-            I&apos;ve been here before
-          </Link>
+          <nav aria-label="Legal" className="flex gap-5 text-sm text-[var(--muted)]">
+            <Link href="/privacy-policy" className="inline-flex min-h-11 items-center underline-offset-4 hover:text-[var(--text)] hover:underline">
+              Privacy
+            </Link>
+            <Link href="/terms-of-service" className="inline-flex min-h-11 items-center underline-offset-4 hover:text-[var(--text)] hover:underline">
+              Terms
+            </Link>
+          </nav>
         </div>
-      </div>
-
-      {/* Features - Asymmetric Layout */}
-      <div className="mt-20 flex-1 lg:mt-0">
-        <div className="grid gap-6 sm:grid-cols-2">
-          {features.map((f, i) => (
-            <div
-              key={f.label}
-              className={`journal-card group flex flex-col gap-4 rounded-[2rem] p-8 transition-all hover:-translate-y-1 ${
-                i % 2 === 1 ? 'lg:translate-y-8' : ''
-              }`}
-            >
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--primary)]/10 transition-colors group-hover:bg-[var(--primary)] group-hover:text-white">
-                <f.icon size={24} strokeWidth={1.5} />
-              </div>
-              <div className="space-y-2">
-                <p className="ink-stamp text-[var(--primary)]">{`0${i + 1} / Entry`}</p>
-                <h3 className="font-serif text-xl font-medium tracking-tight">{f.label}</h3>
-                <p className="text-sm leading-relaxed text-[var(--muted)]">{f.description}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
+      </section>
     </main>
   );
 }

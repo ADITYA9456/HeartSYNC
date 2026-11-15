@@ -6,7 +6,7 @@ export const metadata = { title: 'Games' };
 
 export default function GamesPage() {
   return (
-    <div className="screen-in space-y-6 py-2">
+    <div className="stagger space-y-6 py-2">
       <header className="space-y-1 text-center">
         <h1 className="display-title">Our Games</h1>
         <p className="text-sm text-[var(--muted)]">Little games to learn more about each other</p>
@@ -22,7 +22,7 @@ export default function GamesPage() {
               <li key={g.id}>
                 <Link
                   href={`/games/${g.id}`}
-                  className="flex min-h-16 items-center gap-4 rounded-xl px-2 py-2 hover:bg-[var(--primary)]/8"
+                  className="press flex min-h-16 items-center gap-4 rounded-xl px-2 py-2 hover:bg-[var(--primary)]/8"
                 >
                   <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[var(--primary)]/12 text-[var(--primary)]">
                     <Icon name={g.icon} size={20} aria-hidden="true" />

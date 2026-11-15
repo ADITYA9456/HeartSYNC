@@ -8,6 +8,8 @@ import { Avatar } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/ui/icon';
 import { Skeleton, ErrorState } from '@/components/ui/spinner';
+import { useGreeting } from '@/components/nav/use-greeting';
+import { useCountUp } from '@/lib/use-count-up';
 import { CATEGORY_ICON, countdownLabel, daysFromToday, nextOccurrence } from '@/components/dates/shared';
 
 const QUICK = [
@@ -23,6 +25,7 @@ export default function DashboardPage() {
   const user = useAppStore((s) => s.user);
   const couple = useAppStore((s) => s.couple);
   const partner = useAppStore((s) => s.partner);
+  const greeting = useGreeting();
   const [pinging, setPinging] = useState(null);
   const [dates, setDates] = useState(null);
   const [datesError, setDatesError] = useState(null);
@@ -63,12 +66,17 @@ export default function DashboardPage() {
 
   // Days together by calendar day, so it flips at the viewer's local midnight.
   const daysTogether = couple?.anniversary ? Math.max(0, -daysFromToday(couple.anniversary)) : null;
+  const shownDays = useCountUp(daysTogether);
   const firstNames = partner
     ? `${user?.name?.split(' ')[0] ?? ''} & ${partner?.name?.split(' ')[0] ?? ''}`
     : null;
 
   return (
-    <div className="screen-in space-y-6 py-2">
+    <div className="stagger space-y-6 py-2">
+      <h1 className="font-serif text-2xl font-medium leading-tight">
+        <span className="block min-h-[1.2em] text-[var(--muted)]">{greeting || ' ' }</span>
+        {user?.name?.split(' ')[0] || 'Love'}
+      </h1>
       <section className="anchor-card p-6 text-center" aria-label="Days together">
         <div className="flex items-center justify-center gap-4">
           <Avatar src={user?.avatar_url} name={user?.name} size={56} />
@@ -81,7 +89,7 @@ export default function DashboardPage() {
         </p>
         {daysTogether != null ? (
           <p className="mt-1 flex items-baseline justify-center gap-2">
-            <span className="display-title text-7xl tabular-nums text-[var(--primary)]">{daysTogether}</span>
+            <span className="display-title text-7xl tabular-nums text-[var(--primary)]">{shownDays}</span>
             <span className="ink-stamp">Days</span>
           </p>
         ) : (
@@ -122,7 +130,7 @@ export default function DashboardPage() {
           <ul className="space-y-2">
             {comingUp.map((d) => (
               <li key={d.id}>
-                <Link href="/dates" className="journal-card flex min-h-14 items-center gap-3 p-3">
+                <Link href="/dates" className="journal-card press flex min-h-14 items-center gap-3 p-3">
                   <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[var(--primary)]/12 text-[var(--primary)]">
                     <Icon name={CATEGORY_ICON[d.category] || 'Pin'} size={20} aria-hidden="true" />
                   </span>
@@ -148,7 +156,7 @@ export default function DashboardPage() {
               <Link
                 href={q.href}
                 prefetch
-                className="flex min-h-14 items-center gap-4 rounded-xl px-2 hover:bg-[var(--primary)]/8"
+                className="press flex min-h-14 items-center gap-4 rounded-xl px-2 hover:bg-[var(--primary)]/8"
               >
                 <Icon name={q.icon} size={20} className="text-[var(--primary)]" aria-hidden="true" />
                 <span className="font-serif text-lg font-medium">{q.label}</span>

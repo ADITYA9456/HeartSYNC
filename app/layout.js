@@ -26,8 +26,11 @@ export const metadata = {
     title: 'HeartSYNC',
   },
   icons: {
-    icon: '/icons/icon-192.png',
-    apple: '/icons/icon-192.png',
+    icon: [
+      { url: '/icons/pwa/favicon-32.png', sizes: '32x32', type: 'image/png' },
+      { url: '/icons/pwa/icon-192.png', sizes: '192x192', type: 'image/png' },
+    ],
+    apple: '/icons/pwa/apple-touch-180.png',
   },
   openGraph: {
     title: 'HeartSYNC',
