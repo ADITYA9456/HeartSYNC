@@ -71,7 +71,7 @@ export default function TermsOfServicePage() {
           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-muted">
             Legal
           </p>
-          <h1 className="text-3xl font-black tracking-tight sm:text-4xl">Terms of Service</h1>
+          <h1 className="font-display text-4xl font-semibold tracking-tight">Terms of Service</h1>
           <p className="max-w-2xl text-sm leading-7 text-muted sm:text-base">
             These terms describe the basic rules for using HeartSYNC. They are intentionally kept
             short so the product can stay focused on the private experience for two people.
