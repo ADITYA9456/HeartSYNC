@@ -3,6 +3,7 @@ export const SECTIONS = [
   { id: 'A', title: 'Play on your own time' },
   { id: 'B', title: 'Live on a video call' },
   { id: 'C', title: 'Local time and postcard' },
+  { id: 'D', title: 'More to play together' },
 ];
 
 export const GAMES = [
@@ -126,6 +127,14 @@ export const GAMES = [
     kind: 'postcard',
     howTo: ['You both get the same prompt today.', 'Take or pick a photo that fits.', 'It goes to your shared gallery.'],
   },
+  ...[
+    ['most-likely-to', 'Who’s More Likely To', 'Users', 'Both vote on who is more likely to do it, then see if you agree.', ['The first partner votes in secret.', 'Pass the phone. The second partner votes.', 'Reveal to see if you agreed. Matches are counted.']],
+    ['love-language', 'Love Language Quiz', 'HeartHandshake', 'Choose what feels more like love to you and get your top love language.', ['Answer ten quick either-or questions about yourself.', 'Your answers are scored across the five love languages.', 'Hand the phone over so your partner can take it too.']],
+    ['rapid-fire', 'Rapid Fire', 'Timer', 'Sixty seconds. Answer as many quick questions as you can.', ['Pick who is answering. The other reads the questions out loud.', 'Tap Answered for every reply, or Skip to move on.', 'When the timer hits zero you see the count.']],
+    ['compliment-battle', 'Compliment Battle', 'MessageCircleHeart', 'Take turns giving specific compliments before the timer runs out.', ['Each turn lasts 30 seconds. Three turns each.', 'Give compliments that are specific, not generic.', 'The listener taps the heart for every one that lands.']],
+    ['date-roulette', 'Date Night Roulette', 'Dices', 'Spin for a date idea. Filter by indoor or outdoor and budget.', ['Set where you want to be and how much you want to spend.', 'Spin. Do not like it? Spin again.', 'Lock in the one that makes you both smile.']],
+    ['couple-bingo', 'Couple Bingo', 'Grid3x3', 'Tick off couple activities. Complete a line to call bingo.', ['Each square is something to do together.', 'Tap a square when you have done it. Tap again to undo.', 'Any full row, column or diagonal is a bingo. Your card is saved on this device.']],
+  ].map(([id, title, icon, rule, howTo]) => ({ id, title, rule, section: 'D', icon, sync: false, kind: 'extra', howTo })),
 ];
 
 export const getGame = (id) => GAMES.find((g) => g.id === id);

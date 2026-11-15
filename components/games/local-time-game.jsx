@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/button';
 import { Input, Field } from '@/components/ui/input';
 import { Skeleton, ErrorState, EmptyState } from '@/components/ui/spinner';
 import { useContent, shuffle } from '@/components/games/use-content';
-import { SyncNotice } from '@/components/games/game-frame';
 import { useAppStore } from '@/lib/store';
 
 // Minutes since midnight in a given IANA zone, or null if the zone is invalid.
@@ -89,7 +88,6 @@ export function LocalTimeGuess({ game }) {
             </p>
           </div>
           <Button onClick={nextLine} className="w-full">Another round</Button>
-          <SyncNotice partnerName={partner.name?.split(' ')[0]} />
         </section>
       )}
     </div>

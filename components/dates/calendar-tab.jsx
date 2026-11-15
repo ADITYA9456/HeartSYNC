@@ -8,7 +8,7 @@ import {
   isSameDay,
   format,
 } from 'date-fns';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import { toast } from 'sonner';
 import { api } from '@/lib/api-client';
 import { friendlyError } from '@/lib/friendly-error';
@@ -205,7 +205,7 @@ export function CalendarTab() {
         ) : (
           <div className="space-y-3">
             {dayEvents.map((ev, i) => (
-              <motion.div
+              <m.div
                 key={ev.id}
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -242,7 +242,7 @@ export function CalendarTab() {
                 >
                   <Icon name="Trash2" size={16} />
                 </button>
-              </motion.div>
+              </m.div>
             ))}
           </div>
         )}

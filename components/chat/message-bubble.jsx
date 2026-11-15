@@ -1,6 +1,6 @@
 'use client';
 import { useRef, useState } from 'react';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import { format } from 'date-fns';
 import { Check, CheckCheck, Mic, Smile, Trash2 } from 'lucide-react';
 import { Avatar } from '@/components/ui/avatar';
@@ -49,7 +49,7 @@ export function MessageBubble({
   };
 
   return (
-    <motion.div
+    <m.div
       initial={{ opacity: 0, y: 8, scale: 0.98 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ type: 'spring', stiffness: 380, damping: 30 }}
@@ -135,7 +135,7 @@ export function MessageBubble({
           {showPicker && (
             <>
               <div className="fixed inset-0 z-10" onClick={() => setShowPicker(false)} />
-              <motion.div
+              <m.div
                 initial={{ opacity: 0, scale: 0.85, y: 6 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 className={cn(
@@ -153,7 +153,7 @@ export function MessageBubble({
                     {emoji}
                   </button>
                 ))}
-              </motion.div>
+              </m.div>
             </>
           )}
         </div>
@@ -192,7 +192,7 @@ export function MessageBubble({
           )}
         </div>
       </div>
-    </motion.div>
+    </m.div>
   );
 }
 

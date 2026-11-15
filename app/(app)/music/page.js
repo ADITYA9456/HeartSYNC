@@ -1,6 +1,6 @@
 'use client';
 import { useCallback, useEffect, useState } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, m } from 'framer-motion';
 import {
   Music,
   Play,
@@ -22,7 +22,7 @@ const AUTH_URL = '/api/youtube/auth';
 function PlaylistCard({ playlist, index }) {
   const { title, thumbnail, count, url } = playlist;
   return (
-    <motion.div
+    <m.div
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{
@@ -68,13 +68,13 @@ function PlaylistCard({ playlist, index }) {
           <ExternalLink className="h-3.5 w-3.5 opacity-80" />
         </Button>
       </div>
-    </motion.div>
+    </m.div>
   );
 }
 
 function ConnectState({ onConnect, connecting }) {
   return (
-    <motion.div
+    <m.div
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
@@ -101,7 +101,7 @@ function ConnectState({ onConnect, connecting }) {
       >
         Connect YouTube
       </Button>
-    </motion.div>
+    </m.div>
   );
 }
 
@@ -227,7 +227,7 @@ export default function MusicPage() {
       ) : !connected ? (
         <ConnectState onConnect={handleConnect} connecting={connecting} />
       ) : playlists.length === 0 ? (
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           className="journal-card mt-6 flex flex-col items-center gap-4 p-10 text-center rounded-2xl"
@@ -237,7 +237,7 @@ export default function MusicPage() {
           <p className="max-w-xs text-sm text-[var(--muted)]">
             We couldn&apos;t find any playlists on your YouTube account. Create one to get started!
           </p>
-        </motion.div>
+        </m.div>
       ) : (
         <>
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">

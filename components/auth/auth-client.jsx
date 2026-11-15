@@ -5,7 +5,7 @@ import { api } from '@/lib/api-client';
 import { loginSchema, registerSchema } from '@/lib/validators';
 import { zodResolver } from '@hookform/resolvers/zod';
 import dynamic from 'next/dynamic';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, m } from 'framer-motion';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -108,7 +108,7 @@ export function AuthClient() {
             </p>
           </div>
         <AnimatePresence mode="wait">
-          <motion.form
+          <m.form
             key={mode}
             initial={{ opacity: 0, x: 12 }}
             animate={{ opacity: 1, x: 0 }}
@@ -136,7 +136,7 @@ export function AuthClient() {
             <Button type="submit" className="w-full" loading={submitting}>
               {isLogin ? 'Sign in' : 'Create account'}
             </Button>
-          </motion.form>
+          </m.form>
         </AnimatePresence>
 
         <div className="my-4 flex items-center gap-3 text-xs text-[var(--muted)]">

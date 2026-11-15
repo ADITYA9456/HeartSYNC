@@ -5,6 +5,7 @@ import { getGame } from '@/components/games/registry';
 import { GameFrame } from '@/components/games/game-frame';
 import { Skeleton, EmptyState } from '@/components/ui/spinner';
 import Link from 'next/link';
+import { GameErrorBoundary } from '@/components/games/kit';
 
 const loading = () => <Skeleton className="h-56 w-full" />;
 const KINDS = {
@@ -15,6 +16,20 @@ const KINDS = {
   'hot-seat': dynamic(() => import('@/components/games/deck-game').then((m) => m.HotSeat), { loading }),
   'local-time': dynamic(() => import('@/components/games/local-time-game').then((m) => m.LocalTimeGuess), { loading }),
   postcard: dynamic(() => import('@/components/games/postcard-game').then((m) => m.PostcardPrompt), { loading }),
+};
+
+const pick = (loader, name) => dynamic(() => loader().then((m) => m[name]), { loading });
+const party = () => import('@/components/games/party-games');
+const guess = () => import('@/components/games/guess-games');
+const timed = () => import('@/components/games/timed-games');
+const together = () => import('@/components/games/together-games');
+const EXTRAS = {
+  'most-likely-to': pick(party, 'MostLikelyTo'),
+  'love-language': pick(guess, 'LoveLanguageQuiz'),
+  'rapid-fire': pick(timed, 'RapidFire'),
+  'compliment-battle': pick(timed, 'ComplimentBattle'),
+  'date-roulette': pick(together, 'DateRoulette'),
+  'couple-bingo': pick(together, 'CoupleBingo'),
 };
 
 export default function GamePage() {
@@ -29,10 +44,12 @@ export default function GamePage() {
     );
   }
 
-  const Game = KINDS[game.kind];
+  const Game = game.kind === 'extra' ? EXTRAS[game.id] : KINDS[game.kind];
   return (
     <GameFrame game={game}>
-      <Game game={game} />
+      <GameErrorBoundary>
+        <Game game={game} />
+      </GameErrorBoundary>
     </GameFrame>
   );
 }
