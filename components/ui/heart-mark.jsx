@@ -1,3 +1,4 @@
+'use client';
 import { motion } from 'framer-motion';
 
 export function HeartMark({ size = 72, className = '' }) {

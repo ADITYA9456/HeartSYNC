@@ -1,15 +1,18 @@
-import { Epilogue, DM_Sans as DMSans } from 'next/font/google';
-import Footer from '@/components/Footer';
-import { motion } from 'framer-motion';
-import { Providers } from './providers';
-import './globals.css';
-import { Logo } from '@/components/Logo';
+import { Cormorant_Garamond, DM_Sans } from 'next/font/google';
 import { Providers } from './providers';
 import './globals.css';
 
-const epilogue = Epilogue({ subsets: ['latin'], weight: ['900'], variable: '--font-headline' });
-const dmSans = DMSans({ subsets: ['latin'], weight: ['400'], variable: '--font-body' });
-const cormorant = CormorantGaramond({ subsets: ['latin'], variable: '--font-display' });
+const cormorant = Cormorant_Garamond({
+  subsets: ['latin'],
+  weight: ['400', '500', '600'],
+  display: 'swap',
+  variable: '--font-display-next',
+});
+const dmSans = DM_Sans({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-body-next',
+});
 
 export const metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'),
@@ -37,7 +40,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang='en' suppressHydrationWarning>
       <body
-        className={`${inter.variable} ${cormorant.variable} font-body min-h-dvh antialiased`}
+        className={`${dmSans.variable} ${cormorant.variable} min-h-dvh antialiased`}
       >
         <Providers>{children}</Providers>
       </body>
