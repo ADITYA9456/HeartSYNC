@@ -4,13 +4,18 @@ import { Field, Input } from '@/components/ui/input';
 import { api } from '@/lib/api-client';
 import { loginSchema, registerSchema } from '@/lib/validators';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { GoogleLogin } from '@react-oauth/google';
+import dynamic from 'next/dynamic';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { Logo } from '@/components/brand/logo';
+
+const GoogleButton = dynamic(() => import('@/components/auth/google-button'), {
+  ssr: false,
+  loading: () => <div className="h-11 w-56 animate-pulse rounded-full bg-[var(--muted)]/20" aria-hidden="true" />,
+});
 
 export function AuthClient() {
   const router = useRouter();
@@ -142,10 +147,10 @@ export function AuthClient() {
 
           {googleReady && process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID && (
             <div className="flex justify-center [color-scheme:light]">
-              <GoogleLogin
+              <GoogleButton
+                clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}
                 onSuccess={onGoogle}
                 onError={() => toast.error('Google sign-in failed')}
-                shape="pill"
                 text={isLogin ? 'signin_with' : 'signup_with'}
               />
             </div>
